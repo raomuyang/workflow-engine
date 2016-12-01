@@ -14,6 +14,14 @@
     <dubbo:application name="Workflow-Engine-Provider"></dubbo:application>
 
     <!--zookeeper注册中心 -->
-    <dubbo:registry protocol="zookeeper" address="${dubbo.zookeeper}"/>
+    <dubbo:registry id="wf-provider" protocol="zookeeper" address="${dubbo.zookeeper}"/>
+
+    <!-- 用dubbo协议在20880端口暴露服务 -->
     <dubbo:protocol name="dubbo" port="20880"/>
+
+    <!--暴露服务-->
+    <dubbo:service timeout="3000" interface="org.radrso.demo.HelloWorld" ref="helloWorld"></dubbo:service>
+    <dubbo:service timeout="3000" interface="org.radrso.demo.test.Test1" ref="test1"></dubbo:service>
+    <dubbo:service timeout="3000" interface="org.radrso.demo.test.Test2" ref="test2"></dubbo:service>
+
 </beans>
