@@ -7,6 +7,8 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>WF-Interfaces</module>
+        <module>WF-Provider</module>
+        <module>WF-Consumer</module>
     </modules>
     <name>Workflow-Engine Maven Webapp</name>
     <url>http://maven.apache.org</url>

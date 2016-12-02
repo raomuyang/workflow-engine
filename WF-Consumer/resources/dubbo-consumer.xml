@@ -9,11 +9,11 @@
        http://code.alibabatech.com/schema/dubbo/dubbo.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:property-placeholder location="config.properties"/>
-    <dubbo:application name="wf-consumer"/>
+    <dubbo:application name="Workflow-Engine-Provider"/>
     <!--zookeeper注册中心 -->
     <dubbo:registry id="wf-provider" protocol="zookeeper" address="${dubbo.zookeeper}"/>
 
-    <dubbo:protocol port="2888"/>
+    <dubbo:protocol port="28880"/>
 
     <dubbo:reference  interface="org.radrso.demo.HelloWorld" id="helloWorldImpl"></dubbo:reference>
     <dubbo:reference  interface="org.radrso.demo.test.Test1" id="test1Impl"></dubbo:reference>
