@@ -23,6 +23,7 @@ public class Launcher {
         // 初始化spring
         logger.info("开始初始化core服务");
         BeanFactoryUtils.init();
+        BeanFactoryUtils.getContext().start();
 
         try{
             System.in.read();

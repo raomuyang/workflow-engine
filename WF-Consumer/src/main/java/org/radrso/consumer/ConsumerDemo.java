@@ -11,6 +11,7 @@ public class ConsumerDemo {
 
     public static void main(String[] args) {
         BeanFactoryUtils.init();
+        BeanFactoryUtils.getContext().start();
         HelloWorld helloWorld = (HelloWorld) BeanFactoryUtils.getContext().getBean("helloWorldImpl");
         System.out.println(helloWorld.say("HHHHHH"));
     }
