@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://code.alibabatech.com/schema/dubbo
+       http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
+    <context:property-placeholder location="config.properties"></context:property-placeholder>
+
+    <dubbo:application name="Workflow-Engine-Provider"></dubbo:application>
+
+    <!--zookeeper注册中心 -->
+    <dubbo:registry id="wf-provider" protocol="zookeeper" address="${dubbo.zookeeper}"/>
+
+    <!-- 用dubbo协议在指定端口暴露服务 -->
+    <dubbo:protocol name="dubbo" port="${dubbo.port}"/>
+
+    <!--暴露服务-->
+    <dubbo:service timeout="3000" interface="org.radrso.demo.HelloWorld" ref="helloWorldImpl"></dubbo:service>
+    <dubbo:service timeout="3000" interface="org.radrso.demo.test.Test1" ref="test1Impl"></dubbo:service>
+    <dubbo:service timeout="3000" interface="org.radrso.demo.test.Test2" ref="test2Impl"></dubbo:service>
+
+</beans>
