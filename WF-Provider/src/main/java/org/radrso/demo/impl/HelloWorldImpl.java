@@ -17,7 +17,7 @@ public class HelloWorldImpl implements HelloWorld {
 
     @Override
     public String say(String str) {
-        return "Hello World";
+        return "Hello World:" + str;
     }
 
     @Override
