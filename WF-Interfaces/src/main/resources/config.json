@@ -6,7 +6,7 @@
     {"name": "", "value": "", "type": ""},
     {"name": "", "value": "", "type": ""}
   ],
-  "do": [
+  "run": [
     {
       "doOnNext":{
         "step": 1,
