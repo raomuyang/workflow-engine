@@ -3,6 +3,7 @@ package org.radrso.config.items;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * Created by raomengnan on 16-12-8.
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class ConditionItem {
     private String compare;
     private String judge;
