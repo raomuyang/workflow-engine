@@ -1,4 +1,4 @@
-package org.radrso.utils;
+package org.radrso.plugins;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

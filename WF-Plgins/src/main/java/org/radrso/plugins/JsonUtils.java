@@ -1,4 +1,4 @@
-package org.radrso.utils;
+package org.radrso.plugins;
 
 import com.google.gson.Gson;
 import lombok.extern.log4j.Log4j;

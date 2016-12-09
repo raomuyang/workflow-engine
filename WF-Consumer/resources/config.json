@@ -10,7 +10,6 @@
     {
       "doOnNext":{
         "step": 1,
-        // 可以调用某个方法或者直接请求某个url
         "call": "org.radrso.xxx.Methodxxx || url",
         "method": "CLASS / GET / POST / PUT / DELETE...",
         "next": {
@@ -19,7 +18,7 @@
             "judge": "> = <",
             "next": ""
           },
-          "nextStep": 2 // output默认为step 0
+          "nextStep": 2
         }
       }
     },
@@ -40,6 +39,6 @@
     "type": "String / xx.xxx.xxxClass"
   },
 
-  "header": ""
+  "header": "request header"
 
 }
