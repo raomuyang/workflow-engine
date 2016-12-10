@@ -1,8 +1,7 @@
 package org.radrso.consumer;
 
 import org.radrso.demo.HelloWorld;
-import org.radrso.utils.BeanFactoryUtils;
-import org.springframework.context.ApplicationContext;
+import org.radrso.plugins.BeanFactoryUtils;
 
 /**
  * Created by raomengnan on 16-12-2.
