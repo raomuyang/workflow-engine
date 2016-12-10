@@ -8,7 +8,6 @@ import org.apache.http.entity.StringEntity;
 import org.radrso.plugins.exceptions.WFErrorCode;
 import org.radrso.plugins.exceptions.impl.RequestException;
 import org.radrso.plugins.requests.entity.Method;
-import org.radrso.plugins.requests.entity.Response;
 
 import java.lang.reflect.Constructor;
 
@@ -23,7 +22,7 @@ public class RequestFactory {
     private Method method = Method.GET;
     private Object params;
     private ContentType contentType;
-
+    private boolean usePool;
 
     public Request createRequest(String portocol) throws RequestException {
         Constructor<Request> constructor = getConstructor(portocol);
@@ -42,7 +41,7 @@ public class RequestFactory {
                 default:
                     throw new RequestException(WFErrorCode.UNSUPPORTED_REQUEST_METHOD);
             }
-            Request request = constructor.newInstance(url, method, params, contentType, requestBase);
+            Request request = constructor.newInstance(url, method, params, contentType, requestBase, usePool);
             return request;
         } catch (ReflectiveOperationException e) {
             throw new RequestException(WFErrorCode.UNSUPPORTED_POTOCOL, e);
@@ -112,7 +111,8 @@ public class RequestFactory {
                     Method.class,
                     Object.class,
                     ContentType.class,
-                    HttpRequestBase.class
+                    HttpRequestBase.class,
+                    Boolean.class
             );
             return constructor;
         }catch (Exception e){
@@ -121,16 +121,4 @@ public class RequestFactory {
 
     }
 
-    public static void main(String[] args) throws RequestException {
-        RequestFactory requestFactory = new RequestFactory("http://erp.atomicer.cn/rest/user/auth",
-                Method.POST, "{\"id\":\"xxx\",\"pwd\":\"xxx\"}", ContentType.APPLICATION_JSON);
-        Request request = requestFactory.createRequest("http");
-        try {
-            Response response = request.sendRequest();
-            System.out.println(response);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-    }
 }

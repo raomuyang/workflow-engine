@@ -23,13 +23,15 @@ public abstract class Request {
     protected ContentType contentType;
     protected CloseableHttpClient client;
     private HttpRequestBase requestBase;
+    private boolean usePool;
 
-    public Request(String url, Method method, Object params, ContentType contentType, HttpRequestBase requestBase){
+    public Request(String url, Method method, Object params, ContentType contentType, HttpRequestBase requestBase, Boolean usePool){
         this.url = url;
         this.method = method;
         this.params = params;
         this.contentType = contentType;
         this.requestBase = requestBase;
+        this.usePool = usePool;
     }
 
     public Response sendRequest() throws RequestException {
@@ -37,14 +39,13 @@ public abstract class Request {
         int retry = 3;
         boolean exceptionHappened = false;
         while (retry-- > 0 && !exceptionHappened){
-
-            if(client == null)
-                client = buildClient();
-
-            signature(requestBase);
-
             exceptionHappened = false;
+
             try {
+                if(client == null)
+                    initClient();
+                signature(requestBase);
+
                 HttpResponse httpResponse = client.execute(requestBase);
                 response = new Response(httpResponse);
                 requestBase.abort();
@@ -109,7 +110,16 @@ public abstract class Request {
 
     }
 
+    private void initClient(){
+        if(usePool)
+            client = buildClientUsePool();
+        else
+            client = buildClient();
+    }
+
     public abstract CloseableHttpClient buildClient();
+    public abstract CloseableHttpClient buildClientUsePool();
     public abstract void signature(HttpRequestBase requestBase);
+    public abstract void closeConnectionPool();
 
 }
