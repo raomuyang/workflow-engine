@@ -17,6 +17,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class ConditionItem {
+    private String result;
     private String compare;
     private String judge;
     private String next;

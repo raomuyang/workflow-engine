@@ -17,8 +17,7 @@ import org.radrso.config.items.InputItem;
 @ToString
 public class WorkflowEntity {
     private String application;
-    private String workflow;
-    private InputItem[] input;
+    private String id;
     private String header;
     private DoOnNext[] run;
 }

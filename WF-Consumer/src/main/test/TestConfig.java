@@ -1,5 +1,3 @@
-package test;
-
 import org.radrso.config.WorkflowEntity;
 import org.radrso.plugins.JsonUtils;
 
@@ -10,8 +8,9 @@ import org.radrso.plugins.JsonUtils;
 public class TestConfig {
     public static void main(String[] args) {
         TestConfig t = new TestConfig();
-        String config = "config.json";
-        String fp = t.getClass().getResource("/config.json").getPath();
+        String config = "/workflow1.json";
+        System.out.println(t.getClass().getResource("/workflow1.json"));
+        String fp = t.getClass().getResource(config).getPath();
         System.out.println(fp);
 
         WorkflowEntity workflowEntity = JsonUtils.loadJsonFile(fp, WorkflowEntity.class);

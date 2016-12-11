@@ -18,7 +18,9 @@ import lombok.ToString;
 @ToString
 public class DoOnNext {
     private int step;
+    private String name;
     private String call;
     private String method;
+    private InputItem[] input;
     private Next next;
 }
