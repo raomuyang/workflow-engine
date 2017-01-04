@@ -1,6 +1,8 @@
 {
   "application": "APPLICATION-NAME",
   "id": "WORKFLOW-ID",
+  "startTime":"",
+  "stopTime":"",
   "run": [
     {
       "step": 1,

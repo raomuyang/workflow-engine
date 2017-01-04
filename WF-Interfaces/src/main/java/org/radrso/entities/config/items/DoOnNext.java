@@ -1,4 +1,4 @@
-package org.radrso.config.items;
+package org.radrso.entities.config.items;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
