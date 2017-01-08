@@ -1,10 +1,21 @@
 {
   "application": "APPLICATION-NAME",
   "id": "WORKFLOW-ID",
-  "run": [
+  "startTime":"",
+  "stopTime":"",
+
+  "steps": [
     {
       "step": 1,
       "name": "step name",
+
+      "task":{
+        "id":"xxx",
+        "name":"xxx",
+        "submitPath":"xxx",
+        "callback":"xxx"
+      },
+
       "call": "org.radrso.xxx.Methodxxx || url",
       "method": "CLASS / GET / POST / PUT / DELETE...",
       "input": [
@@ -15,7 +26,7 @@
       "next": {
         "conditions":[
           {
-            "result": "{output.xxx}",
+            "result": "{output.xxx}/{task.xxx}",
             "compare": "xxx",
             "judge": "> = <",
             "next": ""
