@@ -23,6 +23,7 @@ public class JsonUtils {
         try {
             l = mapToBean(jsonStr, List.class);
         }catch (Exception e){
+            log.error(e);
             l = new ArrayList();
             l.add(jsonStr);
         }

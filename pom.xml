@@ -9,7 +9,7 @@
         <module>WF-Interfaces</module>
         <module>WF-Provider</module>
         <module>WF-Consumer</module>
-        <module>WF-Plgins</module>
+        <module>WF-Plugins</module>
     </modules>
     <name>Workflow-Engine Maven Webapp</name>
     <url>http://maven.apache.org</url>
