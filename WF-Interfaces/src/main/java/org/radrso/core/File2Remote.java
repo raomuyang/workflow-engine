@@ -8,7 +8,7 @@ import org.radrso.entities.response.WFResponse;
  */
 public interface File2Remote {
 
-    WFResponse importJar(byte[] stream);
+    WFResponse importJar(String application, String jarName, byte[] stream);
 
     WFResponse importConfigFile(byte[] stream);
 
