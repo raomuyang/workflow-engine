@@ -5,8 +5,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.radrso.plugins.exceptions.WFErrorCode;
-import org.radrso.plugins.exceptions.impl.RequestException;
+import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
+import org.radrso.plugins.requests.entity.exceptions.impl.RequestException;
 import org.radrso.plugins.requests.entity.Method;
 import org.radrso.plugins.requests.entity.Response;
 
@@ -53,7 +53,7 @@ public abstract class Request {
                 exceptionHappened = true;
                 continue;
             } catch (IllegalStateException e){
-                throw new RequestException(e.getMessage(), WFErrorCode.UNKNOW_HOST_EXCEPTION, e);
+                throw new RequestException(e.getMessage(), ResponseCode.UNKNOW_HOST_EXCEPTION, e);
             } finally {
                 if (client != null){
                     try {
@@ -69,26 +69,26 @@ public abstract class Request {
 
             switch (response.getStatusCode()){
                 case 400:
-                    throw new RequestException(WFErrorCode.BAD_REQUEST);
+                    throw new RequestException(ResponseCode.BAD_REQUEST);
                 case 401:
-                    throw new RequestException(WFErrorCode.UNAUTHORIZED);
+                    throw new RequestException(ResponseCode.UNAUTHORIZED);
                 case 403:
-                    throw new RequestException(WFErrorCode.FORBIDDEN);
+                    throw new RequestException(ResponseCode.FORBIDDEN);
                 case 404:
-                    throw new RequestException(WFErrorCode.NOT_FOUND);
+                    throw new RequestException(ResponseCode.NOT_FOUND);
                 case 405:
-                    throw new RequestException(WFErrorCode.METHOD_NOT_ALLOWED);
+                    throw new RequestException(ResponseCode.METHOD_NOT_ALLOWED);
                 case 500:
-                    throw new RequestException(WFErrorCode.INTERNAL_SERVER_ERROR);
+                    throw new RequestException(ResponseCode.INTERNAL_SERVER_ERROR);
                 case 502:
-                    throw new RequestException(WFErrorCode.BAD_GATEWAY);
+                    throw new RequestException(ResponseCode.BAD_GATEWAY);
                 case 503:
-                    throw new RequestException(WFErrorCode.SERVICE_UNAVAILABLE);
+                    throw new RequestException(ResponseCode.SERVICE_UNAVAILABLE);
                 default:
                     if(response.getStatusCode() / 100 == 4)
-                        throw new RequestException(WFErrorCode.UNKNOW_REQUEST_EXCEPTION);
+                        throw new RequestException(ResponseCode.UNKNOW_REQUEST_EXCEPTION);
                     else if(response.getStatusCode() / 100 == 5)
-                        throw new RequestException(WFErrorCode.UNKNOW_HOST_EXCEPTION);
+                        throw new RequestException(ResponseCode.UNKNOW_HOST_EXCEPTION);
 
                     else
                         try {
@@ -101,9 +101,9 @@ public abstract class Request {
 
         if(retry <= 0){
             if(exceptionHappened)
-                throw new RequestException(WFErrorCode.SOCKET_EXCEPTION);
+                throw new RequestException(ResponseCode.SOCKET_EXCEPTION);
             else
-                throw new RequestException(WFErrorCode.UNKNOW);
+                throw new RequestException(ResponseCode.UNKNOW);
         }
         return null;
 

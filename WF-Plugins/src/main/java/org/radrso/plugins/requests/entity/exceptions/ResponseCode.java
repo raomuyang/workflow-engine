@@ -1,10 +1,12 @@
-package org.radrso.plugins.exceptions;
+package org.radrso.plugins.requests.entity.exceptions;
 
 
 /**
  * Created by raomengnan on 16-12-9.
  */
-public enum WFErrorCode {
+public enum ResponseCode {
+    OK(200, "OK"),
+
     UNKNOW(5000, "Unknow Exception"),
     BUILD_REQUEST_EXCEPTION(5001, "EXCEPTION IN BUILD REQUEST"),
     PARAM_NULL_EXCEPTION(5002, "JSON object is null"),
@@ -26,7 +28,7 @@ public enum WFErrorCode {
 
     int code;
     String info;
-    WFErrorCode(int c, String intro) {
+    ResponseCode(int c, String intro) {
         this.code = c;
         this.info = intro;
     }

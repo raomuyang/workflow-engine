@@ -5,8 +5,8 @@ import lombok.Data;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.radrso.plugins.exceptions.WFErrorCode;
-import org.radrso.plugins.exceptions.impl.RequestException;
+import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
+import org.radrso.plugins.requests.entity.exceptions.impl.RequestException;
 import org.radrso.plugins.requests.entity.Method;
 
 import java.lang.reflect.Constructor;
@@ -39,12 +39,12 @@ public class RequestFactory {
                 case DELETE:
                     requestBase = buildDelete();break;
                 default:
-                    throw new RequestException(WFErrorCode.UNSUPPORTED_REQUEST_METHOD);
+                    throw new RequestException(ResponseCode.UNSUPPORTED_REQUEST_METHOD);
             }
             Request request = constructor.newInstance(url, method, params, contentType, requestBase, usePool);
             return request;
         } catch (ReflectiveOperationException e) {
-            throw new RequestException(WFErrorCode.UNSUPPORTED_POTOCOL, e);
+            throw new RequestException(ResponseCode.UNSUPPORTED_POTOCOL, e);
         }
     }
 
@@ -52,14 +52,14 @@ public class RequestFactory {
         try {
             return new HttpGet(this.getUrl());
         }catch (Exception e){
-            throw new RequestException(WFErrorCode.BUILD_REQUEST_EXCEPTION ,e);
+            throw new RequestException(ResponseCode.BUILD_REQUEST_EXCEPTION ,e);
         }
     }
 
     public HttpRequestBase buildPost() throws RequestException{
         try {
             if (getParams() == null)
-                throw new RequestException("Request param is null", WFErrorCode.PARAM_NULL_EXCEPTION);
+                throw new RequestException("Request param is null", ResponseCode.PARAM_NULL_EXCEPTION);
 
             StringEntity entity = new StringEntity(params.toString(), contentType);
             HttpPost post = new HttpPost(this.getUrl());
@@ -67,14 +67,14 @@ public class RequestFactory {
             post.setHeader("content_type", entity.getContentType().getValue());
             return post;
         }catch (Exception e){
-            throw new RequestException(WFErrorCode.BUILD_REQUEST_EXCEPTION ,e);
+            throw new RequestException(ResponseCode.BUILD_REQUEST_EXCEPTION ,e);
         }
     }
 
     public HttpRequestBase buildPut() throws RequestException{
         try {
             if (getParams() == null)
-                throw new RequestException("Request param is null", WFErrorCode.PARAM_NULL_EXCEPTION);
+                throw new RequestException("Request param is null", ResponseCode.PARAM_NULL_EXCEPTION);
 
             StringEntity entity = new StringEntity(params.toString(), contentType);
             HttpPut put = new HttpPut(this.getUrl());
@@ -82,7 +82,7 @@ public class RequestFactory {
             put.setHeader("content_type", entity.getContentType().getValue());
             return put;
         }catch (Exception e){
-            throw new RequestException(WFErrorCode.BUILD_REQUEST_EXCEPTION ,e);
+            throw new RequestException(ResponseCode.BUILD_REQUEST_EXCEPTION ,e);
         }
     }
 
@@ -90,7 +90,7 @@ public class RequestFactory {
         try {
             return new HttpDelete(this.getUrl());
         }catch (Exception e){
-            throw new RequestException(WFErrorCode.BUILD_REQUEST_EXCEPTION ,e);
+            throw new RequestException(ResponseCode.BUILD_REQUEST_EXCEPTION ,e);
         }
     }
 
@@ -116,7 +116,7 @@ public class RequestFactory {
             );
             return constructor;
         }catch (Exception e){
-            throw new RequestException(WFErrorCode.UNSUPPORTED_POTOCOL, e);
+            throw new RequestException(ResponseCode.UNSUPPORTED_POTOCOL, e);
         }
 
     }
