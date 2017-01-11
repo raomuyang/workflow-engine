@@ -48,7 +48,7 @@ public class RequestFactory {
         }
     }
 
-    public HttpRequestBase buildGet()throws RequestException {
+    protected HttpRequestBase buildGet()throws RequestException {
         try {
             return new HttpGet(this.getUrl());
         }catch (Exception e){
@@ -56,7 +56,7 @@ public class RequestFactory {
         }
     }
 
-    public HttpRequestBase buildPost() throws RequestException{
+    protected HttpRequestBase buildPost() throws RequestException{
         try {
             if (getParams() == null)
                 throw new RequestException("Request param is null", ResponseCode.PARAM_NULL_EXCEPTION);
@@ -71,7 +71,7 @@ public class RequestFactory {
         }
     }
 
-    public HttpRequestBase buildPut() throws RequestException{
+    protected HttpRequestBase buildPut() throws RequestException{
         try {
             if (getParams() == null)
                 throw new RequestException("Request param is null", ResponseCode.PARAM_NULL_EXCEPTION);
@@ -86,7 +86,7 @@ public class RequestFactory {
         }
     }
 
-    public HttpRequestBase buildDelete() throws RequestException{
+    protected HttpRequestBase buildDelete() throws RequestException{
         try {
             return new HttpDelete(this.getUrl());
         }catch (Exception e){
