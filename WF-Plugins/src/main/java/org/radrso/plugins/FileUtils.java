@@ -48,9 +48,6 @@ public class FileUtils {
         File parentFile = file.getAbsoluteFile().getParentFile();
         if (!parentFile.exists()) {
             parentFile.mkdirs();
-//            // 递归寻找上级目录
-//            mkParentDir(parentFile);
-//            parentFile.mkdirs();
         }
     }
 

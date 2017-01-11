@@ -55,11 +55,4 @@ public class JsonUtils {
         return null;
     }
 
-    public static void main(String[] args) {
-        String str = "['test', 'test2', 'test3']";
-        List<String> test = mapToList(str);
-        test.forEach(o->{
-            System.out.println(o);
-        });
-    }
 }
