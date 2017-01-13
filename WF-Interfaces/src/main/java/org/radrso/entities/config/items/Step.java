@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 /**
  * Created by raomengnan on 16-12-8.
  * step     步奏ID
@@ -16,7 +18,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Step {
+public class Step implements Serializable{
     public static final String WAIT = "wait";
     public static final String RUNNING = "running";
     public static final String FINISHED = "finished";

@@ -6,5 +6,5 @@ package org.radrso.demo;
 public interface HelloWorld {
     String say(String str);
     String useTest1();
-    String useTest2();
+    HelloWorld useTest2();
 }
