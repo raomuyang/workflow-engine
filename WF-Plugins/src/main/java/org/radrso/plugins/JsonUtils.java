@@ -1,7 +1,7 @@
 package org.radrso.plugins;
 
-import com.google.gson.Gson;
-import lombok.extern.log4j.Log4j;
+import com.google.gson.*;
+import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -10,8 +10,9 @@ import java.util.List;
 /**
  * Created by raomengnan on 16-9-12.
  */
-@Log4j
+
 public class JsonUtils {
+    private static Logger log;
 
     public static <T> T mapToBean(String jsonStr, Class<T> clazz){
         Gson gson = new Gson();
@@ -53,6 +54,18 @@ public class JsonUtils {
             }
         }
         return null;
+    }
+
+    public static JsonObject getJsonObject(Object o){
+        String json = new Gson().toJson(o);
+        JsonElement element = new JsonParser().parse(json);
+        return element.getAsJsonObject();
+    }
+
+    public static JsonArray getJsonArray(Object o){
+        String json = new Gson().toJson(o);
+        JsonElement element = new JsonParser().parse(json);
+        return element.getAsJsonArray();
     }
 
 }
