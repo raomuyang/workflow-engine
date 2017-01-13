@@ -16,16 +16,15 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class DoOnNext {
+public class Step {
     public static final String WAIT = "wait";
     public static final String RUNNING = "running";
     public static final String FINISHED = "finished";
-    private int step;
+    private String sign;
     private String name;
-    private Task task;
     private String call;
     private String method;
-    private InputItem[] input;
-    private Next next;
+    private int loop = 1;
+    private Transfer transfer;
     private String status = WAIT;
 }

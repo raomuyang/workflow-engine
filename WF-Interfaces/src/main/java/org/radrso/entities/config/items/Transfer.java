@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.List;
+
 /**
  * Created by raomengnan on 16-12-8.
  * 用于组成“下一步”和一些“判断条件”
@@ -16,7 +18,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class Next {
-    private ConditionItem[] conditions;
-    private int nextStep = 0;
+public class Transfer {
+    private List<InputItem> input;
+    private List<Judge> judge;
+    private String to;
+    private List<String> scatters;
 }

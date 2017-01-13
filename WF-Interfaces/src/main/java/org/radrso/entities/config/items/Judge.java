@@ -16,9 +16,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class ConditionItem {
-    private String result;
-    private String compare;
-    private String judge;
+public class Judge {
+    private String compute;
+    private String computeWith;
+    private String expression;
     private String next;
+    private Transfer passTransfer;
+    private Transfer nopassTransfer;
 }

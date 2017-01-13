@@ -11,7 +11,7 @@ public class BeanFactoryUtils {
     public final static String APPLICATION_CONTEXT_ROOT = "";
     public final static String APPLICATION_CONTEXT_PATH = APPLICATION_CONTEXT_ROOT + "applicationContext.xml";
 
-    private static void init(){
+    public static void init(){
         if(ctx_provider == null){
             String[] configLocations = new String[]{APPLICATION_CONTEXT_PATH};
             ctx_provider = new ClassPathXmlApplicationContext(configLocations);
