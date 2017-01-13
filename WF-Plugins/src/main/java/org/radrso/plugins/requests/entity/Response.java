@@ -7,13 +7,14 @@ import org.radrso.plugins.StreamUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 
 /**
  * Created by raomengnan on 16-12-9.
  */
 @Data
 @ToString
-public class Response {
+public class Response implements Serializable{
     private String content;
     private int statusCode;
     private String errorMsg;

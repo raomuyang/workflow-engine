@@ -1,9 +1,11 @@
 package org.radrso.plugins.requests.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by raomengnan on 16-12-9.
  */
-public enum Method {
+public enum Method implements Serializable{
     GET("Get"),
     POST("Post"),
     PUT("Put"),

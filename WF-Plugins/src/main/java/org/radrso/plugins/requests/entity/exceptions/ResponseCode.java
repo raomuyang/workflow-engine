@@ -1,10 +1,12 @@
 package org.radrso.plugins.requests.entity.exceptions;
 
 
+import java.io.Serializable;
+
 /**
  * Created by raomengnan on 16-12-9.
  */
-public enum ResponseCode {
+public enum ResponseCode implements Serializable{
     OK(200, "OK"),
 
     UNKNOW(5000, "Unknow Exception"),
