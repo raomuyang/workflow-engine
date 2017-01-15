@@ -1,4 +1,4 @@
-package org.radrso.workflow.provider;
+package org.radrso.plugins;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

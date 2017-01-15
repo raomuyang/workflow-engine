@@ -1,7 +1,7 @@
-package org.radrso.workflow.provider.requests.entity.exceptions.impl;
+package org.radrso.plugins.requests.entity.exceptions.impl;
 
-import org.radrso.workflow.provider.requests.entity.exceptions.ResponseCode;
-import org.radrso.workflow.provider.requests.entity.exceptions.WFException;
+import org.radrso.plugins.requests.entity.exceptions.WFException;
+import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
 
 /**
  * Created by raomengnan on 16-12-9.

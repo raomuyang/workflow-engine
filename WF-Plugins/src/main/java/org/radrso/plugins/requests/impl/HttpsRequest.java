@@ -1,4 +1,4 @@
-package org.radrso.workflow.provider.requests.impl;
+package org.radrso.plugins.requests.impl;
 
 import lombok.Data;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -13,8 +13,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.ssl.SSLContexts;
-import org.radrso.workflow.provider.requests.Request;
-import org.radrso.workflow.provider.requests.entity.Method;
+import org.radrso.plugins.requests.Request;
+import org.radrso.plugins.requests.entity.Method;
 
 import javax.net.ssl.SSLContext;
 import java.security.KeyManagementException;

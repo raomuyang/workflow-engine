@@ -5,7 +5,7 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class LoadClass {
     public static void main(String[] args) throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
-        Class clazz = Class.forName("org.radrso.plugins.SystemDetails");
+        Class clazz = Class.forName("SystemDetails");
         Object o = clazz.newInstance();
         clazz.getMethod("outputDetails").invoke(o);
     }

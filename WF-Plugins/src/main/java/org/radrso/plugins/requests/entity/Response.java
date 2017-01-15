@@ -1,9 +1,9 @@
-package org.radrso.workflow.provider.requests.entity;
+package org.radrso.plugins.requests.entity;
 
 import lombok.Data;
 import lombok.ToString;
 import org.apache.http.HttpResponse;
-import org.radrso.workflow.provider.StreamUtils;
+import org.radrso.plugins.StreamUtils;
 
 import java.io.IOException;
 import java.io.InputStream;

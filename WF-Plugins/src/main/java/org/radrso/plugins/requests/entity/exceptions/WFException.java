@@ -1,4 +1,4 @@
-package org.radrso.workflow.provider.requests.entity.exceptions;
+package org.radrso.plugins.requests.entity.exceptions;
 
 
 /**

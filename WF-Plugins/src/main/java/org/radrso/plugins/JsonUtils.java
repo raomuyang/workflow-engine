@@ -1,7 +1,7 @@
-package org.radrso.workflow.provider;
+package org.radrso.plugins;
 
 import com.google.gson.*;
-import org.apache.log4j.Logger;
+import lombok.extern.log4j.Log4j;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -11,8 +11,8 @@ import java.util.List;
  * Created by raomengnan on 16-9-12.
  */
 
+@Log4j
 public class JsonUtils {
-    private static Logger log;
 
     public static <T> T mapToBean(String jsonStr, Class<T> clazz){
         Gson gson = new Gson();

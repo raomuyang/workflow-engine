@@ -1,14 +1,14 @@
-package org.radrso.workflow.provider.requests;
+package org.radrso.plugins.requests;
 
 import lombok.Data;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.radrso.workflow.provider.requests.entity.exceptions.ResponseCode;
-import org.radrso.workflow.provider.requests.entity.exceptions.impl.RequestException;
-import org.radrso.workflow.provider.requests.entity.Method;
-import org.radrso.workflow.provider.requests.entity.Response;
+import org.radrso.plugins.requests.entity.Method;
+import org.radrso.plugins.requests.entity.Response;
+import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
+import org.radrso.plugins.requests.entity.exceptions.impl.RequestException;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package org.radrso.workflow.provider.requests.entity;
+package org.radrso.plugins.requests.entity;
 
 import java.io.Serializable;
 
