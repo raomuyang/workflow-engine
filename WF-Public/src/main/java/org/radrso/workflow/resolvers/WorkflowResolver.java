@@ -10,8 +10,8 @@ import org.radrso.workflow.entities.config.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
-import org.radrso.workflow.provider.CustomClassLoader;
-import org.radrso.workflow.provider.JsonUtils;
+import org.radrso.plugins.CustomClassLoader;
+import org.radrso.plugins.JsonUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -1,8 +1,8 @@
-package org.radrso;
+package org.radrso.workflow;
 
-import org.radrso.workflow.provider.requests.entity.Method;
-import org.radrso.workflow.provider.requests.entity.exceptions.ResponseCode;
-import org.radrso.workflow.provider.requests.entity.exceptions.impl.RequestException;
+import org.radrso.plugins.requests.entity.Method;
+import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
+import org.radrso.plugins.requests.entity.exceptions.impl.RequestException;
 
 /**
  * Created by raomengnan on 17-1-15.
