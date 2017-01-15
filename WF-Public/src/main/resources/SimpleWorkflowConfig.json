@@ -6,7 +6,7 @@
 
   "steps": [
     {
-      "sign": "start-sign",
+      "sign": "START",
       "name": "Start",
       "transfer":{
         "input": [
@@ -33,29 +33,30 @@
           {"name": "test3",  "type": "test3"}
         ],
 
-        "judge":[
-          {
-            "compute": "{output[sign-1]}.{xxx}",
-            "computeWith": "xxx",
-            "expression": "> = <",
-            "passTransfer":{
-              "input":[],
-              "to": "sign-2"
-            },
-            "nopassTransfer":{
-              "input":[],
-              "to": "sign-3"
-            }
+        "judge":
+        {
+          "compute": "{output}[sign-1][xxx]e[xxx]",
+          "computeWith": 123,
+          "type": "",
+          "expression": "> == < && ||",
+          "passTransfer":{
+            "input":[],
+            "to": "sign-2"
+          },
+          "nopassTransfer":{
+            "input":[],
+            "to": "sign-3"
           }
-        ],
+        },
 
+        "wait":3000,
         "to": "sign-2",
         "scatters":["sign-3 judge生效，则后面的to和scatter不起作用"]
       }
     },
 
     {
-      "sign": "finish-sign",
+      "sign": "FINISH",
       "name": "Finish the workflow",
       "call": "org.radrso.xxx.XXXClass || url",
       "method": "xxxClass / GET / POST / PUT / DELETE..."
