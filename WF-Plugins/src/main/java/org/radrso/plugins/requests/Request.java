@@ -69,21 +69,21 @@ public abstract class Request {
 
             switch (response.getStatusCode()){
                 case 400:
-                    throw new RequestException(ResponseCode.BAD_REQUEST);
+                    throw new RequestException(ResponseCode.HTTP_BAD_REQUEST);
                 case 401:
-                    throw new RequestException(ResponseCode.UNAUTHORIZED);
+                    throw new RequestException(ResponseCode.HTTP_UNAUTHORIZED);
                 case 403:
-                    throw new RequestException(ResponseCode.FORBIDDEN);
+                    throw new RequestException(ResponseCode.HTTP_FORBIDDEN);
                 case 404:
-                    throw new RequestException(ResponseCode.NOT_FOUND);
+                    throw new RequestException(ResponseCode.HTTP_NOT_FOUND);
                 case 405:
-                    throw new RequestException(ResponseCode.METHOD_NOT_ALLOWED);
+                    throw new RequestException(ResponseCode.HTTP_METHOD_NOT_ALLOWED);
                 case 500:
-                    throw new RequestException(ResponseCode.INTERNAL_SERVER_ERROR);
+                    throw new RequestException(ResponseCode.HTTP_INTERNAL_SERVER_ERROR);
                 case 502:
-                    throw new RequestException(ResponseCode.BAD_GATEWAY);
+                    throw new RequestException(ResponseCode.HTTP_BAD_GATEWAY);
                 case 503:
-                    throw new RequestException(ResponseCode.SERVICE_UNAVAILABLE);
+                    throw new RequestException(ResponseCode.HTTP_SERVICE_UNAVAILABLE);
                 default:
                     if(response.getStatusCode() / 100 == 4)
                         throw new RequestException(ResponseCode.UNKNOW_REQUEST_EXCEPTION);

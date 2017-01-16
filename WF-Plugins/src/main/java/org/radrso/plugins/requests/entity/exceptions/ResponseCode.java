@@ -25,14 +25,14 @@ public enum ResponseCode implements Serializable{
     METHOD_INVOCATION_ERROR(4045, "Method access exception"),
 
 
-    BAD_REQUEST(400, "Bad Request"),
-    UNAUTHORIZED(401, "Unauthorized"),
-    FORBIDDEN(403, "Forbidden"),
-    NOT_FOUND(404, "Not Found"),
-    METHOD_NOT_ALLOWED(405, "Method Not Allowed"),
-    INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
-    BAD_GATEWAY(502, "Bad Gateway"),
-    SERVICE_UNAVAILABLE(503, "Service Unavailable");
+    HTTP_BAD_REQUEST(400, "Bad Request"),
+    HTTP_UNAUTHORIZED(401, "Unauthorized"),
+    HTTP_FORBIDDEN(403, "Forbidden"),
+    HTTP_NOT_FOUND(404, "Not Found"),
+    HTTP_METHOD_NOT_ALLOWED(405, "Method Not Allowed"),
+    HTTP_INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
+    HTTP_BAD_GATEWAY(502, "Bad Gateway"),
+    HTTP_SERVICE_UNAVAILABLE(503, "Service Unavailable");
 
     int code;
     String info;

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,7 +22,7 @@ import java.util.List;
 public class Transfer implements Serializable{
     private List<InputItem> input;
     private Judge judge;
-    private int wait; //minutes
+    private Date diedline;
     private String to;
     private List<String> scatters;
 }
