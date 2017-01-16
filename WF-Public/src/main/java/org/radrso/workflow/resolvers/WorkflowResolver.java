@@ -38,7 +38,7 @@ public class WorkflowResolver implements Serializable{
 
     private List<Step> scatterSteps;
 
-    public WorkflowResolver(){
+    private WorkflowResolver(){
         this.stepMap = new ConcurrentHashMap<>();
     }
 
@@ -98,7 +98,7 @@ public class WorkflowResolver implements Serializable{
 
         Step nextStep = transferToNextStep(currentTransfer);
 
-        workflowInstance.getStepProcess().put(currentStep.getSign(), Step.RUNNING);
+        workflowInstance.getStepProcess().put(currentStep.getSign(), Step.FINISHED);
         currentStep = nextStep;
         workflowInstance.getStepProcess().put(currentStep.getSign(), Step.RUNNING);
         return this;
@@ -127,8 +127,12 @@ public class WorkflowResolver implements Serializable{
      * @throws ConfigReadException
      */
     public Step transferToNextStep(Transfer transfer) throws ConfigReadException {
+        if(transfer == null)
+            return null;
+
         if(transfer.getJudge() == null) {
             scatterSteps = scatterTo(transfer);
+            getParams(transfer);
             return stepMap.get(transfer.getTo());
         }
 

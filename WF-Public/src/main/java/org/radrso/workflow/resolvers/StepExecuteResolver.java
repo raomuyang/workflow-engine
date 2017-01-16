@@ -54,7 +54,7 @@ public class StepExecuteResolver {
             WFResponse response = new WFResponse();
             Class clazz = CustomClassLoader.getClassLoader().loadClass(className);
             Object ret = ReflectInvokeMethod.invoke(clazz, clazz.newInstance(), mehtodName, new Object[]{params});
-            response.setCode(ResponseCode.OK.code());
+            response.setCode(ResponseCode.HTTP_OK.code());
             response.setResponse(ret);
             return response;
 

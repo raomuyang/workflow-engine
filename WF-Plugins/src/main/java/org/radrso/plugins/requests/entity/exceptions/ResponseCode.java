@@ -7,7 +7,7 @@ import java.io.Serializable;
  * Created by raomengnan on 16-12-9.
  */
 public enum ResponseCode implements Serializable{
-    OK(200, "OK"),
+
 
     UNKNOW(5000, "Unknow Exception"),
     BUILD_REQUEST_EXCEPTION(5001, "EXCEPTION IN BUILD REQUEST"),
@@ -25,6 +25,8 @@ public enum ResponseCode implements Serializable{
     METHOD_INVOCATION_ERROR(4045, "Method access exception"),
 
 
+    HTTP_OK(200, "HTTP_OK"),
+    HTTP_REQUEST_CONTINUE(100, "Continue"),
     HTTP_BAD_REQUEST(400, "Bad Request"),
     HTTP_UNAUTHORIZED(401, "Unauthorized"),
     HTTP_FORBIDDEN(403, "Forbidden"),
