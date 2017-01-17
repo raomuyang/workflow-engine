@@ -25,8 +25,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Data
 public class WorkflowResolver implements Serializable{
-    public static final String START = "START";
-    public static final String FINISH = "FINISH";
+    public static final String START = "{START}";
+    public static final String FINISH = "{FINISH}";
     public static final String OUTPUT = "{output}";
     public static final String INSTANCE_ID = "{instanceid}";
 
@@ -63,6 +63,8 @@ public class WorkflowResolver implements Serializable{
         if(currentStep == null && stepMap.size() > 0) {
             Step s = this.stepMap.get(START);
             this.currentStep = s;
+            if(currentStep != null)
+                workflowInstance.getStepProcess().put(START, Step.RUNNING);
         }
         return currentStep;
     }
