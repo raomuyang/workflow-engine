@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.config.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
+import org.radrso.workflow.entities.exceptions.UnknowExceptionInRunning;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
@@ -51,6 +52,8 @@ public class OneStepAction implements Action1<WorkflowResolver> {
                 } catch (InterruptedException e1) {
                     log.error(e1);
                 }
+            } catch (UnknowExceptionInRunning unknowExceptionInRunning) {
+                unknowExceptionInRunning.printStackTrace();
             }
         }
 
@@ -63,7 +66,7 @@ public class OneStepAction implements Action1<WorkflowResolver> {
             boolean isContinue = new Date().before(diedline);
             isContinue = isContinue && workflowExecuteStatusService.getStatus(
                     workflowResolver.getWorkflowInstance()
-                            .getApplicationId()).equals(WorkflowExecuteStatus.START);
+                            .getWorkflowId()).equals(WorkflowExecuteStatus.START);
             //还没有验证工作流是否停止
             if(! isContinue)
                 throw new WFRuntimeException(WorkflowInstance.EXPIRED);

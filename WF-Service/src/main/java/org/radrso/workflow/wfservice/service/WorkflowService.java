@@ -8,5 +8,5 @@ import org.radrso.workflow.entities.config.WorkflowConfig;
 public interface WorkflowService {
 
     public boolean save(WorkflowConfig workflowConfig);
-    public boolean get(String workflowId);
+    public WorkflowConfig get(String workflowId);
 }
