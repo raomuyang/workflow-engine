@@ -3,6 +3,7 @@ package org.radrso.workflow.entities.wf;
 import lombok.Data;
 import lombok.ToString;
 import org.radrso.workflow.entities.response.WFResponse;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Data
 @ToString
+@Document(collection = "workflowInstance")
 public class WorkflowInstance implements Serializable{
     public static final String EXPIRED = "expired";
     public static final String RUNNING = "running";
