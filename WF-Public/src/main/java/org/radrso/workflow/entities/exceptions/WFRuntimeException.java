@@ -7,4 +7,8 @@ public class WFRuntimeException extends RuntimeException{
     public WFRuntimeException(String msg){
         super(msg);
     }
+
+    public WFRuntimeException(String message, Throwable e) {
+        super(message, e);
+    }
 }
