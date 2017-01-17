@@ -129,7 +129,7 @@ public class StepExecuteResolver {
             wfResponse.setMsg(response.getErrorMsg());
         try {
             if(response.getContentType().equals(ContentType.APPLICATION_JSON.toString())){
-                JsonObject object = JsonUtils.getJsonObject(response.getContent());
+                JsonObject object = JsonUtils.getJsonObject(response.getContent()).getAsJsonObject();
                 wfResponse.setResponse(object);
             }
             else
