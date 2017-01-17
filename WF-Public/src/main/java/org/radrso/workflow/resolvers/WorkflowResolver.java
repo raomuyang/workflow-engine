@@ -8,6 +8,7 @@ import org.radrso.workflow.entities.config.items.Judge;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.config.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
+import org.radrso.workflow.entities.exceptions.UnknowExceptionInRunning;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
 import org.radrso.plugins.CustomClassLoader;
@@ -92,7 +93,7 @@ public class WorkflowResolver implements Serializable{
      * @return
      * @throws ConfigReadException
      */
-    public WorkflowResolver next() throws ConfigReadException {
+    public WorkflowResolver next() throws ConfigReadException, UnknowExceptionInRunning {
         Transfer currentTransfer = getCurrentTransfer();
         if(currentTransfer == null)
             return null;
@@ -127,7 +128,7 @@ public class WorkflowResolver implements Serializable{
      * @return
      * @throws ConfigReadException
      */
-    public Step transferToNextStep(Transfer transfer) throws ConfigReadException {
+    public Step transferToNextStep(Transfer transfer) throws ConfigReadException, UnknowExceptionInRunning {
         if(transfer == null)
             return null;
 
@@ -161,7 +162,7 @@ public class WorkflowResolver implements Serializable{
      * @return
      * @throws ConfigReadException
      */
-    public Transfer judgeNextTransfer(Judge judge) throws ConfigReadException {
+    public Transfer judgeNextTransfer(Judge judge) throws ConfigReadException, UnknowExceptionInRunning {
         Object computer = judge.getCompute();
         Object computerWith = judge.getComputeWith();
         String type = judge.getType();
@@ -199,7 +200,7 @@ public class WorkflowResolver implements Serializable{
      * @return 返回的是参数集合
      * @throws ConfigReadException
      */
-    public Object[] getParams(Transfer transfer) throws ConfigReadException {
+    public Object[] getParams(Transfer transfer) throws ConfigReadException, UnknowExceptionInRunning {
         List<InputItem> inputs = transfer.getInput();
         if(inputs == null || inputs.size() ==0)
             return new Object[]{};
@@ -225,7 +226,7 @@ public class WorkflowResolver implements Serializable{
      * @param paramStr
      * @return
      */
-    public Object resolverParamString(String paramStr) throws ConfigReadException {
+    public Object resolverParamString(String paramStr) throws ConfigReadException, UnknowExceptionInRunning {
 
         String errorMsg = null;
 
@@ -243,14 +244,15 @@ public class WorkflowResolver implements Serializable{
                 Object output = responseMap.get(sp[1]).getResponse();
                 ret = output;
                 for (; i < sp.length; ++i)
-                    ret = ((JsonObject) ret).get(sp[i]);
+                    ret = JsonUtils.getJsonObject(ret).getAsJsonObject().get(sp[i]);
 
             }catch (IndexOutOfBoundsException e1){
                 errorMsg = "Read Config Error:" + e1.getMessage();
             } catch (NullPointerException e2){
                 errorMsg = "No such value: " + paramStr + "/" + sp[i];
             } catch (Throwable e3){
-                errorMsg = e3.getMessage();
+                throw new UnknowExceptionInRunning(e3);
+
             }
 
             if(errorMsg != null)
