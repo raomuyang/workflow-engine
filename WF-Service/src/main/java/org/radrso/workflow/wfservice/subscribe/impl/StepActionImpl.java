@@ -1,4 +1,4 @@
-package org.radrso.workflow.wfservice.utils;
+package org.radrso.workflow.wfservice.subscribe.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -13,22 +13,49 @@ import org.radrso.workflow.entities.wf.WorkflowInstance;
 import org.radrso.workflow.resolvers.WorkflowResolver;
 import org.radrso.workflow.rmi.WorkflowInstanceExecutor;
 import org.radrso.workflow.wfservice.service.WorkflowExecuteStatusService;
-import rx.functions.Action1;
+import org.radrso.workflow.wfservice.service.WorkflowInstanceService;
+import org.radrso.workflow.wfservice.subscribe.StepAction;
 
 import java.util.Date;
 
 /**
- * Created by raomengnan on 17-1-16.
+ * Created by raomengnan on 17-1-17.
  */
-@AllArgsConstructor
 @Log4j
-public class OneStepAction implements Action1<WorkflowResolver> {
+public class StepActionImpl implements StepAction{
+
+    private WorkflowInstanceService workflowInstanceService;
     private WorkflowInstanceExecutor workflowInstanceExecutor;
     private WorkflowExecuteStatusService workflowExecuteStatusService;
 
-    @Override
-    public void call(WorkflowResolver workflowResolver) {
+    public StepActionImpl(WorkflowInstanceService workflowInstanceService, WorkflowInstanceExecutor workflowInstanceExecutor, WorkflowExecuteStatusService workflowExecuteStatusService) {
+        this.workflowInstanceService = workflowInstanceService;
+        this.workflowInstanceExecutor = workflowInstanceExecutor;
+        this.workflowExecuteStatusService = workflowExecuteStatusService;
+    }
 
+    @Override
+    public void stepCompleted(WorkflowResolver workflowResolver) {
+        log.info("[STEP-COMPLETED] " + workflowResolver.getWorkflowInstance().getInstanceId() + " " + workflowResolver.getCurrentStep().getName());
+        if(workflowResolver.eof()) {
+            workflowResolver.getWorkflowInstance().setStatus(WorkflowInstance.COMPLETED);
+            workflowInstanceService.save(workflowResolver.getWorkflowInstance());
+        }
+    }
+
+    @Override
+    public void stepError(WorkflowResolver workflowResolver, Throwable throwable) {
+        log.error("[STEP-EXCEPTION] " +   workflowResolver.getWorkflowInstance().getInstanceId() + " " + throwable);
+        if(WorkflowInstance.EXCEPTION.equals(throwable.getMessage()))
+            workflowResolver.getWorkflowInstance().setStatus(WorkflowInstance.EXPIRED);
+        else
+            workflowResolver.getWorkflowInstance().setStatus(WorkflowInstance.EXCEPTION);
+
+        workflowInstanceService.save(workflowResolver.getWorkflowInstance());
+    }
+
+    @Override
+    public void stepNext(WorkflowResolver workflowResolver) {
         boolean loopDo = true;
         while (loopDo) {
             loopDo = false;
@@ -37,6 +64,7 @@ public class OneStepAction implements Action1<WorkflowResolver> {
             try {
                 workflowResolver.next();
                 Step step = workflowResolver.getCurrentStep();
+                log.info("[START] " + workflowResolver.getWorkflowInstance().getInstanceId() + " " + step.getName() + String.format(" Thread[%s]", Thread.currentThread().getId()) );
                 Object[] params = workflowResolver.getCurrentStepParams();
                 String[] paramNames = workflowResolver.getCurrentStepParamNames();
 
@@ -46,6 +74,7 @@ public class OneStepAction implements Action1<WorkflowResolver> {
                     workflowResolver.putResponse(step.getSign(), response);
                 }
             } catch (ConfigReadException e) {
+                System.out.println(e);
                 loopDo = true;
                 try {
                     Thread.sleep(1000 * 60);
@@ -56,7 +85,6 @@ public class OneStepAction implements Action1<WorkflowResolver> {
                 unknowExceptionInRunning.printStackTrace();
             }
         }
-
     }
 
     private void verifyDate(WorkflowResolver workflowResolver){
