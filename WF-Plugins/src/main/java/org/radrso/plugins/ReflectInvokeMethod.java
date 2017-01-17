@@ -14,22 +14,34 @@ public class ReflectInvokeMethod {
     }
 
     public static Object invoke(Class clazz, Object instance, String methodName, Object... args) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
-        Class[] argClasses1 = new Class[args.length];
-        Class[] argClasses2 = new Class[args.length];
+        Class[] argClasses1 = new Class[]{};
+        Class[] argClasses2 = new Class[]{};
+        if(args != null) {
+            argClasses1 = new Class[args.length];
+            argClasses2 = new Class[args.length];
 
-        for (int i = 0; i < args.length; i++) {
-            Class cla = args[i].getClass();
-            argClasses1[i] = cla;
-            argClasses2[i] = cla;
+            for (int i = 0; i < args.length; i++) {
+                Class cla = args[i].getClass();
+                argClasses1[i] = cla;
+                argClasses2[i] = cla;
 
-            if(Number.class.isAssignableFrom(cla)){
-                String name = cla.getSimpleName();
-                switch (name){
-                    case "Integer": argClasses2[i] = int.class;break;
-                    case "Float": argClasses2[i] = float.class;break;
-                    case "Double": argClasses2[i] = double.class;break;
-                    case "Short": argClasses2[i] = short.class;
-                }
+                if (Number.class.isAssignableFrom(cla)) {
+                    String name = cla.getSimpleName();
+                    switch (name) {
+                        case "Integer":
+                            argClasses2[i] = int.class;
+                            break;
+                        case "Float":
+                            argClasses2[i] = float.class;
+                            break;
+                        case "Double":
+                            argClasses2[i] = double.class;
+                            break;
+                        case "Short":
+                            argClasses2[i] = short.class;
+                    }
+                }else if ("Boolean".equals(cla.getSimpleName()))
+                    argClasses2[i] = boolean.class;
             }
         }
 
