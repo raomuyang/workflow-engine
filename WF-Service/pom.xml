@@ -7,10 +7,9 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>WF-Provider</artifactId>
+    <artifactId>WF-Service</artifactId>
     <packaging>war</packaging>
-    <name>Workflow-Engine Provider Maven Webapp</name>
-
+    <name>Workflow-Engine Consumer Maven Webapp</name>
 
     <dependencies>
 
@@ -26,10 +25,9 @@
             <version>1.2.4</version>
         </dependency>
 
-
     </dependencies>
 
     <build>
-        <finalName>Workflow-Engine-Provider</finalName>
+        <finalName>Workflow-Engine-Consumer</finalName>
     </build>
 </project>
