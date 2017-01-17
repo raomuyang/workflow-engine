@@ -105,7 +105,7 @@ public class RequestFactory {
         cs[0] -= 32;
         portocol = new String(cs);
 
-        String name = String.format("org.radrso.plugins.requests.org.radrso.demo.impl.%sRequest", portocol);
+        String name = String.format("org.radrso.plugins.requests.impl.%sRequest", portocol);
 
         try {
 
