@@ -47,13 +47,14 @@ public class WorkflowResolver implements Serializable{
         this.header = workflowConfig.getHeader();
         this.workflowInstance = workflowInstance;
 
-        this.workflowInstance.setApplicationId(workflowConfig.getId());
+//        this.workflowInstance.setWorkflowId(workflowConfig.getId());
         this.responseMap = workflowInstance.getStepResponses();
 
-        workflowConfig.getSteps().forEach(step -> {
-            stepMap.put(step.getSign(), step);
-            workflowInstance.getStepProcess().put(step.getSign(), Step.WAIT);
-        });
+        if(workflowConfig.getSteps() != null)
+            workflowConfig.getSteps().forEach(step -> {
+                stepMap.put(step.getSign(), step);
+                workflowInstance.getStepProcess().put(step.getSign(), Step.WAIT);
+            });
     }
 
 

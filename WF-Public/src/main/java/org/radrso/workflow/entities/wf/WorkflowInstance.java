@@ -1,6 +1,7 @@
 package org.radrso.workflow.entities.wf;
 
 import lombok.Data;
+import lombok.ToString;
 import org.radrso.workflow.entities.response.WFResponse;
 
 import java.io.Serializable;
@@ -11,13 +12,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by raomengnan on 17-1-13.
  */
 @Data
+@ToString
 public class WorkflowInstance implements Serializable{
     public static final String EXPIRED = "expired";
     public static final String RUNNING = "running";
     public static final String COMPLETED = "completed";
     public static final String EXCEPTION = "exception";
 
-    private String applicationId;
+    private String workflowId;
     private String instanceId;
     private Date createTime = new Date();
     private Date submitTime;
@@ -28,12 +30,12 @@ public class WorkflowInstance implements Serializable{
     private ConcurrentHashMap<String, String[]> stepParamNames;
     private ConcurrentHashMap<String, WFResponse> stepResponses;
 
-    public WorkflowInstance(String applicationId, String instanceId){
+    public WorkflowInstance(String workflowId, String instanceId){
         this();
-        this.applicationId = applicationId;
+        this.workflowId = workflowId;
         this.instanceId = instanceId;
     }
-    public WorkflowInstance(){
+    private WorkflowInstance(){
         this.stepProcess = new ConcurrentHashMap<>();
         this.stepParams = new ConcurrentHashMap<>();
         this.stepResponses = new ConcurrentHashMap<>();

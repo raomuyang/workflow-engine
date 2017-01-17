@@ -8,14 +8,5 @@ import java.io.Serializable;
  * Created by raomengnan on 17-1-4.
  */
 public interface WorkflowCommander extends Serializable{
-    WFResponse start();
-    WFResponse stop();
-
-    WFResponse importJar(String application, String jarName, byte[] stream);
-
-    WFResponse getInstanse();
-    WFResponse getWFStatus();
-
-    WFResponse getBaseInfo();
-    WFResponse isStart();
+    WFResponse importJar(String workflowId, String jarName, byte[] stream);
 }
