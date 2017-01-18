@@ -1,6 +1,5 @@
 package org.radrso.workflow.wfservice.subscribe.impl;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.config.items.Transfer;

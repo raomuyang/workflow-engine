@@ -1,6 +1,5 @@
 package org.radrso.workflow.wfservice.service.impl;
 
-import lombok.extern.java.Log;
 import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
 import org.radrso.workflow.rmi.WorkflowInstanceExecutor;
@@ -14,15 +13,11 @@ import org.radrso.workflow.wfservice.subscribe.WorkflowObservable;
 import org.radrso.workflow.wfservice.subscribe.impl.StepActionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import rx.Observable;
-import rx.Subscriber;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by raomengnan on 17-1-14.
  */
 @Service
-@Log
 public class WorkflowExecuteServiceImpl implements WorkflowExecuteService {
 
     @Autowired

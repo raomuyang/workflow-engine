@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
@@ -20,6 +21,7 @@ public class WorkflowExecuteStatus implements Serializable{
     public static final String START = "started";
     public static final String STOP = "stopped";
     public static final String EXCEPTION = "exception";
+    @Id
     private String workflowId;
     private String status;
     private String msg;

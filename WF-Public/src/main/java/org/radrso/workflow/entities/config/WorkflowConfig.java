@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.radrso.workflow.entities.config.items.Step;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
@@ -22,7 +23,9 @@ import java.util.List;
 @Document(collection = "workflow")
 public class WorkflowConfig implements Serializable{
     private String application;
+    @Id
     private String id;
+    private String owner;
     private String header;
     private Date startTime;
     private Date stopTime;
