@@ -11,4 +11,5 @@ import java.util.List;
 public interface WorkflowInstanceRepository extends MongoRepository<WorkflowInstance, String>{
     public WorkflowInstance findByInstanceId(String instanceId);
     public List<WorkflowInstance> findByWorkflowId(String workflowId);
+    public void deleteByWorkflowId(String workflowId);
 }
