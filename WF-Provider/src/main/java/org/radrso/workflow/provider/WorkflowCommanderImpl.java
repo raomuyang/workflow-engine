@@ -13,7 +13,7 @@ import java.io.IOException;
 /**
  * Created by raomengnan on 17-1-17.
  */
-@Service("workflowCommander")
+@Service
 public class WorkflowCommanderImpl implements WorkflowCommander{
     @Override
     public WFResponse importJar(String workflowId, String jarName, byte[] stream) {
