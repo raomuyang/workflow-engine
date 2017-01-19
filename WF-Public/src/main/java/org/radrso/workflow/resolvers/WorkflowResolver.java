@@ -33,10 +33,11 @@ public class WorkflowResolver implements Serializable{
     private String header;
     private WorkflowInstance workflowInstance;
 
+    private Step lastStep;
     private Step currentStep;
     private ConcurrentHashMap<String, Step> stepMap;
-    private ConcurrentHashMap<String, WFResponse> responseMap;
 
+    private ConcurrentHashMap<String, WFResponse> responseMap;
     private List<Step> scatterSteps;
 
     private WorkflowResolver(){
@@ -48,7 +49,6 @@ public class WorkflowResolver implements Serializable{
         this.header = workflowConfig.getHeader();
         this.workflowInstance = workflowInstance;
 
-//        this.workflowInstance.setWorkflowId(workflowConfig.getId());
         this.responseMap = workflowInstance.getStepResponses();
 
         if(workflowConfig.getSteps() != null)
@@ -103,8 +103,14 @@ public class WorkflowResolver implements Serializable{
         Step nextStep = transferToNextStep(currentTransfer);
 
         workflowInstance.getStepProcess().put(currentStep.getSign(), Step.FINISHED);
+        lastStep = currentStep;
         currentStep = nextStep;
         workflowInstance.getStepProcess().put(currentStep.getSign(), Step.RUNNING);
+        return this;
+    }
+
+    public WorkflowResolver back(){
+        currentStep = lastStep;
         return this;
     }
 
@@ -245,8 +251,13 @@ public class WorkflowResolver implements Serializable{
                 sp = paramStr.split("\\.");
                 Object output = responseMap.get(sp[1]).getResponse();
                 ret = output;
-                for (; i < sp.length; ++i)
-                    ret = JsonUtils.getJsonObject(ret).getAsJsonObject().get(sp[i]);
+                for (; i < sp.length; ++i) {
+                    Class c = ret.getClass();
+                    if("java.lang".equals(c.getName().substring(0, c.getName().lastIndexOf("."))))
+                        ret = ret;
+                    else
+                        ret = JsonUtils.getJsonObject(ret).getAsJsonObject().get(sp[i]);
+                }
 
             }catch (IndexOutOfBoundsException e1){
                 errorMsg = "Read Config Error:" + e1;
@@ -259,12 +270,6 @@ public class WorkflowResolver implements Serializable{
             if(errorMsg != null)
                 throw new ConfigReadException(errorMsg);
 
-            try {
-                if( ( (JsonObject)ret ).isJsonArray())
-                    return ( (JsonObject)ret ).getAsJsonArray();
-            }catch (Exception e){
-                System.out.println("Not a Json Object");
-            }
             return ret;
         }
 

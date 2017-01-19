@@ -83,14 +83,22 @@ public class StepActionImpl implements StepAction{
                 String[] paramNames = workflowResolver.getCurrentStepParamNames();
 
                 WFResponse response = null;
-                if (step.getCall() != null) {
+                if (step.getCall() != null)
                     response = workflowCommandService.execute(step, params, paramNames);
-                    workflowResolver.putResponse(step.getSign(), response);
-                }
 
                 if(response != null){
                     int code = response.getCode();
-                    if(code == ResponseCode.CLASS_NOT_FOUND.code()){
+
+                    if(code == ResponseCode.HTTP_OK.code())
+                        workflowResolver.putResponse(step.getSign(), response);
+
+                    else {
+                        //发生错误，回滚一步
+                        workflowResolver.back();
+                        if(code == ResponseCode.CLASS_NOT_FOUND.code())
+                            workflowCommandService.importJars(workflowResolver.getWorkflowInstance().getWorkflowId());
+                        else if (ResponseCode.CLASS_NOT_FOUND.code() < code && code < ResponseCode.JAR_FILE_NOT_FOUND.code())
+                            throw new WFRuntimeException(response.getMsg());
                     }
                 }
             } catch (ConfigReadException e) {
