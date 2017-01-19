@@ -3,7 +3,10 @@ package org.radrso.workflow.wfservice.service.exec;
 import lombok.Data;
 import org.radrso.plugins.FileUtils;
 import org.radrso.workflow.entities.config.WorkflowConfig;
+import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.response.WFResponse;
+import org.radrso.workflow.entities.wf.WorkflowErrorLog;
+import org.radrso.workflow.entities.wf.WorkflowInstance;
 import org.radrso.workflow.rmi.WorkflowInstanceExecutor;
 import org.radrso.workflow.wfservice.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,30 +33,6 @@ public class WorkflowCommandServiceImpl implements WorkflowCommandService{
     protected WorkflowLogService workflowLogService;
 
     @Override
-    public WorkflowInstanceExecutor getInstanceExecutor() {
-        return this.workflowInstanceExecutor;
-    }
-
-    @Override
-    public WorkflowService getWFService() {
-        return this.workflowService;
-    }
-
-    @Override
-    public WorkflowExecuteStatusService getStatusService() {
-        return this.workflowExecuteStatusService;
-    }
-
-    @Override
-    public WorkflowInstanceService getInstanceService() {
-        return this.workflowInstanceService;
-    }
-
-    @Override
-    public WorkflowLogService getLogService() {
-        return this.workflowLogService;
-    }
-
     public boolean importJars(String workflowId) {
         WorkflowConfig workflowConfig = workflowService.getByWorkflowId(workflowId);
         String app = workflowConfig.getApplication();
@@ -65,5 +44,25 @@ public class WorkflowCommandServiceImpl implements WorkflowCommandService{
         jars.forEach(j->{});
 
         return false;
+    }
+
+    @Override
+    public boolean logError(WorkflowErrorLog log){
+        return workflowLogService.save(log);
+    }
+
+    @Override
+    public boolean updateInstance(WorkflowInstance instance){
+        return workflowInstanceService.save(instance);
+    }
+
+    @Override
+    public WFResponse execute(Step step, Object[] params, String[] paramNames){
+        return workflowInstanceExecutor.execute(step, params, paramNames);
+    }
+
+    @Override
+    public String getWFStatus(String workflowId){
+        return workflowExecuteStatusService.getStatus(workflowId);
     }
 }

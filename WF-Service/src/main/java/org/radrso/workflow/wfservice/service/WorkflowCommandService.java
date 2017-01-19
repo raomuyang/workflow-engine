@@ -1,5 +1,9 @@
 package org.radrso.workflow.wfservice.service;
 
+import org.radrso.workflow.entities.config.items.Step;
+import org.radrso.workflow.entities.response.WFResponse;
+import org.radrso.workflow.entities.wf.WorkflowErrorLog;
+import org.radrso.workflow.entities.wf.WorkflowInstance;
 import org.radrso.workflow.rmi.WorkflowInstanceExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -8,11 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public interface WorkflowCommandService {
 
-    WorkflowInstanceExecutor getInstanceExecutor();
-    WorkflowService getWFService();
-    WorkflowExecuteStatusService getStatusService();
-    WorkflowInstanceService getInstanceService();
-    WorkflowLogService getLogService();
     boolean importJars(String workflowId);
 
+    boolean logError(WorkflowErrorLog log);
+
+    boolean updateInstance(WorkflowInstance instance);
+
+    WFResponse execute(Step step, Object[] params, String[] paramNames);
+
+    String getWFStatus(String workflowId);
 }

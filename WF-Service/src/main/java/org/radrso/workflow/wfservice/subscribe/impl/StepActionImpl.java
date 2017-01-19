@@ -30,17 +30,8 @@ public class StepActionImpl implements StepAction{
 
     private WorkflowCommandService workflowCommandService;
 
-    private WorkflowInstanceExecutor workflowInstanceExecutor;
-    private WorkflowInstanceService workflowInstanceService;
-    private WorkflowExecuteStatusService workflowExecuteStatusService;
-    private WorkflowLogService workflowLogService;
-
     public StepActionImpl(WorkflowCommandService workflowCommandService) {
         this.workflowCommandService = workflowCommandService;
-        this.workflowInstanceService = workflowCommandService.getInstanceService();
-        this.workflowInstanceExecutor = workflowCommandService.getInstanceExecutor();
-        this.workflowExecuteStatusService = workflowCommandService.getStatusService();
-        this.workflowLogService = workflowCommandService.getLogService();
     }
 
     @Override
@@ -51,7 +42,7 @@ public class StepActionImpl implements StepAction{
         if(workflowResolver.eof())
             workflowResolver.getWorkflowInstance().setStatus(WorkflowInstance.COMPLETED);
 
-        workflowInstanceService.save(workflowResolver.getWorkflowInstance());
+        workflowCommandService.updateInstance(workflowResolver.getWorkflowInstance());
     }
 
     @Override
@@ -63,7 +54,7 @@ public class StepActionImpl implements StepAction{
         else
             instance.setStatus(WorkflowInstance.EXCEPTION);
 
-        workflowInstanceService.save(instance);
+        workflowCommandService.updateInstance(instance);
 
         ObjectId objectId = new ObjectId();
         WorkflowErrorLog log = new WorkflowErrorLog(
@@ -74,7 +65,7 @@ public class StepActionImpl implements StepAction{
                 throwable.toString(),
                 objectId.getDate(),
                 throwable);
-        workflowLogService.save(log);
+        workflowCommandService.logError(log);
     }
 
     @Override
@@ -93,7 +84,7 @@ public class StepActionImpl implements StepAction{
 
                 WFResponse response = null;
                 if (step.getCall() != null) {
-                    response = workflowInstanceExecutor.execute(step, params, paramNames);
+                    response = workflowCommandService.execute(step, params, paramNames);
                     workflowResolver.putResponse(step.getSign(), response);
                 }
 
@@ -132,7 +123,7 @@ public class StepActionImpl implements StepAction{
     }
 
     private boolean checkWorkflowStatus(WorkflowResolver workflowResolver){
-        String status = workflowExecuteStatusService.getStatus(
+        String status = workflowCommandService.getWFStatus(
                     workflowResolver.getWorkflowInstance()
                             .getWorkflowId());
         if(status == null)
