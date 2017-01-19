@@ -1,8 +1,6 @@
 package org.radrso.plugins;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * Created by Raomengnan on 2016/9/4.
@@ -37,6 +35,39 @@ public class FileUtils {
 
         return true;
 
+    }
+
+    public static byte[] getByte(File file){
+        if(file == null || !file.exists())
+            return null;
+        FileInputStream is = null;
+        ByteArrayOutputStream bos = null;
+        byte[] buffer = null;
+        try {
+            is = new FileInputStream(file);
+            bos = new ByteArrayOutputStream(1024);
+            byte[] buf = new byte[1024];
+            int len = 0;
+            while ((len = is.read(buf)) != -1)
+                bos.write(buf, 0, len);
+            buffer =  bos.toByteArray();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                is.close();
+                bos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return buffer;
+    }
+
+    public byte[] getByte(String filePath){
+        return getByte(new File(filePath));
     }
 
     /**

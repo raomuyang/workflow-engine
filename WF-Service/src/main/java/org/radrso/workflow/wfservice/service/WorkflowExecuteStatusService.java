@@ -9,4 +9,6 @@ public interface WorkflowExecuteStatusService {
     public WorkflowExecuteStatus get(String workflowId);
     public boolean save(WorkflowExecuteStatus status);
     public String getStatus(String workflowId);
+    public boolean deleteStatus(String workflowId);
+    public boolean clearAll();
 }

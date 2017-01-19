@@ -13,6 +13,39 @@
 
     <dependencies>
 
+        <!-- MongoDB驱动/ -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>3.3.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-mongodb -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+            <version>1.4.3.RELEASE</version>
+        </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>org.springframework.data</groupId>-->
+            <!--<artifactId>spring-data-mongodb</artifactId>-->
+            <!--<version>1.9.2.RELEASE</version>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+            <!--<groupId>org.springframework.data</groupId>-->
+            <!--<artifactId>spring-data-mongodb-cross-store</artifactId>-->
+            <!--<version>1.9.2.RELEASE</version>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+            <!--<groupId>org.springframework.data</groupId>-->
+            <!--<artifactId>spring-data-mongodb-log4j</artifactId>-->
+            <!--<version>1.9.2.RELEASE</version>-->
+        <!--</dependency>-->
+        <!-- /MongoDB驱动 -->
+
         <dependency>
             <groupId>org.radrso.workflow</groupId>
             <artifactId>WF-Public</artifactId>

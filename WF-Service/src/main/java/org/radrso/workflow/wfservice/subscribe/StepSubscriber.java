@@ -1,6 +1,5 @@
 package org.radrso.workflow.wfservice.subscribe;
 
-import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.resolvers.WorkflowResolver;
 import rx.Subscriber;
 
@@ -20,10 +19,8 @@ public class StepSubscriber extends Subscriber<WorkflowResolver> {
     @Override
     public void onCompleted() {
         stepAction.stepCompleted(workflowResolver);
-        if(!workflowResolver.eof()) {
+        if(!workflowResolver.eof())
             WorkflowObservable.subscribe(stepAction, workflowResolver);
-            workflowResolver.getWorkflowInstance().getStepProcess().put(WorkflowResolver.FINISH, Step.FINISHED);
-        }
     }
 
     @Override

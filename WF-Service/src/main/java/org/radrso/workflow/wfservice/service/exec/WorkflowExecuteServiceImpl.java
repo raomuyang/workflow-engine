@@ -1,42 +1,34 @@
-package org.radrso.workflow.wfservice.service.impl;
+package org.radrso.workflow.wfservice.service.exec;
 
-import lombok.extern.java.Log;
+import org.radrso.plugins.FileUtils;
 import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
+import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
 import org.radrso.workflow.rmi.WorkflowInstanceExecutor;
 import org.radrso.workflow.resolvers.WorkflowResolver;
 import org.radrso.workflow.entities.response.WFResponse;
-import org.radrso.workflow.wfservice.service.WorkflowExecuteService;
-import org.radrso.workflow.wfservice.service.WorkflowExecuteStatusService;
-import org.radrso.workflow.wfservice.service.WorkflowInstanceService;
+import org.radrso.workflow.wfservice.service.*;
 import org.radrso.workflow.wfservice.subscribe.StepAction;
 import org.radrso.workflow.wfservice.subscribe.WorkflowObservable;
 import org.radrso.workflow.wfservice.subscribe.impl.StepActionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import rx.Observable;
-import rx.Subscriber;
-import rx.schedulers.Schedulers;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * Created by raomengnan on 17-1-14.
  */
 @Service
-@Log
 public class WorkflowExecuteServiceImpl implements WorkflowExecuteService {
 
     @Autowired
-    private WorkflowInstanceExecutor workflowInstanceExecutor;
-
-    @Autowired
-    private WorkflowExecuteStatusService workflowExecuteStatusService;
-
-    @Autowired
-    private WorkflowInstanceService workflowInstanceService;
+    private WorkflowCommandService commandService;
 
     @Override
-    public WFResponse execute(WorkflowResolver workflowResolver) {
-        StepAction stepAction = new StepActionImpl(workflowInstanceService, workflowInstanceExecutor, workflowExecuteStatusService);
+    public WFResponse startExecute(WorkflowResolver workflowResolver) {
+        StepAction stepAction = new StepActionImpl(commandService);
 
         WorkflowObservable.subscribe(stepAction, workflowResolver);
 
@@ -54,4 +46,6 @@ public class WorkflowExecuteServiceImpl implements WorkflowExecuteService {
             return new WFResponse(ResponseCode.HTTP_SERVICE_UNAVAILABLE.code(), "workflow instance exception", null);
 
     }
+
+
 }

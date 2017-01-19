@@ -1,6 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/data/mongo
+           http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
+
     <import resource="dubbo-consumer.xml"/>
+
+    <bean id="mappingContext"
+          class="org.springframework.data.mongodb.core.mapping.MongoMappingContext"></bean>
+
+    <bean id="defaultMongoTypeMapper"
+          class="org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper">
+        <constructor-arg name="typeKey">
+            <null></null>
+        </constructor-arg>
+    </bean>
+
+    <!--mongoDB数据源配置，定义mongo对象-->
+    <mongo:mongo-client id="mongo" host="${db.host}" port="${db.port}"
+                        credentials="${db.username}:${db.password}@${db.dbname}">
+        <mongo:client-options
+                connections-per-host="${db.connectionsPerHost}"
+                threads-allowed-to-block-for-connection-multiplier="${db.threadsAllowedToBlockForConnectionMultiplier}"
+                connect-timeout="${db.conncetTimeout}"
+                max-wait-time="${db.maxWaitTime}"
+                socket-timeout="${db.socketTimeout}"
+                socket-keep-alive="${db.socketKeepAlive}"
+        />
+
+    </mongo:mongo-client>
+
+    <!-- mongo的工厂，通过它来取得mongo实例,dbname不存在会自动创建 -->
+    <bean id="mongoFactory" class="org.springframework.data.mongodb.core.SimpleMongoDbFactory">
+        <constructor-arg name="mongo" ref="mongo"/>
+        <constructor-arg name="databaseName" value="${db.dbname}"/>
+    </bean>
+
+
+    <!-- collection的映射 -->
+    <bean id="mappingMongoConverter"
+          class="org.springframework.data.mongodb.core.convert.MappingMongoConverter">
+        <constructor-arg name="mongoDbFactory" ref="mongoFactory"></constructor-arg>
+        <constructor-arg name="mappingContext" ref="mappingContext"></constructor-arg>
+        <property name="typeMapper" ref="defaultMongoTypeMapper"/>
+    </bean>
+
+    <!-- mongodb的主要操作对象，完成增删查改操作 -->
+    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+        <constructor-arg name="mongoDbFactory" ref="mongoFactory"/>
+        <constructor-arg name="mongoConverter" ref="mappingMongoConverter"/>
+    </bean>
+
 </beans>

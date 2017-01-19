@@ -3,6 +3,7 @@ package org.radrso.workflow.entities.wf;
 import lombok.Data;
 import lombok.ToString;
 import org.radrso.workflow.entities.response.WFResponse;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
@@ -22,6 +23,7 @@ public class WorkflowInstance implements Serializable{
     public static final String EXCEPTION = "exception";
 
     private String workflowId;
+    @Id
     private String instanceId;
     private Date createTime = new Date();
     private Date submitTime;

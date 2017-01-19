@@ -8,7 +8,6 @@ import org.radrso.workflow.entities.response.WFResponse;
  */
 public interface WorkflowExecuteService {
 
-    WFResponse execute(WorkflowResolver workflowResolver);
-
+    WFResponse startExecute(WorkflowResolver workflowResolver);
 
 }

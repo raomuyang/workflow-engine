@@ -12,7 +12,10 @@ import java.util.Map;
 public interface WorkflowInstanceService {
     public WorkflowInstance newInstance(String workflowId);
     public boolean save(WorkflowInstance workflowInstance);
-    public WorkflowInstance get(String workflowId, String wfInstanceId);
+    public WorkflowInstance getByInstanceId(String instanceId);
+    public List<WorkflowInstance> getByWorkflowId(String workflowId);
     public Map<String, String> currentProcess(String instanceId);
     public List<Step> finishedStep(String instanceId);
+    public boolean delete(String instanceId);
+    public boolean deleteByWorkflowId(String workflowId);
 }
