@@ -30,4 +30,5 @@ public class WorkflowConfig implements Serializable{
     private Date startTime;
     private Date stopTime;
     private List<Step> steps;
+    private List<String> jars;
 }

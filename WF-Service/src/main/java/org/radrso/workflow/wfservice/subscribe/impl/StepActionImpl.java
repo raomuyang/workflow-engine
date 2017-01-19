@@ -2,6 +2,7 @@ package org.radrso.workflow.wfservice.subscribe.impl;
 
 import lombok.extern.log4j.Log4j;
 import org.bson.types.ObjectId;
+import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.config.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
@@ -13,6 +14,7 @@ import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
 import org.radrso.workflow.resolvers.WorkflowResolver;
 import org.radrso.workflow.rmi.WorkflowInstanceExecutor;
+import org.radrso.workflow.wfservice.service.WorkflowCommandService;
 import org.radrso.workflow.wfservice.service.WorkflowExecuteStatusService;
 import org.radrso.workflow.wfservice.service.WorkflowInstanceService;
 import org.radrso.workflow.wfservice.service.WorkflowLogService;
@@ -26,16 +28,19 @@ import java.util.Date;
 @Log4j
 public class StepActionImpl implements StepAction{
 
-    private WorkflowInstanceService workflowInstanceService;
+    private WorkflowCommandService workflowCommandService;
+
     private WorkflowInstanceExecutor workflowInstanceExecutor;
+    private WorkflowInstanceService workflowInstanceService;
     private WorkflowExecuteStatusService workflowExecuteStatusService;
     private WorkflowLogService workflowLogService;
 
-    public StepActionImpl(WorkflowInstanceService workflowInstanceService, WorkflowInstanceExecutor workflowInstanceExecutor, WorkflowExecuteStatusService workflowExecuteStatusService, WorkflowLogService workflowLogService) {
-        this.workflowInstanceService = workflowInstanceService;
-        this.workflowInstanceExecutor = workflowInstanceExecutor;
-        this.workflowExecuteStatusService = workflowExecuteStatusService;
-        this.workflowLogService = workflowLogService;
+    public StepActionImpl(WorkflowCommandService workflowCommandService) {
+        this.workflowCommandService = workflowCommandService;
+        this.workflowInstanceService = workflowCommandService.getInstanceService();
+        this.workflowInstanceExecutor = workflowCommandService.getInstanceExecutor();
+        this.workflowExecuteStatusService = workflowCommandService.getStatusService();
+        this.workflowLogService = workflowCommandService.getLogService();
     }
 
     @Override
@@ -78,7 +83,7 @@ public class StepActionImpl implements StepAction{
         while (loopDo) {
             loopDo = false;
 
-            verifyDate(workflowResolver);
+//            verifyDate(workflowResolver);
             try {
                 workflowResolver.next();
                 Step step = workflowResolver.getCurrentStep();
@@ -90,6 +95,12 @@ public class StepActionImpl implements StepAction{
                 if (step.getCall() != null) {
                     response = workflowInstanceExecutor.execute(step, params, paramNames);
                     workflowResolver.putResponse(step.getSign(), response);
+                }
+
+                if(response != null){
+                    int code = response.getCode();
+                    if(code == ResponseCode.CLASS_NOT_FOUND.code()){
+                    }
                 }
             } catch (ConfigReadException e) {
                 System.out.println(e);
@@ -110,12 +121,14 @@ public class StepActionImpl implements StepAction{
     private void verifyDate(WorkflowResolver workflowResolver){
         Transfer lastTransfer = workflowResolver.getCurrentTransfer();
         Date diedline = null;
-        if (lastTransfer != null && (diedline = lastTransfer.getDiedline()) != null) {
-            boolean isContinue = new Date().before(diedline);
-            isContinue = isContinue && checkWorkflowStatus(workflowResolver);
-            if(! isContinue)
-                throw new WFRuntimeException(WFRuntimeException.WORKFLOW_EXPIRED);
-        }
+        boolean isContinue = true;
+        if (lastTransfer != null && (diedline = lastTransfer.getDiedline()) != null)
+            isContinue = new Date().before(diedline);
+
+        isContinue = isContinue && checkWorkflowStatus(workflowResolver);
+        if(! isContinue)
+            throw new WFRuntimeException(WFRuntimeException.WORKFLOW_EXPIRED);
+
     }
 
     private boolean checkWorkflowStatus(WorkflowResolver workflowResolver){

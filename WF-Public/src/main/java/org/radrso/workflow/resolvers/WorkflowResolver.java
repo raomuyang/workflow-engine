@@ -96,7 +96,6 @@ public class WorkflowResolver implements Serializable{
      * @throws ConfigReadException
      */
     public WorkflowResolver next() throws ConfigReadException, UnknowExceptionInRunning {
-        int a = 1/0;
         Transfer currentTransfer = getCurrentTransfer();
         if(currentTransfer == null)
             return null;
