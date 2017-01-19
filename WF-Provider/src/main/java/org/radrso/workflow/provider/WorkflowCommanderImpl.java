@@ -1,5 +1,6 @@
 package org.radrso.workflow.provider;
 
+import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.CustomClassLoader;
 import org.radrso.plugins.FileUtils;
 import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
@@ -13,6 +14,7 @@ import java.io.IOException;
 /**
  * Created by raomengnan on 17-1-17.
  */
+@Log4j
 @Service
 public class WorkflowCommanderImpl implements WorkflowCommander{
     public static final String root = FileUtils.getProjectHome() + File.separator + "provide-jars" + File.separator;
@@ -26,6 +28,7 @@ public class WorkflowCommanderImpl implements WorkflowCommander{
      */
     @Override
     public WFResponse importJar(String application, String jarName, byte[] stream) {
+        log.info(String.format("Import jar[%s]", application + "/" + jarName));
         String path = root + application + File.separator;
         boolean add = false;
         try {
@@ -33,6 +36,7 @@ public class WorkflowCommanderImpl implements WorkflowCommander{
             if(add)
                 CustomClassLoader.getClassLoader().addJar(new File(path + jarName));
         } catch (IOException e) {
+            log.error("[Import] " + e);
             return new WFResponse(ResponseCode.UNKNOW_HOST_EXCEPTION.code(), e.toString(), e);
         }
 
@@ -43,8 +47,10 @@ public class WorkflowCommanderImpl implements WorkflowCommander{
     public WFResponse checkAndImportJar(String application, String jarName) {
         String fp = root + application + File.separator + jarName;
         File file = new File(fp);
-        if (file.exists())
+        if (file.exists()){
+            log.info(String.format("Import local jar[%s]", application + "/" + jarName));
             return importJar(application, jarName, FileUtils.getByte(file));
+        }
         else
             return new WFResponse(ResponseCode.JAR_FILE_NOT_FOUND.code(), ResponseCode.JAR_FILE_NOT_FOUND.info(), null);
     }

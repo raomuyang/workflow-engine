@@ -104,6 +104,7 @@ public class StepActionImpl implements StepAction{
             } catch (ConfigReadException e) {
                 System.out.println(e);
                 loopDo = true;
+                workflowResolver.back();
                 try {
                     Thread.sleep(1000 * 60);
                 } catch (InterruptedException e1) {
