@@ -8,6 +8,7 @@ import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.wfservice.service.WorkflowExecuteService;
 import org.radrso.workflow.wfservice.service.WorkflowExecuteStatusService;
 import org.radrso.workflow.wfservice.service.WorkflowInstanceService;
+import org.radrso.workflow.wfservice.service.WorkflowLogService;
 import org.radrso.workflow.wfservice.subscribe.StepAction;
 import org.radrso.workflow.wfservice.subscribe.WorkflowObservable;
 import org.radrso.workflow.wfservice.subscribe.impl.StepActionImpl;
@@ -29,9 +30,12 @@ public class WorkflowExecuteServiceImpl implements WorkflowExecuteService {
     @Autowired
     private WorkflowInstanceService workflowInstanceService;
 
+    @Autowired
+    private WorkflowLogService workflowLogService;
+
     @Override
     public WFResponse execute(WorkflowResolver workflowResolver) {
-        StepAction stepAction = new StepActionImpl(workflowInstanceService, workflowInstanceExecutor, workflowExecuteStatusService);
+        StepAction stepAction = new StepActionImpl(workflowInstanceService, workflowInstanceExecutor, workflowExecuteStatusService, workflowLogService);
 
         WorkflowObservable.subscribe(stepAction, workflowResolver);
 

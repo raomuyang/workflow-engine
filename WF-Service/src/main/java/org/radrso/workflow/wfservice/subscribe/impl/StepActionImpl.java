@@ -1,18 +1,21 @@
 package org.radrso.workflow.wfservice.subscribe.impl;
 
 import lombok.extern.log4j.Log4j;
+import org.bson.types.ObjectId;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.config.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
 import org.radrso.workflow.entities.exceptions.UnknowExceptionInRunning;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;
 import org.radrso.workflow.entities.response.WFResponse;
+import org.radrso.workflow.entities.wf.WorkflowErrorLog;
 import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
 import org.radrso.workflow.resolvers.WorkflowResolver;
 import org.radrso.workflow.rmi.WorkflowInstanceExecutor;
 import org.radrso.workflow.wfservice.service.WorkflowExecuteStatusService;
 import org.radrso.workflow.wfservice.service.WorkflowInstanceService;
+import org.radrso.workflow.wfservice.service.WorkflowLogService;
 import org.radrso.workflow.wfservice.subscribe.StepAction;
 
 import java.util.Date;
@@ -26,11 +29,13 @@ public class StepActionImpl implements StepAction{
     private WorkflowInstanceService workflowInstanceService;
     private WorkflowInstanceExecutor workflowInstanceExecutor;
     private WorkflowExecuteStatusService workflowExecuteStatusService;
+    private WorkflowLogService workflowLogService;
 
-    public StepActionImpl(WorkflowInstanceService workflowInstanceService, WorkflowInstanceExecutor workflowInstanceExecutor, WorkflowExecuteStatusService workflowExecuteStatusService) {
+    public StepActionImpl(WorkflowInstanceService workflowInstanceService, WorkflowInstanceExecutor workflowInstanceExecutor, WorkflowExecuteStatusService workflowExecuteStatusService, WorkflowLogService workflowLogService) {
         this.workflowInstanceService = workflowInstanceService;
         this.workflowInstanceExecutor = workflowInstanceExecutor;
         this.workflowExecuteStatusService = workflowExecuteStatusService;
+        this.workflowLogService = workflowLogService;
     }
 
     @Override
@@ -46,13 +51,25 @@ public class StepActionImpl implements StepAction{
 
     @Override
     public void stepError(WorkflowResolver workflowResolver, Throwable throwable) {
-        log.error("[STEP-EXCEPTION] " +   workflowResolver.getWorkflowInstance().getInstanceId() + " " + throwable);
+        WorkflowInstance instance = workflowResolver.getWorkflowInstance();
+        log.error("[STEP-EXCEPTION] " +   instance.getInstanceId() + " " + workflowResolver.getCurrentStep().getSign() + " " + throwable);
         if(WFRuntimeException.WORKFLOW_EXPIRED.equals(throwable.getMessage()))
-            workflowResolver.getWorkflowInstance().setStatus(WorkflowInstance.EXPIRED);
+            instance.setStatus(WorkflowInstance.EXPIRED);
         else
-            workflowResolver.getWorkflowInstance().setStatus(WorkflowInstance.EXCEPTION);
+            instance.setStatus(WorkflowInstance.EXCEPTION);
 
-        workflowInstanceService.save(workflowResolver.getWorkflowInstance());
+        workflowInstanceService.save(instance);
+
+        ObjectId objectId = new ObjectId();
+        WorkflowErrorLog log = new WorkflowErrorLog(
+                objectId.toHexString(),
+                instance.getWorkflowId(),
+                instance.getInstanceId(),
+                workflowResolver.getCurrentStep().getSign(),
+                throwable.toString(),
+                objectId.getDate(),
+                throwable);
+        workflowLogService.save(log);
     }
 
     @Override
