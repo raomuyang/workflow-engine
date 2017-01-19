@@ -15,9 +15,8 @@
 
     <dubbo:protocol port="${dubbo.port}"/>
 
-    <dubbo:reference  interface="org.radrso.demo.HelloWorld" id="helloWorldImpl"></dubbo:reference>
-    <dubbo:reference  interface="org.radrso.demo.test.Test1" id="test1Impl"></dubbo:reference>
-    <dubbo:reference  interface="org.radrso.demo.test.Test2" id="test2Impl"></dubbo:reference>
+    <dubbo:reference interface="org.radrso.workflow.rmi.WorkflowCommander" id="workflowCommander"></dubbo:reference>
+    <dubbo:reference interface="org.radrso.workflow.rmi.WorkflowInstanceExecutor" id="workflowUbstabceExecutor"></dubbo:reference>
 
 
 </beans>

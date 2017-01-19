@@ -36,16 +36,18 @@ public class StepActionImpl implements StepAction{
     @Override
     public void stepCompleted(WorkflowResolver workflowResolver) {
         log.info("[STEP-COMPLETED] " + workflowResolver.getWorkflowInstance().getInstanceId() + " " + workflowResolver.getCurrentStep().getName());
-        if(workflowResolver.eof()) {
+
+        workflowResolver.getWorkflowInstance().getStepProcess().put(workflowResolver.getCurrentStep().getSign(), Step.FINISHED);
+        if(workflowResolver.eof())
             workflowResolver.getWorkflowInstance().setStatus(WorkflowInstance.COMPLETED);
-            workflowInstanceService.save(workflowResolver.getWorkflowInstance());
-        }
+
+        workflowInstanceService.save(workflowResolver.getWorkflowInstance());
     }
 
     @Override
     public void stepError(WorkflowResolver workflowResolver, Throwable throwable) {
         log.error("[STEP-EXCEPTION] " +   workflowResolver.getWorkflowInstance().getInstanceId() + " " + throwable);
-        if(WorkflowInstance.EXCEPTION.equals(throwable.getMessage()))
+        if(WFRuntimeException.WORKFLOW_EXPIRED.equals(throwable.getMessage()))
             workflowResolver.getWorkflowInstance().setStatus(WorkflowInstance.EXPIRED);
         else
             workflowResolver.getWorkflowInstance().setStatus(WorkflowInstance.EXCEPTION);
@@ -81,7 +83,9 @@ public class StepActionImpl implements StepAction{
                     log.error(e1);
                 }
             } catch (UnknowExceptionInRunning unknowExceptionInRunning) {
+                log.error(unknowExceptionInRunning);
                 unknowExceptionInRunning.printStackTrace();
+                throw new WFRuntimeException(unknowExceptionInRunning.toString());
             }
         }
     }
@@ -91,12 +95,21 @@ public class StepActionImpl implements StepAction{
         Date diedline = null;
         if (lastTransfer != null && (diedline = lastTransfer.getDiedline()) != null) {
             boolean isContinue = new Date().before(diedline);
-            isContinue = isContinue && workflowExecuteStatusService.getStatus(
-                    workflowResolver.getWorkflowInstance()
-                            .getWorkflowId()).equals(WorkflowExecuteStatus.START);
-            //还没有验证工作流是否停止
+            isContinue = isContinue && checkWorkflowStatus(workflowResolver);
             if(! isContinue)
-                throw new WFRuntimeException(WorkflowInstance.EXPIRED);
+                throw new WFRuntimeException(WFRuntimeException.WORKFLOW_EXPIRED);
         }
+    }
+
+    private boolean checkWorkflowStatus(WorkflowResolver workflowResolver){
+        String status = workflowExecuteStatusService.getStatus(
+                    workflowResolver.getWorkflowInstance()
+                            .getWorkflowId());
+        if(status == null)
+            throw new WFRuntimeException(WFRuntimeException.NO_SUCH_WORKFLOW_STATUS);
+        boolean isStart = WorkflowExecuteStatus.START.equals(status);
+        //还没有验证工作流是否停止
+
+        return true;
     }
 }

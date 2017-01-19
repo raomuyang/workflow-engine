@@ -249,12 +249,11 @@ public class WorkflowResolver implements Serializable{
                     ret = JsonUtils.getJsonObject(ret).getAsJsonObject().get(sp[i]);
 
             }catch (IndexOutOfBoundsException e1){
-                errorMsg = "Read Config Error:" + e1.getMessage();
+                errorMsg = "Read Config Error:" + e1;
             } catch (NullPointerException e2){
                 errorMsg = "No such value: " + paramStr + "/" + sp[i];
             } catch (Throwable e3){
-                throw new UnknowExceptionInRunning(e3);
-
+                throw new UnknowExceptionInRunning("Exception in resolve param [%s]".format(paramStr) + "/case:" + e3 , e3);
             }
 
             if(errorMsg != null)
@@ -281,9 +280,9 @@ public class WorkflowResolver implements Serializable{
             Class clazz = CustomClassLoader.getClassLoader().loadClass(type);
             return JsonUtils.mapToBean(o.toString(), clazz);
         } catch (ClassNotFoundException e) {
-            throw new ConfigReadException(String.format("Param type error: (%s)", type) + e.getMessage());
+            throw new ConfigReadException(String.format("Param type error: (%s)", type) + e);
         } catch (Throwable throwable){
-            throw new ConfigReadException("Value case error: " + throwable.getMessage());
+            throw new ConfigReadException("Value case error: " + throwable);
         }
 
     }
