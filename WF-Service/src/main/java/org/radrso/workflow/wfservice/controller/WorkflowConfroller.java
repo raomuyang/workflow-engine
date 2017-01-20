@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -103,4 +104,17 @@ public class WorkflowConfroller {
         return statusService.get(workflowid);
     }
 
+    @RequestMapping(value = "/upload/jar", method = RequestMethod.POST)
+    public ResponseEntity<ModelMap> uploadJar(String application, MultipartFile file){
+        log.info(String.format("Upload jar file [%s]", file));
+        boolean res = workflowService.transferJarFile(application, file);
+        ModelMap map = new ModelMap();
+        map.put("status", res);
+
+        if(!res){
+            map.put("msg", "Upload error");
+            return new ResponseEntity<ModelMap>(map, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<ModelMap>(map, HttpStatus.OK);
+    }
 }
