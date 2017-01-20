@@ -52,6 +52,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 
     @Override
     public boolean delete(String workflowId) {
+        log.info("Delete " + workflowId);
         if(workflowId == null)
             return false;
         workflowRepository.delete(workflowId);
@@ -80,19 +81,27 @@ public class WorkflowServiceImpl implements WorkflowService {
 
     @Override
     public void updateServiceStatus(WorkflowConfig workflowConfig){
-        Date start = workflowConfig.getStartTime();
-        Date stop = workflowConfig.getStopTime();
+        if(workflowConfig == null)
+            return;
 
-        WorkflowExecuteStatus status = statusRepository.findOne(workflowConfig.getId());
-        if(status == null)
-            status = new WorkflowExecuteStatus(workflowConfig.getId(), workflowConfig.getApplication(), WorkflowExecuteStatus.CREATED, null);
+        try {
 
-        Date current = new Date();
-        if(current.after(start) && current.before(stop))
-            status.setStatus(WorkflowExecuteStatus.START);
-        else if(current.after(stop))
-            status.setStatus(WorkflowExecuteStatus.STOP);
+            Date start = workflowConfig.getStartTime();
+            Date stop = workflowConfig.getStopTime();
 
-        statusRepository.save(status);
+            WorkflowExecuteStatus status = statusRepository.findOne(workflowConfig.getId());
+            if (status == null)
+                status = new WorkflowExecuteStatus(workflowConfig.getId(), workflowConfig.getApplication(), WorkflowExecuteStatus.CREATED, null);
+
+            Date current = new Date();
+            if (current.after(start) && current.before(stop))
+                status.setStatus(WorkflowExecuteStatus.START);
+            else if (current.after(stop))
+                status.setStatus(WorkflowExecuteStatus.STOP);
+
+            statusRepository.save(status);
+        }catch (Throwable e){
+            log.error(e);
+        }
     }
 }
