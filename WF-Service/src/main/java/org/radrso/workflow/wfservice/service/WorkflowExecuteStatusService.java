@@ -6,9 +6,16 @@ import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
  * Created by raomengnan on 17-1-16.
  */
 public interface WorkflowExecuteStatusService {
-    public WorkflowExecuteStatus get(String workflowId);
+
+    WorkflowExecuteStatus get(String workflowId);
+
     public boolean save(WorkflowExecuteStatus status);
-    public String getStatus(String workflowId);
+
+    String getStatus(String workflowId);
+
     public boolean deleteStatus(String workflowId);
+
+    boolean deleteStatusByApplication(String application);
+
     public boolean clearAll();
 }

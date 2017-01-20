@@ -17,5 +17,6 @@ public interface WorkflowService {
     boolean deleteByApplication(String application);
 
     boolean transferJarFile(String application, MultipartFile originFile);
+    void updateServiceStatus(WorkflowConfig workflowConfig);
 
 }

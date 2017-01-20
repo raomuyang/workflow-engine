@@ -1,6 +1,5 @@
 package org.radrso.workflow.wfservice.service.impl;
 
-import com.sun.org.apache.regexp.internal.RE;
 import lombok.extern.log4j.Log4j;
 import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
 import org.radrso.workflow.wfservice.repositories.WorkflowStatusRepository;
@@ -32,17 +31,26 @@ public class WorkflowExecuteStatusServiceImpl implements WorkflowExecuteStatusSe
 
     @Override
     public String getStatus(String workflowId) {
-        WorkflowExecuteStatus w = workflowStatusRepository.findOne(workflowId);
-        if(w != null)
-            return w.getStatus();
+        WorkflowExecuteStatus status = get(workflowId);
+        if(status != null)
+            return status.getStatus();
         return null;
     }
 
     @Override
     public boolean deleteStatus(String workflowId) {
-        if (workflowId == null)
+        if(workflowId == null)
             return false;
         workflowStatusRepository.delete(workflowId);
+        return true;
+    }
+
+
+    @Override
+    public boolean deleteStatusByApplication(String application) {
+        if (application == null)
+            return false;
+        workflowStatusRepository.deleteByApplication(application);
         return true;
     }
 

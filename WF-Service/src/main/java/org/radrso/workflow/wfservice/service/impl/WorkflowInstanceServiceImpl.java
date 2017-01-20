@@ -1,9 +1,11 @@
 package org.radrso.workflow.wfservice.service.impl;
 
 import org.bson.types.ObjectId;
+import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
 import org.radrso.workflow.wfservice.repositories.WorkflowInstanceRepository;
+import org.radrso.workflow.wfservice.repositories.WorkflowRepository;
 import org.radrso.workflow.wfservice.service.WorkflowInstanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,9 +22,15 @@ import java.util.Map;
 public class WorkflowInstanceServiceImpl implements WorkflowInstanceService{
     @Autowired
     private WorkflowInstanceRepository workflowInstanceRepository;
+    @Autowired
+    private WorkflowRepository workflowRepository;
 
     @Override
     public WorkflowInstance newInstance(String workflowId) {
+        WorkflowConfig workflowConfig = workflowRepository.findOne(workflowId);
+        if(workflowConfig == null)
+            return null;
+
         ObjectId id = new ObjectId();
         WorkflowInstance workflowInstance = new WorkflowInstance(workflowId, id.toHexString());
         save(workflowInstance);
