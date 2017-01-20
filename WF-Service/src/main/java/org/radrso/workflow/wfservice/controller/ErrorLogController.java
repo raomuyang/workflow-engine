@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.websocket.server.PathParam;
 import java.util.List;
 
 /**
@@ -25,17 +25,17 @@ public class ErrorLogController {
     private WorkflowLogService workflowLogService;
 
     @RequestMapping("/workflow/{workflowId}")
-    public List<WorkflowErrorLog> getByWorkflowId(@PathParam("workflowId") String workflowId){
+    public List<WorkflowErrorLog> getByWorkflowId(@PathVariable("workflowId") String workflowId){
         return workflowLogService.getByWorkflowId(workflowId);
     }
 
     @RequestMapping("/instance/{instanceId}")
-    public List<WorkflowErrorLog> getByInstanceId(@PathParam("instanceId") String instanceId){
+    public List<WorkflowErrorLog> getByInstanceId(@PathVariable("instanceId") String instanceId){
         return workflowLogService.getByInstanceId(instanceId);
     }
 
     @RequestMapping(value = "/delete/workflow/{workflowId}", method = RequestMethod.DELETE)
-    public ResponseEntity<ModelMap> deleteByWorkflowId(@PathParam("workflowId") String workflowId){
+    public ResponseEntity<ModelMap> deleteByWorkflowId(@PathVariable("workflowId") String workflowId){
         boolean res = workflowLogService.deleteByWorkflowId(workflowId);
         ModelMap map = new ModelMap();
         map.put("status", res);
@@ -47,7 +47,7 @@ public class ErrorLogController {
     }
 
     @RequestMapping(value = "/delete/instance/{instanceId}", method = RequestMethod.DELETE)
-    public ResponseEntity<ModelMap> deleteByInstanceId(@PathParam("instanceId") String instanceId){
+    public ResponseEntity<ModelMap> deleteByInstanceId(@PathVariable("instanceId") String instanceId){
         boolean res = workflowLogService.deleteByInstanceId(instanceId);
         ModelMap map = new ModelMap();
         map.put("status", res);

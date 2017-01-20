@@ -9,11 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.websocket.server.PathParam;
 import java.util.List;
 
 /**
@@ -63,17 +63,18 @@ public class WorkflowConfroller {
     }
 
     @RequestMapping("/{id}")
-    public WorkflowConfig getWorkflowById(@PathParam("id") String id){
+    public WorkflowConfig getWorkflowById(@PathVariable("id") String id){
+        System.out.println("[Debug]"+id);
         return workflowService.getByWorkflowId(id);
     }
 
     @RequestMapping("/app/{application}")
-    public List<WorkflowConfig> getWorkflowByApplication(@PathParam("application") String application){
+    public List<WorkflowConfig> getWorkflowByApplication(@PathVariable("application") String application){
         return workflowService.getByApplication(application);
     }
 
     @RequestMapping(value = "/delete/{workflowid}", method = RequestMethod.DELETE)
-    public ResponseEntity<ModelMap> delete(@PathParam("workflowid") String workflowid){
+    public ResponseEntity<ModelMap> delete(@PathVariable("workflowid") String workflowid){
         boolean res = workflowService.delete(workflowid);
         ModelMap map = new ModelMap();
         map.put("status", res);
@@ -85,7 +86,7 @@ public class WorkflowConfroller {
     }
 
     @RequestMapping(value = "/deletel/app/{application}", method = RequestMethod.DELETE)
-    public ResponseEntity<ModelMap> deleteByApplication(@PathParam("application") String application){
+    public ResponseEntity<ModelMap> deleteByApplication(@PathVariable("application") String application){
         boolean res = workflowService.deleteByApplication(application);
         ModelMap map = new ModelMap();
         map.put("status", res);
@@ -97,7 +98,7 @@ public class WorkflowConfroller {
     }
 
     @RequestMapping("/status/{workflowid}")
-    public WorkflowExecuteStatus getWorkflowStatus(@PathParam("workflowid") String workflowid){
+    public WorkflowExecuteStatus getWorkflowStatus(@PathVariable("workflowid") String workflowid){
         workflowService.updateServiceStatus(workflowService.getByWorkflowId(workflowid));
         return statusService.get(workflowid);
     }
