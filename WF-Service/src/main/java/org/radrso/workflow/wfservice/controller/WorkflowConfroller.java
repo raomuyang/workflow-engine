@@ -104,7 +104,7 @@ public class WorkflowConfroller {
         return statusService.get(workflowid);
     }
 
-    @RequestMapping(value = "/upload/jar/", method = RequestMethod.POST)
+    @RequestMapping(value = "/upload/jar", method = RequestMethod.POST)
     public ResponseEntity<ModelMap> uploadJar(String application, MultipartFile file){
         log.info(String.format("Upload jar file [%s]", file));
         boolean res = workflowService.transferJarFile(application, file);

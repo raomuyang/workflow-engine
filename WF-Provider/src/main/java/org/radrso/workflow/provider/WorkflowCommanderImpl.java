@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.CustomClassLoader;
 import org.radrso.plugins.FileUtils;
 import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
+import org.radrso.workflow.StandardString;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.rmi.WorkflowCommander;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ import java.io.IOException;
 @Log4j
 @Service
 public class WorkflowCommanderImpl implements WorkflowCommander{
-    public static final String root = FileUtils.getProjectHome() + File.separator + "provide-jars" + File.separator;
+    public static final String ROOT = StandardString.PROVIDER_JAR_HOME;
 
     /**
      *
@@ -29,7 +30,7 @@ public class WorkflowCommanderImpl implements WorkflowCommander{
     @Override
     public WFResponse importJar(String application, String jarName, byte[] stream) {
         log.info(String.format("Import jar[%s]", application + "/" + jarName));
-        String path = root + application + File.separator;
+        String path = ROOT + application + File.separator;
         boolean add = false;
         try {
             add = FileUtils.writeFile(path, jarName, stream);
@@ -45,7 +46,7 @@ public class WorkflowCommanderImpl implements WorkflowCommander{
 
     @Override
     public WFResponse checkAndImportJar(String application, String jarName) {
-        String fp = root + application + File.separator + jarName;
+        String fp = ROOT + application + File.separator + jarName;
         File file = new File(fp);
         if (file.exists()){
             log.info(String.format("Import local jar[%s]", application + "/" + jarName));
