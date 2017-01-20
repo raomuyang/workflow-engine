@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>WF-Provider</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>Workflow-Engine Provider Maven Webapp</name>
 
 
