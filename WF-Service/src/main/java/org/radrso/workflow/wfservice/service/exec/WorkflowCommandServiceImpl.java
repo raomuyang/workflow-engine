@@ -88,6 +88,6 @@ public class WorkflowCommandServiceImpl implements WorkflowCommandService{
         if(workflowConfig == null)
             return null;
         workflowService.updateServiceStatus(workflowConfig);
-        return workflowExecuteStatusService.getStatus(workflowConfig.getApplication(), workflowId);
+        return workflowExecuteStatusService.getStatus(workflowId);
     }
 }

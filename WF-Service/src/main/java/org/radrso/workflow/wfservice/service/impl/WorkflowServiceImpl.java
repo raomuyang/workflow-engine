@@ -83,10 +83,9 @@ public class WorkflowServiceImpl implements WorkflowService {
         Date start = workflowConfig.getStartTime();
         Date stop = workflowConfig.getStopTime();
 
-        WorkflowExecuteStatus status = statusRepository.findByApplicationAndWorkflowId(
-                workflowConfig.getApplication(), workflowConfig.getId());
+        WorkflowExecuteStatus status = statusRepository.findOne(workflowConfig.getId());
         if(status == null)
-            status = new WorkflowExecuteStatus(null, workflowConfig.getApplication(), workflowConfig.getId(), WorkflowExecuteStatus.CREATED, null);
+            status = new WorkflowExecuteStatus(workflowConfig.getId(), workflowConfig.getApplication(), WorkflowExecuteStatus.CREATED, null);
 
         Date current = new Date();
         if(current.after(start) && current.before(stop))

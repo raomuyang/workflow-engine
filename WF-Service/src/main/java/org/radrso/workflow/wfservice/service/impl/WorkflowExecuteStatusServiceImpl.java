@@ -17,8 +17,8 @@ public class WorkflowExecuteStatusServiceImpl implements WorkflowExecuteStatusSe
     private WorkflowStatusRepository workflowStatusRepository;
 
     @Override
-    public WorkflowExecuteStatus get(String applicaton, String workflowId) {
-        return workflowStatusRepository.findByApplicationAndWorkflowId(applicaton, workflowId);
+    public WorkflowExecuteStatus get(String workflowId) {
+        return workflowStatusRepository.findOne(workflowId);
     }
 
     @Override
@@ -30,24 +30,24 @@ public class WorkflowExecuteStatusServiceImpl implements WorkflowExecuteStatusSe
     }
 
     @Override
-    public String getStatus(String application, String workflowId) {
-        WorkflowExecuteStatus status = get(application, workflowId);
+    public String getStatus(String workflowId) {
+        WorkflowExecuteStatus status = get(workflowId);
         if(status != null)
             return status.getStatus();
         return null;
     }
 
     @Override
-    public boolean deleteStatus(String application, String workflowId) {
-        if(application == null || workflowId == null)
+    public boolean deleteStatus(String workflowId) {
+        if(workflowId == null)
             return false;
-        workflowStatusRepository.deleteByApplicationAndWorkflowId(application, workflowId);
+        workflowStatusRepository.delete(workflowId);
         return true;
     }
 
 
     @Override
-    public boolean deleteStatus(String application) {
+    public boolean deleteStatusByApplication(String application) {
         if (application == null)
             return false;
         workflowStatusRepository.deleteByApplication(application);
