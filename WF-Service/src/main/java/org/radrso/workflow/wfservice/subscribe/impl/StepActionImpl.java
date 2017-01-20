@@ -74,7 +74,7 @@ public class StepActionImpl implements StepAction{
         while (loopDo) {
             loopDo = false;
 
-//            verifyDate(workflowResolver);
+            verifyDate(workflowResolver);
             try {
                 workflowResolver.next();
                 Step step = workflowResolver.getCurrentStep();

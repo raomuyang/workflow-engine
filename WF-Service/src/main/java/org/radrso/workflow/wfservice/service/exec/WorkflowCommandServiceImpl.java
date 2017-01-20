@@ -84,6 +84,10 @@ public class WorkflowCommandServiceImpl implements WorkflowCommandService{
 
     @Override
     public String getWFStatus(String workflowId){
-        return workflowExecuteStatusService.getStatus(workflowId);
+        WorkflowConfig workflowConfig = workflowService.getByWorkflowId(workflowId);
+        if(workflowConfig == null)
+            return null;
+        workflowService.updateServiceStatus(workflowConfig);
+        return workflowExecuteStatusService.getStatus(workflowConfig.getApplication(), workflowId);
     }
 }

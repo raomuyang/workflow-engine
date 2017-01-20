@@ -3,7 +3,9 @@ package org.radrso.workflow.wfservice.service.impl;
 import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.FileUtils;
 import org.radrso.workflow.entities.config.WorkflowConfig;
+import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
 import org.radrso.workflow.wfservice.repositories.WorkflowRepository;
+import org.radrso.workflow.wfservice.repositories.WorkflowStatusRepository;
 import org.radrso.workflow.wfservice.service.WorkflowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,6 +25,8 @@ import java.util.List;
 public class WorkflowServiceImpl implements WorkflowService {
     @Autowired
     private WorkflowRepository workflowRepository;
+    @Autowired
+    private WorkflowStatusRepository statusRepository;
 
     @Override
     public boolean save(WorkflowConfig workflowConfig) {
@@ -71,5 +76,24 @@ public class WorkflowServiceImpl implements WorkflowService {
             log.error(e);
             return false;
         }
+    }
+
+    @Override
+    public void updateServiceStatus(WorkflowConfig workflowConfig){
+        Date start = workflowConfig.getStartTime();
+        Date stop = workflowConfig.getStopTime();
+
+        WorkflowExecuteStatus status = statusRepository.findByApplicationAndWorkflowId(
+                workflowConfig.getApplication(), workflowConfig.getId());
+        if(status == null)
+            status = new WorkflowExecuteStatus(null, workflowConfig.getApplication(), workflowConfig.getId(), WorkflowExecuteStatus.CREATED, null);
+
+        Date current = new Date();
+        if(current.after(start) && current.before(stop))
+            status.setStatus(WorkflowExecuteStatus.START);
+        else if(current.after(stop))
+            status.setStatus(WorkflowExecuteStatus.STOP);
+
+        statusRepository.save(status);
     }
 }

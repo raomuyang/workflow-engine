@@ -18,10 +18,12 @@ import java.io.Serializable;
 @ToString
 @Document(collection = "workflowStatus")
 public class WorkflowExecuteStatus implements Serializable{
+    public static final String CREATED = "created";
     public static final String START = "started";
     public static final String STOP = "stopped";
     public static final String EXCEPTION = "exception";
-    @Id
+    private String _id;
+    private String application;
     private String workflowId;
     private String status;
     private String msg;
