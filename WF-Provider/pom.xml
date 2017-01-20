@@ -25,12 +25,35 @@
             <artifactId>rxjava</artifactId>
             <version>1.2.4</version>
         </dependency>
-
-
     </dependencies>
 
     <build>
         <finalName>Workflow-Engine-Provider</finalName>
-    </build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <!--<excludes>-->
+                    <!--<exclude>*</exclude>-->
+                <!--</excludes>-->
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
 
+                <configuration>
+                    <mainClass>org.radrso.workflow.provider.ProviderLancher</mainClass>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
