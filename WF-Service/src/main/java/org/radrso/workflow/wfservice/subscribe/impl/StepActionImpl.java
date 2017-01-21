@@ -92,8 +92,19 @@ public class StepActionImpl implements StepAction{
                         for(int i = 0; i < scatters.size(); i++){
                             //获取分支下一步
                             Step scatterNextStep = scatters.get(i);
-                            log.info("Scatter to " + scatterNextStep.getSign() + " in " + step.getSign());
+                            String msg = String.format("Scatter to [%s] from step[%s]/[%s]",scatterNextStep.getSign(), step.getSign(), workflowResolver.getWorkflowInstance().getInstanceId());
+                            log.info(msg);
+
                             WorkflowResolver newWFResolver = workflowCommandService.branchInstance(workflowResolver.getWorkflowInstance().getInstanceId());
+                            if(newWFResolver == null){
+                                WorkflowErrorLog log = new WorkflowErrorLog();
+                                log.setMsg("Instance not found:" + msg);
+                                log.setWorkflowId(workflowResolver.getWorkflowInstance().getWorkflowId());
+                                log.setInstanceId(workflowResolver.getWorkflowInstance().getInstanceId());
+                                log.setStepSign(workflowResolver.getCurrentStep().getSign());
+                                workflowCommandService.logError(log);
+                                continue;
+                            }
 
                             //获取分支实例
                             WorkflowInstance branchInstance = newWFResolver.getWorkflowInstance();
@@ -104,7 +115,7 @@ public class StepActionImpl implements StepAction{
                             );
 
                             //当前分支的上一个转移函数，用于获取input，deadline等
-                            Transfer lastTranInMain = workflowResolver.getLastStep().getTransfer();
+                            Transfer lastTranInMain = workflowResolver.getLastTransfer();
 
                             //新分支的转移函数
                             Transfer tran = new Transfer();

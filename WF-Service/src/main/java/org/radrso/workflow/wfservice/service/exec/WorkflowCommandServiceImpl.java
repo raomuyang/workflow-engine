@@ -95,9 +95,9 @@ public class WorkflowCommandServiceImpl implements WorkflowCommandService{
 
     @Override
     public WorkflowResolver branchInstance(String instanceId){
-        if(instanceId != null)
-            instanceId = instanceId.split("-")[0];
         WorkflowInstance instance = workflowInstanceService.getByInstanceId(instanceId);
+        if(instance == null)
+            return null;
         WorkflowConfig config = workflowService.getByWorkflowId(instance.getWorkflowId());
         WorkflowInstance newInstance = new WorkflowInstance(config.getId(), instanceId);
         return new WorkflowResolver(config, newInstance);
