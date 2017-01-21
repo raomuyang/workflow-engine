@@ -7,7 +7,10 @@ import org.radrso.workflow.entities.wf.WorkflowInstance;
 import org.radrso.workflow.wfservice.repositories.WorkflowInstanceRepository;
 import org.radrso.workflow.wfservice.repositories.WorkflowRepository;
 import org.radrso.workflow.wfservice.service.WorkflowInstanceService;
+import org.radrso.workflow.wfservice.utils.MongoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,6 +27,8 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService{
     private WorkflowInstanceRepository workflowInstanceRepository;
     @Autowired
     private WorkflowRepository workflowRepository;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Override
     public WorkflowInstance newInstance(String workflowId) {
@@ -50,6 +55,18 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService{
         if(instanceId == null)
             return null;
         return workflowInstanceRepository.findOne(instanceId);
+    }
+
+    @Override
+    public List<WorkflowInstance> getInstanceDetails(String instanceId){
+        WorkflowInstance instance = getByInstanceId(instanceId);
+        if(instance == null)
+            return null;
+
+        Query query = new Query(MongoUtil.fuzzyCriteria("_id",instanceId));
+        List<WorkflowInstance> instances = mongoTemplate.find(query ,WorkflowInstance.class);
+        instances.add(0, instance);
+        return instances;
     }
 
     @Override
