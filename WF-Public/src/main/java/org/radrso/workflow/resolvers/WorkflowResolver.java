@@ -106,6 +106,8 @@ public class WorkflowResolver implements Serializable{
         lastStep = currentStep;
         currentStep = nextStep;
         workflowInstance.getStepProcess().put(currentStep.getSign(), Step.RUNNING);
+        int len = scatterSteps == null?0:scatterSteps.size();
+        workflowInstance.setBranchs(workflowInstance.getBranchs() + len);
         return this;
     }
 
@@ -141,7 +143,7 @@ public class WorkflowResolver implements Serializable{
             return null;
 
         if(transfer.getJudge() == null) {
-            scatterSteps = scatterTo(transfer);
+            scatterTo(transfer);
             getParams(transfer);
             return stepMap.get(transfer.getTo());
         }
@@ -156,12 +158,15 @@ public class WorkflowResolver implements Serializable{
      */
     public List<Step> scatterTo(Transfer transfer){
         List<String> stepNames = transfer.getScatters();
-        List<Step> scatterSteps = new ArrayList<>();
+        scatterSteps = scatterSteps == null ? new ArrayList<>():scatterSteps;
 
-        if(scatterSteps != null && scatterSteps.size() > 0)
-            for(int i = 0; i < scatterSteps.size(); i++ )
+        int len = workflowInstance.getBranchs();
+
+        if(stepNames != null && stepNames.size() > 0)
+            for(int i = 0; i < stepNames.size(); i++ ) {
                 scatterSteps.add(stepMap.get(stepNames.get(0)));
-
+                workflowInstance.getBranchStepMap().put(len + i + 1, currentStep.getSign());
+            }
         return scatterSteps;
     }
     /**

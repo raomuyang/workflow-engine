@@ -4,6 +4,7 @@ import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.entities.wf.WorkflowErrorLog;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
+import org.radrso.workflow.resolvers.WorkflowResolver;
 import org.radrso.workflow.rmi.WorkflowInstanceExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,4 +22,6 @@ public interface WorkflowCommandService {
     WFResponse execute(Step step, Object[] params, String[] paramNames);
 
     String getWFStatus(String workflowId);
+
+    WorkflowResolver branchInstance(String instanceId);
 }
