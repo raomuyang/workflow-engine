@@ -9,7 +9,7 @@
 
     <artifactId>WF-Service</artifactId>
     <packaging>jar</packaging>
-    <name>Workflow-Engine Consumer Maven Webapp</name>
+    <name>Workflow-Engine Service Maven Webapp</name>
 
     <dependencies>
 
@@ -27,25 +27,6 @@
             <version>1.4.3.RELEASE</version>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.data</groupId>-->
-            <!--<artifactId>spring-data-mongodb</artifactId>-->
-            <!--<version>1.9.2.RELEASE</version>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.data</groupId>-->
-            <!--<artifactId>spring-data-mongodb-cross-store</artifactId>-->
-            <!--<version>1.9.2.RELEASE</version>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.data</groupId>-->
-            <!--<artifactId>spring-data-mongodb-log4j</artifactId>-->
-            <!--<version>1.9.2.RELEASE</version>-->
-        <!--</dependency>-->
-        <!-- /MongoDB驱动 -->
-
         <dependency>
             <groupId>org.radrso.workflow</groupId>
             <artifactId>WF-Public</artifactId>
@@ -62,5 +43,24 @@
 
     <build>
         <finalName>Workflow-Engine-Service</finalName>
+
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+
+                <configuration>
+                    <mainClass>org.radrso.workflow.wfservice.ServiceLuancher</mainClass>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 </project>

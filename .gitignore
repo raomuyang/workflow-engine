@@ -5,3 +5,4 @@
 *.class
 log
 /*/src/main/test/
+*jars/*
