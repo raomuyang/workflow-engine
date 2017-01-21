@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>WF-Provider</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>Workflow-Engine Provider Maven Webapp</name>
 
 
@@ -25,12 +25,28 @@
             <artifactId>rxjava</artifactId>
             <version>1.2.4</version>
         </dependency>
-
-
     </dependencies>
 
     <build>
         <finalName>Workflow-Engine-Provider</finalName>
-    </build>
 
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+
+                <configuration>
+                    <mainClass>org.radrso.workflow.provider.ProviderLancher</mainClass>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

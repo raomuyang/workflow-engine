@@ -19,8 +19,10 @@ import org.radrso.workflow.wfservice.service.WorkflowExecuteStatusService;
 import org.radrso.workflow.wfservice.service.WorkflowInstanceService;
 import org.radrso.workflow.wfservice.service.WorkflowLogService;
 import org.radrso.workflow.wfservice.subscribe.StepAction;
+import org.radrso.workflow.wfservice.subscribe.WorkflowObservable;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by raomengnan on 17-1-17.
@@ -39,8 +41,13 @@ public class StepActionImpl implements StepAction{
         log.info("[STEP-COMPLETED] " + workflowResolver.getWorkflowInstance().getInstanceId() + " " + workflowResolver.getCurrentStep().getName());
 
         workflowResolver.getWorkflowInstance().getStepProcess().put(workflowResolver.getCurrentStep().getSign(), Step.FINISHED);
-        if(workflowResolver.eof())
+        workflowResolver.getWorkflowInstance().getFinishedSequence().add(
+                workflowResolver.getCurrentStep().getSign()
+        );
+        if(workflowResolver.eof()) {
             workflowResolver.getWorkflowInstance().setStatus(WorkflowInstance.COMPLETED);
+            workflowResolver.getWorkflowInstance().setSubmitTime(new Date());
+        }
 
         workflowCommandService.updateInstance(workflowResolver.getWorkflowInstance());
     }
@@ -71,6 +78,7 @@ public class StepActionImpl implements StepAction{
     @Override
     public void stepNext(WorkflowResolver workflowResolver) {
         boolean loopDo = true;
+        boolean isScatter = false;
         while (loopDo) {
             loopDo = false;
 
@@ -78,6 +86,57 @@ public class StepActionImpl implements StepAction{
             try {
                 workflowResolver.next();
                 Step step = workflowResolver.getCurrentStep();
+
+                if(!isScatter){
+                    isScatter = true;
+                    List<Step> scatters = workflowResolver.getScatterSteps();
+                    if(scatters != null){
+                        for(int i = 0; i < scatters.size(); i++){
+                            //获取分支下一步
+                            Step scatterNextStep = scatters.get(i);
+                            String msg = String.format("Scatter to [%s] from step[%s]/[%s]",scatterNextStep.getSign(), step.getSign(), workflowResolver.getWorkflowInstance().getInstanceId());
+                            log.info(msg);
+
+                            WorkflowResolver newWFResolver = workflowCommandService.branchInstance(workflowResolver.getWorkflowInstance().getInstanceId());
+                            if(newWFResolver == null){
+                                WorkflowErrorLog log = new WorkflowErrorLog();
+                                log.setMsg("Instance not found:" + msg);
+                                log.setWorkflowId(workflowResolver.getWorkflowInstance().getWorkflowId());
+                                log.setInstanceId(workflowResolver.getWorkflowInstance().getInstanceId());
+                                log.setStepSign(workflowResolver.getCurrentStep().getSign());
+                                workflowCommandService.logError(log);
+                                continue;
+                            }
+
+                            //获取分支实例
+                            WorkflowInstance branchInstance = newWFResolver.getWorkflowInstance();
+
+                            branchInstance.setInstanceId(
+                                    workflowResolver.getWorkflowInstance().getInstanceId() + "-"
+                                            + (workflowResolver.getWorkflowInstance().getBranchs() - scatters.size() + i + 1)
+                            );
+
+                            //当前分支的上一个转移函数，用于获取input，deadline等
+                            Transfer lastTranInMain = workflowResolver.getLastTransfer();
+
+                            //新分支的转移函数
+                            Transfer tran = new Transfer();
+                            tran.setDiedline(lastTranInMain.getDiedline());
+                            tran.setInput(lastTranInMain.getInput());
+                            tran.setTo(scatterNextStep.getSign());
+
+                            //用新分支转移函数和旧分支的步奏名构成新分支的上一状态，从而next()时可以调用新分支转移函数
+                            Step ls = new Step();
+                            ls.setTransfer(tran);
+                            ls.setSign(workflowResolver.getLastStep().getSign());
+
+                            newWFResolver.setCurrentStep(ls);
+                            WorkflowObservable.subscribe(this, newWFResolver);
+                        }
+                        workflowResolver.setScatterSteps(null);
+                    }
+                }
+
                 log.info("[START] " + workflowResolver.getWorkflowInstance().getInstanceId() + " " + step.getName() + String.format(" Thread[%s]", Thread.currentThread().getId()) );
                 Object[] params = workflowResolver.getCurrentStepParams();
                 String[] paramNames = workflowResolver.getCurrentStepParamNames();

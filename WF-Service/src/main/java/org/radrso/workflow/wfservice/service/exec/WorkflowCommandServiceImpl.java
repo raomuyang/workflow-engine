@@ -11,6 +11,7 @@ import org.radrso.workflow.entities.exceptions.WFRuntimeException;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.entities.wf.WorkflowErrorLog;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
+import org.radrso.workflow.resolvers.WorkflowResolver;
 import org.radrso.workflow.rmi.WorkflowCommander;
 import org.radrso.workflow.rmi.WorkflowInstanceExecutor;
 import org.radrso.workflow.wfservice.service.*;
@@ -90,5 +91,15 @@ public class WorkflowCommandServiceImpl implements WorkflowCommandService{
             return null;
         workflowService.updateServiceStatus(workflowConfig);
         return workflowExecuteStatusService.getStatus(workflowId);
+    }
+
+    @Override
+    public WorkflowResolver branchInstance(String instanceId){
+        WorkflowInstance instance = workflowInstanceService.getByInstanceId(instanceId);
+        if(instance == null)
+            return null;
+        WorkflowConfig config = workflowService.getByWorkflowId(instance.getWorkflowId());
+        WorkflowInstance newInstance = new WorkflowInstance(config.getId(), instanceId);
+        return new WorkflowResolver(config, newInstance);
     }
 }

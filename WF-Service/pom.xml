@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>WF-Service</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>Workflow-Engine Consumer Maven Webapp</name>
 
     <dependencies>
@@ -61,6 +61,6 @@
     </dependencies>
 
     <build>
-        <finalName>Workflow-Engine-Consumer</finalName>
+        <finalName>Workflow-Engine-Service</finalName>
     </build>
 </project>

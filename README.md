@@ -1,3 +1,5 @@
+### Simple workflow config
+```
 {
   "application": "application-test",
   "id": "wf-test",
@@ -69,7 +71,7 @@
           },
           "nopassTransfer":{
             "input":[],
-            "to": "{START}"
+            "to": "start"
           }
         }
       }
@@ -153,6 +155,9 @@
     }
   ],
 
-  "header": "request header,在一些http请求的任务中可能会附带的"
-
+  "header": "request header,在一些http请求的任务中可能会附带的",
+  "jars": ["Test-1.0.jar"]
 }
+```
+
+> 当一个新的分支建立时，除了建立的瞬间和当前分支的转移函数有联系，在之后的运行都是相对独立的

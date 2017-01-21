@@ -2,6 +2,7 @@ package org.radrso.workflow.resolvers;
 
 import com.google.gson.JsonObject;
 import lombok.Data;
+import lombok.extern.log4j.Log4j;
 import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.radrso.workflow.entities.config.items.InputItem;
 import org.radrso.workflow.entities.config.items.Judge;
@@ -24,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by raomengnan on 17-1-14.
  */
 @Data
+@Log4j
 public class WorkflowResolver implements Serializable{
     public static final String START = "{START}";
     public static final String FINISH = "{FINISH}";
@@ -34,9 +36,11 @@ public class WorkflowResolver implements Serializable{
     private WorkflowInstance workflowInstance;
 
     private Step lastStep;
-    private Step currentStep;
-    private ConcurrentHashMap<String, Step> stepMap;
+    private Transfer lastTransfer;
 
+    private Step currentStep;
+
+    private ConcurrentHashMap<String, Step> stepMap;
     private ConcurrentHashMap<String, WFResponse> responseMap;
     private List<Step> scatterSteps;
 
@@ -106,9 +110,15 @@ public class WorkflowResolver implements Serializable{
         lastStep = currentStep;
         currentStep = nextStep;
         workflowInstance.getStepProcess().put(currentStep.getSign(), Step.RUNNING);
+        int len = scatterSteps == null?0:scatterSteps.size();
+        workflowInstance.setBranchs(workflowInstance.getBranchs() + len);
         return this;
     }
 
+    /**
+     * 回滚到上一步
+     * @return
+     */
     public WorkflowResolver back(){
         currentStep = lastStep;
         return this;
@@ -141,8 +151,9 @@ public class WorkflowResolver implements Serializable{
             return null;
 
         if(transfer.getJudge() == null) {
-            scatterSteps = scatterTo(transfer);
+            scatterTo(transfer);
             getParams(transfer);
+            lastTransfer = transfer;
             return stepMap.get(transfer.getTo());
         }
 
@@ -156,12 +167,15 @@ public class WorkflowResolver implements Serializable{
      */
     public List<Step> scatterTo(Transfer transfer){
         List<String> stepNames = transfer.getScatters();
-        List<Step> scatterSteps = new ArrayList<>();
+        scatterSteps = scatterSteps == null ? new ArrayList<>():scatterSteps;
 
-        if(scatterSteps != null && scatterSteps.size() > 0)
-            for(int i = 0; i < scatterSteps.size(); i++ )
+        int len = workflowInstance.getBranchs();
+
+        if(stepNames != null && stepNames.size() > 0)
+            for(int i = 0; i < stepNames.size(); i++ ) {
                 scatterSteps.add(stepMap.get(stepNames.get(0)));
-
+                workflowInstance.getBranchStepMap().put(len + i + 1, currentStep.getSign());
+            }
         return scatterSteps;
     }
     /**
@@ -171,6 +185,7 @@ public class WorkflowResolver implements Serializable{
      * @throws ConfigReadException
      */
     public Transfer judgeNextTransfer(Judge judge) throws ConfigReadException, UnknowExceptionInRunning {
+        log.debug(judge);
         Object computer = judge.getCompute();
         Object computerWith = judge.getComputeWith();
         String type = judge.getType();
@@ -260,10 +275,12 @@ public class WorkflowResolver implements Serializable{
                 }
 
             }catch (IndexOutOfBoundsException e1){
+                log.error(e1);
                 errorMsg = "Read Config Error:" + e1;
             } catch (NullPointerException e2){
                 errorMsg = "No such value: " + paramStr + "/" + sp[i];
             } catch (Throwable e3){
+                log.debug(e3);
                 throw new UnknowExceptionInRunning("Exception in resolve param [%s]".format(paramStr) + "/case:" + e3 , e3);
             }
 

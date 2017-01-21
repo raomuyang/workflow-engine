@@ -58,6 +58,16 @@ public class InstanceController {
         return workflowInstanceService.getByInstanceId(instanceId);
     }
 
+    /**
+     * 与直接以instanceId查询不同的是，这个接口会返回这个工作流实例所有的分支执行信息
+     * @param instanceId
+     * @return
+     */
+    @RequestMapping("/all-details/{instanceId}")
+    public List<WorkflowInstance> getAllInstanceDetails(@PathVariable("instanceId") String instanceId){
+        return workflowInstanceService.getInstanceDetails(instanceId);
+    }
+
     @RequestMapping("/workflow/{workflowId}")
     public List<WorkflowInstance> getByWorkflowId(@PathVariable("workflowId") String workflowId){
         return workflowInstanceService.getByWorkflowId(workflowId);

@@ -14,7 +14,6 @@ import java.util.Date;
  */
 @Document(collection = "WorkflowErrorLog")
 @AllArgsConstructor
-@NoArgsConstructor
 @Data
 @ToString
 public class WorkflowErrorLog implements Serializable{
@@ -25,4 +24,7 @@ public class WorkflowErrorLog implements Serializable{
     private String msg;
     private Date date;
     private Throwable exception;
+    public WorkflowErrorLog(){
+        this.date = new Date();
+    }
 }
