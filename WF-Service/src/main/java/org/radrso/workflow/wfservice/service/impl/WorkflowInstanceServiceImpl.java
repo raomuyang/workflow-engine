@@ -2,7 +2,6 @@ package org.radrso.workflow.wfservice.service.impl;
 
 import org.bson.types.ObjectId;
 import org.radrso.workflow.entities.config.WorkflowConfig;
-import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
 import org.radrso.workflow.wfservice.repositories.WorkflowInstanceRepository;
 import org.radrso.workflow.wfservice.repositories.WorkflowRepository;
@@ -76,6 +75,39 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService{
         return workflowInstanceRepository.findByWorkflowId(workflowId);
     }
 
+    @Override
+    public int count(String workflowId){
+        List<WorkflowInstance> instances = getByWorkflowId(workflowId);
+
+        int len = 0;
+        if(instances == null)
+            return 0;
+        else{
+
+            for (WorkflowInstance i:
+                 instances) {
+                if(i.getInstanceId().indexOf("-") > 0)
+                    len++;
+            }
+        }
+        return instances.size() - len;
+
+    }
+
+    @Override
+    public int countFinished(String workflowId){
+        List<WorkflowInstance> instances = getByWorkflowId(workflowId);
+        if(instances == null)
+            return 0;
+        int i = 0;
+        for(int j = 0; j < instances.size(); ++j){
+            WorkflowInstance instance = instances.get(j);
+            if(instance.getStatus().equals(WorkflowInstance.COMPLETED) && instance.getInstanceId().indexOf("-")<0)
+                ++i;
+        }
+        return i;
+    }
+
 
     @Override
     public Map<String, String> currentProcess(String instanceId) {
@@ -86,8 +118,21 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService{
     }
 
     @Override
-    public List<Step> finishedStep(String instanceId) {
-        return null;
+    public Map<String, List<String>> finishedStep(String instanceId) {
+        WorkflowInstance instance = getByInstanceId(instanceId);
+        if(instance == null)
+            return null;
+        List<String> finisheds = instance.getFinishedSequence();
+        Map<String, List<String>> map = new HashMap<>();
+        map.put(instanceId, finisheds);
+
+        List<WorkflowInstance> ch_instances = getInstanceDetails(instanceId);
+        if (ch_instances != null){
+            for (int i = 0; i < ch_instances.size(); i++)
+                map.put(ch_instances.get(i).getInstanceId(), ch_instances.get(i).getFinishedSequence());
+
+        }
+        return map;
     }
 
     @Override

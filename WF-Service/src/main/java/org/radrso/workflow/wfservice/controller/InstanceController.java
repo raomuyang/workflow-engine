@@ -58,6 +58,15 @@ public class InstanceController {
         return workflowInstanceService.getByInstanceId(instanceId);
     }
 
+    @RequestMapping("/count/workflow/{workflowid}")
+    public int count(@PathVariable("workflowid") String workflowid){
+        return workflowInstanceService.count(workflowid);
+    }
+
+    @RequestMapping("/count/workflow/{workflowid}/finished")
+    public int countFinished(@PathVariable("workflowid") String workflowid){
+        return workflowInstanceService.countFinished(workflowid);
+    }
     /**
      * 与直接以instanceId查询不同的是，这个接口会返回这个工作流实例所有的分支执行信息
      * @param instanceId
