@@ -13,4 +13,5 @@ public interface WorkflowLogService {
     List<WorkflowErrorLog> getByInstanceId(String instanceId);
     boolean deleteByWorkflowId(String workflowId);
     boolean deleteByInstanceId(String instanceId);
+    int count(String workflowId);
 }

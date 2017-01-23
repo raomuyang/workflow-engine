@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +31,16 @@ public class WorkflowConfroller {
     @Autowired
     private WorkflowExecuteStatusService statusService;
 
+    @RequestMapping("/")
+    public List<String> getAllWFId(){
+        List<WorkflowConfig> wfs = workflowService.getAll();
+        List<String> wfIds = new ArrayList<>();
+        if(wfs != null)
+            wfs.forEach(wf->{
+                wfIds.add(wf.getId());
+            });
+        return wfIds;
+    }
     @RequestMapping(method = RequestMethod.PUT, value = "/create")
     public ResponseEntity<ModelMap> create(WorkflowConfig workflow){
         boolean res = workflowService.save(workflow);
@@ -65,7 +76,6 @@ public class WorkflowConfroller {
 
     @RequestMapping("/{id}")
     public WorkflowConfig getWorkflowById(@PathVariable("id") String id){
-        System.out.println("[Debug]"+id);
         return workflowService.getByWorkflowId(id);
     }
 

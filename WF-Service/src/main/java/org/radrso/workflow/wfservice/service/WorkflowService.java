@@ -11,6 +11,9 @@ import java.util.List;
 public interface WorkflowService {
 
     boolean save(WorkflowConfig workflowConfig);
+
+    List<WorkflowConfig> getAll();
+
     WorkflowConfig getByWorkflowId(String workflowId);
     List<WorkflowConfig> getByApplication(String application);
     boolean delete(String workflowId);

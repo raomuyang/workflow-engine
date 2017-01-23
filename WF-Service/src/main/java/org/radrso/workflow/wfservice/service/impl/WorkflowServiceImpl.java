@@ -38,6 +38,10 @@ public class WorkflowServiceImpl implements WorkflowService {
     }
 
     @Override
+    public List<WorkflowConfig> getAll(){
+        return workflowRepository.findAll();
+    }
+    @Override
     public WorkflowConfig getByWorkflowId(String workflowId) {
         if(workflowId == null)
             return null;

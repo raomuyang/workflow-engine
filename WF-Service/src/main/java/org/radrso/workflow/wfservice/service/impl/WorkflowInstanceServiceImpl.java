@@ -72,7 +72,14 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService{
     public List<WorkflowInstance> getByWorkflowId(String workflowId) {
         if(workflowId == null)
             return new ArrayList<>();
-        return workflowInstanceRepository.findByWorkflowId(workflowId);
+        List<WorkflowInstance> instances = workflowInstanceRepository.findByWorkflowId(workflowId);
+        List<WorkflowInstance> pureInstances = new ArrayList<>();
+        if(instances != null)
+            for (WorkflowInstance i: instances) {
+                if(!i.getInstanceId().contains("-"))
+                    pureInstances.add(i);
+            }
+        return pureInstances;
     }
 
     @Override
@@ -86,7 +93,7 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService{
 
             for (WorkflowInstance i:
                  instances) {
-                if(i.getInstanceId().indexOf("-") > 0)
+                if(i.getInstanceId().contains("-"))
                     len++;
             }
         }
@@ -102,7 +109,7 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService{
         int i = 0;
         for(int j = 0; j < instances.size(); ++j){
             WorkflowInstance instance = instances.get(j);
-            if(instance.getStatus().equals(WorkflowInstance.COMPLETED) && instance.getInstanceId().indexOf("-")<0)
+            if(instance.getStatus().equals(WorkflowInstance.COMPLETED) && !instance.getInstanceId().contains("-"))
                 ++i;
         }
         return i;

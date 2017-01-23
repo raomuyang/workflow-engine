@@ -52,4 +52,10 @@ public class WorkflowLogServiceImpl implements WorkflowLogService {
         workflowErrorLogRepository.deleteByInstanceId(instanceId);
         return true;
     }
+
+    @Override
+    public int count(String workflowId) {
+        List<WorkflowErrorLog> logs = getByWorkflowId(workflowId);
+        return logs == null?0:logs.size();
+    }
 }

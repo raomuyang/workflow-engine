@@ -34,6 +34,11 @@ public class ErrorLogController {
         return workflowLogService.getByInstanceId(instanceId);
     }
 
+    @RequestMapping("/count/workflow/{workflowid}")
+   public int count(@PathVariable("workflowid") String workflowid){
+        return workflowLogService.count(workflowid);
+    }
+
     @RequestMapping(value = "/delete/workflow/{workflowId}", method = RequestMethod.DELETE)
     public ResponseEntity<ModelMap> deleteByWorkflowId(@PathVariable("workflowId") String workflowId){
         boolean res = workflowLogService.deleteByWorkflowId(workflowId);
