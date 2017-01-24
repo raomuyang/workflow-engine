@@ -77,7 +77,7 @@ public class WorkflowCommandServiceImpl implements WorkflowCommandService{
                 log.info(String.format("NEEDN'T UPLOAD FILE[%s]", app + "/" + j));
 
             if(response.getCode() / 100 != 2)
-                throw new WFRuntimeException(response.getMsg());
+                throw new WFRuntimeException("Jar file upload failed:" + response.getMsg());
         });
     }
 
