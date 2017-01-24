@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public interface WorkflowCommandService {
 
+    boolean haveJarsDefine(String workflowId);
+
     void importJars(String workflowId);
 
     boolean logError(WorkflowErrorLog log);

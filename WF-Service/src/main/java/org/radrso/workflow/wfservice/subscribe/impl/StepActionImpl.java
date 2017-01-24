@@ -154,8 +154,14 @@ public class StepActionImpl implements StepAction{
                     else {
                         //发生错误，回滚一步
                         workflowResolver.back();
-                        if(code == ResponseCode.CLASS_NOT_FOUND.code())
-                            workflowCommandService.importJars(workflowResolver.getWorkflowInstance().getWorkflowId());
+                        loopDo = true;
+                        if(code == ResponseCode.CLASS_NOT_FOUND.code()) {
+                            String wfId = workflowResolver.getWorkflowInstance().getWorkflowId();
+                            if(!workflowCommandService.haveJarsDefine(wfId))
+                                throw new WFRuntimeException("No jars to load class:" + response.getMsg());
+
+                            workflowCommandService.importJars(wfId);
+                        }
                         else if (ResponseCode.CLASS_NOT_FOUND.code() < code && code < ResponseCode.JAR_FILE_NOT_FOUND.code())
                             throw new WFRuntimeException(response.getMsg());
                     }
