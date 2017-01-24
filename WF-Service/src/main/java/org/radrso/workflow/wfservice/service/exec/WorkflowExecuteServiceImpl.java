@@ -28,6 +28,13 @@ public class WorkflowExecuteServiceImpl implements WorkflowExecuteService {
 
     @Override
     public WFResponse startExecute(WorkflowResolver workflowResolver) {
+        //保证调用的幂等性
+        WorkflowInstance instance = workflowResolver.getWorkflowInstance();
+        if(instance != null)
+            if(instance.getStatus().equals(WorkflowInstance.COMPLETED))
+                return new WFResponse(ResponseCode.HTTP_OK.code(), "workflow instance complated", null);
+
+
         StepAction stepAction = new StepActionImpl(commandService);
 
         WorkflowObservable.subscribe(stepAction, workflowResolver);
