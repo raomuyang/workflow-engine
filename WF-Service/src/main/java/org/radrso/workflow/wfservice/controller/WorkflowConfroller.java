@@ -10,10 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -49,7 +46,7 @@ public class WorkflowConfroller {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/create")
-    public ResponseEntity<ModelMap> create(WorkflowConfig workflow){
+    public ResponseEntity<ModelMap> create(@RequestBody WorkflowConfig workflow){
         boolean res = workflowService.save(workflow);
         ModelMap map = new ModelMap();
         map.put("status", res);
@@ -63,7 +60,7 @@ public class WorkflowConfroller {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/update")
-    public ResponseEntity<ModelMap> update(WorkflowConfig workflow){
+    public ResponseEntity<ModelMap> update(@RequestBody WorkflowConfig workflow){
 
         boolean res = false;
         if(workflow.getId() != null
