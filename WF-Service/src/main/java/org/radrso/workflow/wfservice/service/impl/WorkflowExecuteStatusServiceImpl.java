@@ -30,7 +30,7 @@ public class WorkflowExecuteStatusServiceImpl implements WorkflowExecuteStatusSe
     }
     @Override
     public boolean save(WorkflowExecuteStatus status) {
-        if(status == null)
+        if(status == null || status.getWorkflowId() == null)
             return false;
         workflowStatusRepository.save(status);
         return true;

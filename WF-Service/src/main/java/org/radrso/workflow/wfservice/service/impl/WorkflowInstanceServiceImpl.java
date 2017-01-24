@@ -43,7 +43,7 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService{
 
     @Override
     public boolean save(WorkflowInstance workflowInstance) {
-        if(workflowInstance == null)
+        if(workflowInstance == null || workflowInstance.getInstanceId() == null)
             return false;
         workflowInstanceRepository.save(workflowInstance);
         return true;
