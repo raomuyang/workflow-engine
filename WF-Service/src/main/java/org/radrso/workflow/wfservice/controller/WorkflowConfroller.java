@@ -6,6 +6,7 @@ import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
 import org.radrso.workflow.wfservice.service.WorkflowExecuteStatusService;
 import org.radrso.workflow.wfservice.service.WorkflowService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
@@ -41,6 +42,12 @@ public class WorkflowConfroller {
             });
         return wfIds;
     }
+
+    @RequestMapping("/infos/pno/{pno}/psize/{psize}")
+    public Page<WorkflowConfig> getAllInfos(@PathVariable("pno") int pno, @PathVariable("psize")int psize){
+        return workflowService.getAll(pno, psize);
+    }
+
     @RequestMapping(method = RequestMethod.PUT, value = "/create")
     public ResponseEntity<ModelMap> create(WorkflowConfig workflow){
         boolean res = workflowService.save(workflow);
@@ -96,7 +103,7 @@ public class WorkflowConfroller {
         return new ResponseEntity<ModelMap>(map, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/deletel/app/{application}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete/app/{application}", method = RequestMethod.DELETE)
     public ResponseEntity<ModelMap> deleteByApplication(@PathVariable("application") String application){
         boolean res = workflowService.deleteByApplication(application);
         ModelMap map = new ModelMap();
@@ -112,6 +119,11 @@ public class WorkflowConfroller {
     public WorkflowExecuteStatus getWorkflowStatus(@PathVariable("workflowid") String workflowid){
         workflowService.updateServiceStatus(workflowService.getByWorkflowId(workflowid));
         return statusService.get(workflowid);
+    }
+
+    @RequestMapping("/status/pno/{pno}/psize/{psize}")
+    public Page<WorkflowExecuteStatus> getAllStatus(@PathVariable("pno") int pno, @PathVariable("psize")int psize){
+        return statusService.getAll(pno, psize);
     }
 
     @RequestMapping(value = "/upload/jar", method = RequestMethod.POST)

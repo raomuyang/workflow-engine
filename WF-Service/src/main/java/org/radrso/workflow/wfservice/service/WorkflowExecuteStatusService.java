@@ -1,6 +1,7 @@
 package org.radrso.workflow.wfservice.service;
 
 import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
+import org.springframework.data.domain.Page;
 
 /**
  * Created by raomengnan on 17-1-16.
@@ -8,6 +9,8 @@ import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
 public interface WorkflowExecuteStatusService {
 
     WorkflowExecuteStatus get(String workflowId);
+
+    Page<WorkflowExecuteStatus> getAll(int pno, int psize);
 
     public boolean save(WorkflowExecuteStatus status);
 

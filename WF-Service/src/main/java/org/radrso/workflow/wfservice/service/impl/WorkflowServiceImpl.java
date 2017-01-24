@@ -9,6 +9,8 @@ import org.radrso.workflow.wfservice.repositories.WorkflowRepository;
 import org.radrso.workflow.wfservice.repositories.WorkflowStatusRepository;
 import org.radrso.workflow.wfservice.service.WorkflowService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,7 +33,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 
     @Override
     public boolean save(WorkflowConfig workflowConfig) {
-        if(workflowConfig == null)
+        if(workflowConfig == null || workflowConfig.getApplication() == null || workflowConfig.getId() == null)
             return false;
         workflowRepository.save(workflowConfig);
         return true;
@@ -41,6 +43,12 @@ public class WorkflowServiceImpl implements WorkflowService {
     public List<WorkflowConfig> getAll(){
         return workflowRepository.findAll();
     }
+
+    @Override
+    public Page<WorkflowConfig> getAll(int pno, int psize){
+        return workflowRepository.findAll(new PageRequest(pno, psize));
+    }
+
     @Override
     public WorkflowConfig getByWorkflowId(String workflowId) {
         if(workflowId == null)
