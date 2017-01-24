@@ -2,7 +2,6 @@ package org.radrso.workflow.wfservice.service.impl;
 
 import org.bson.types.ObjectId;
 import org.radrso.workflow.entities.config.WorkflowConfig;
-import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
 import org.radrso.workflow.wfservice.repositories.WorkflowInstanceRepository;
 import org.radrso.workflow.wfservice.repositories.WorkflowRepository;
@@ -44,7 +43,7 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService{
 
     @Override
     public boolean save(WorkflowInstance workflowInstance) {
-        if(workflowInstance == null)
+        if(workflowInstance == null || workflowInstance.getInstanceId() == null)
             return false;
         workflowInstanceRepository.save(workflowInstance);
         return true;
@@ -73,7 +72,47 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService{
     public List<WorkflowInstance> getByWorkflowId(String workflowId) {
         if(workflowId == null)
             return new ArrayList<>();
-        return workflowInstanceRepository.findByWorkflowId(workflowId);
+        List<WorkflowInstance> instances = workflowInstanceRepository.findByWorkflowId(workflowId);
+        List<WorkflowInstance> pureInstances = new ArrayList<>();
+        if(instances != null)
+            for (WorkflowInstance i: instances) {
+                if(!i.getInstanceId().contains("-"))
+                    pureInstances.add(i);
+            }
+        return pureInstances;
+    }
+
+    @Override
+    public int count(String workflowId){
+        List<WorkflowInstance> instances = getByWorkflowId(workflowId);
+
+        int len = 0;
+        if(instances == null)
+            return 0;
+        else{
+
+            for (WorkflowInstance i:
+                 instances) {
+                if(i.getInstanceId().contains("-"))
+                    len++;
+            }
+        }
+        return instances.size() - len;
+
+    }
+
+    @Override
+    public int countFinished(String workflowId){
+        List<WorkflowInstance> instances = getByWorkflowId(workflowId);
+        if(instances == null)
+            return 0;
+        int i = 0;
+        for(int j = 0; j < instances.size(); ++j){
+            WorkflowInstance instance = instances.get(j);
+            if(instance.getStatus().equals(WorkflowInstance.COMPLETED) && !instance.getInstanceId().contains("-"))
+                ++i;
+        }
+        return i;
     }
 
 
@@ -86,8 +125,21 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService{
     }
 
     @Override
-    public List<Step> finishedStep(String instanceId) {
-        return null;
+    public Map<String, List<String>> finishedStep(String instanceId) {
+        WorkflowInstance instance = getByInstanceId(instanceId);
+        if(instance == null)
+            return null;
+        List<String> finisheds = instance.getFinishedSequence();
+        Map<String, List<String>> map = new HashMap<>();
+        map.put(instanceId, finisheds);
+
+        List<WorkflowInstance> ch_instances = getInstanceDetails(instanceId);
+        if (ch_instances != null){
+            for (int i = 0; i < ch_instances.size(); i++)
+                map.put(ch_instances.get(i).getInstanceId(), ch_instances.get(i).getFinishedSequence());
+
+        }
+        return map;
     }
 
     @Override

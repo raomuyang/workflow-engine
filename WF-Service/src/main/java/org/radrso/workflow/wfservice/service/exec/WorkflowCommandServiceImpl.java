@@ -43,6 +43,18 @@ public class WorkflowCommandServiceImpl implements WorkflowCommandService{
     @Autowired
     protected WorkflowLogService workflowLogService;
 
+
+    @Override
+    public boolean haveJarsDefine(String workflowId){
+        WorkflowConfig workflowConfig = workflowService.getByWorkflowId(workflowId);
+        if(workflowConfig == null)
+            return false;
+        List<String> jars = workflowConfig.getJars();
+        if(jars == null || jars.size() == 0)
+            return false;
+        return true;
+    }
+
     @Override
     public void importJars(String workflowId) {
         WorkflowConfig workflowConfig = workflowService.getByWorkflowId(workflowId);

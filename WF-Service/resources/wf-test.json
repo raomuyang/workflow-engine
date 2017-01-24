@@ -69,7 +69,7 @@
           },
           "nopassTransfer":{
             "input":[],
-            "to": "{START}"
+            "to": "start"
           }
         }
       }
@@ -98,7 +98,8 @@
               {"name": "test3",  "type": "string", "value": "test"}
             ],
 
-            "to": "sign-4"
+            "to": "sign-4",
+            "scatters":["sign-4"]
           },
 
           "nopassTransfer":{
@@ -153,6 +154,6 @@
     }
   ],
 
-  "header": "request header,在一些http请求的任务中可能会附带的"
-
+  "header": "request header,在一些http请求的任务中可能会附带的",
+  "jars": ["Test-1.0.jar"]
 }

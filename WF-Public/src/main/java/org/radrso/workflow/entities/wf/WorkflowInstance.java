@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @ToString
 @Document(collection = "workflowInstance")
 public class WorkflowInstance implements Serializable{
+    public static final String CREATED = "created";
     public static final String EXPIRED = "expired";
     public static final String RUNNING = "running";
     public static final String COMPLETED = "completed";
@@ -27,7 +28,7 @@ public class WorkflowInstance implements Serializable{
     private String instanceId;
     private Date createTime = new Date();
     private Date submitTime;
-    private String status = RUNNING;
+    private String status = CREATED;
 
     private int branchs = 0;
     private Map<Integer, String> branchStepMap;

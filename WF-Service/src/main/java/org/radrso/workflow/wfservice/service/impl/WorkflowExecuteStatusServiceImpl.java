@@ -5,6 +5,8 @@ import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
 import org.radrso.workflow.wfservice.repositories.WorkflowStatusRepository;
 import org.radrso.workflow.wfservice.service.WorkflowExecuteStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,8 +24,13 @@ public class WorkflowExecuteStatusServiceImpl implements WorkflowExecuteStatusSe
     }
 
     @Override
+    public Page<WorkflowExecuteStatus> getAll(int pno, int psize){
+        PageRequest pageRequest = new PageRequest(pno, psize);
+        return workflowStatusRepository.findAll(pageRequest);
+    }
+    @Override
     public boolean save(WorkflowExecuteStatus status) {
-        if(status == null)
+        if(status == null || status.getWorkflowId() == null)
             return false;
         workflowStatusRepository.save(status);
         return true;
