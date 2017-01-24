@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j;
 import org.radrso.workflow.entities.wf.WorkflowErrorLog;
 import org.radrso.workflow.wfservice.service.WorkflowLogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
@@ -29,9 +30,23 @@ public class ErrorLogController {
         return workflowLogService.getByWorkflowId(workflowId);
     }
 
+    @RequestMapping("/workflow/{workflowId}/pno/{pno}/psize/{psize}")
+    public Page<WorkflowErrorLog> getByWorkflowId(@PathVariable("workflowId") String workflowId,
+                                                  @PathVariable("pno") int pno,
+                                                  @PathVariable("psize")int psize){
+        return workflowLogService.getByWorkflowId(workflowId, pno, psize);
+    }
+
     @RequestMapping("/instance/{instanceId}")
     public List<WorkflowErrorLog> getByInstanceId(@PathVariable("instanceId") String instanceId){
         return workflowLogService.getByInstanceId(instanceId);
+    }
+
+    @RequestMapping("/instance/{instanceId}/pno/{pno}/psize/{psize}")
+    public Page<WorkflowErrorLog> getByInstanceId(@PathVariable("instanceId") String instanceId,
+                                                  @PathVariable("pno") int pno,
+                                                  @PathVariable("psize")int psize){
+        return workflowLogService.getByInstanceId(instanceId, pno, psize);
     }
 
     @RequestMapping("/count/workflow/{workflowid}")
