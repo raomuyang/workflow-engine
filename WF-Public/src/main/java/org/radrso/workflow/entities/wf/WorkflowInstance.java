@@ -2,13 +2,11 @@ package org.radrso.workflow.entities.wf;
 
 import lombok.Data;
 import lombok.ToString;
-import org.radrso.workflow.entities.response.WFResponse;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by raomengnan on 17-1-13.
@@ -33,11 +31,8 @@ public class WorkflowInstance implements Serializable{
     private int branchs = 0;
     private Map<Integer, String> branchStepMap;
 
-    private ConcurrentHashMap<String, String> stepProcess;
-    private ConcurrentHashMap<String, Object[]> stepParams;
-    private ConcurrentHashMap<String, String[]> stepParamNames;
-    private ConcurrentHashMap<String, WFResponse> stepResponses;
-
+    private Map<String, StepStatus> stepStatusesMap;
+    private Map<String, String> stepProcess;
     private List<String> finishedSequence;
 
     public WorkflowInstance(String workflowId, String instanceId){
@@ -46,11 +41,8 @@ public class WorkflowInstance implements Serializable{
         this.instanceId = instanceId;
     }
     private WorkflowInstance(){
-        this.stepProcess = new ConcurrentHashMap<>();
-        this.stepParams = new ConcurrentHashMap<>();
-        this.stepResponses = new ConcurrentHashMap<>();
-        this.stepParamNames = new ConcurrentHashMap<>();
-
+        this.stepStatusesMap = new HashMap<>();
+        this.stepProcess = new HashMap<>();
         this.branchStepMap = new HashMap<>();
         this.finishedSequence = new ArrayList<>();
     }

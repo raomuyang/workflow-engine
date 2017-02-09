@@ -9,6 +9,7 @@ import org.radrso.workflow.entities.exceptions.ConfigReadException;
 import org.radrso.workflow.entities.exceptions.UnknowExceptionInRunning;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;
 import org.radrso.workflow.entities.response.WFResponse;
+import org.radrso.workflow.entities.wf.StepStatus;
 import org.radrso.workflow.entities.wf.WorkflowErrorLog;
 import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
@@ -40,7 +41,10 @@ public class StepActionImpl implements StepAction{
     public void stepCompleted(WorkflowResolver workflowResolver) {
         log.info("[STEP-COMPLETED] " + workflowResolver.getWorkflowInstance().getInstanceId() + " " + workflowResolver.getCurrentStep().getName());
 
-        workflowResolver.getWorkflowInstance().getStepProcess().put(workflowResolver.getCurrentStep().getSign(), Step.FINISHED);
+        String stepSign = workflowResolver.getCurrentStep().getSign();
+        workflowResolver.getWorkflowInstance().getStepProcess().put(stepSign , Step.FINISHED);
+
+        workflowResolver.getStepStatusMap().get(stepSign).setStatus(Step.FINISHED);
         workflowResolver.getWorkflowInstance().getFinishedSequence().add(
                 workflowResolver.getCurrentStep().getSign()
         );
@@ -61,15 +65,29 @@ public class StepActionImpl implements StepAction{
         else
             instance.setStatus(WorkflowInstance.EXCEPTION);
 
+        Step currentStep = workflowResolver.getCurrentStep();
+        if(currentStep != null) {
+            String stepSign = workflowResolver.getCurrentStep().getSign();
+            StepStatus stepStatus = workflowResolver.getStepStatusMap().get(stepSign);
+
+            workflowResolver.getWorkflowInstance().getStepProcess().put(stepSign, Step.STOPED);
+            if(stepStatus != null)
+                stepStatus.setStatus(Step.STOPED);
+            else
+                log.error("StepStatus is null:" + stepSign);
+        }
         workflowCommandService.updateInstance(instance);
 
         ObjectId objectId = new ObjectId();
+        String msg = throwable.getMessage();
+        if(msg == null || msg.equals(""))
+            msg = throwable.toString();
         WorkflowErrorLog log = new WorkflowErrorLog(
                 objectId.toHexString(),
                 instance.getWorkflowId(),
                 instance.getInstanceId(),
                 workflowResolver.getCurrentStep().getSign(),
-                throwable.toString(),
+                msg,
                 objectId.getDate(),
                 throwable);
         workflowCommandService.logError(log);
@@ -78,7 +96,9 @@ public class StepActionImpl implements StepAction{
     @Override
     public void stepNext(WorkflowResolver workflowResolver) {
         boolean loopDo = true;
-        boolean isScatter = false;
+        boolean isScatter = false;//判断是否已经执行分支（防止回滚后再次执行分支）
+        boolean isReloadJarFile = false;//判断是否已经重新加载jar文件
+
         while (loopDo) {
             loopDo = false;
 
@@ -152,18 +172,20 @@ public class StepActionImpl implements StepAction{
                         workflowResolver.putResponse(step.getSign(), response);
 
                     else {
-                        //发生错误，回滚一步
-                        workflowResolver.back();
                         loopDo = true;
-                        if(code == ResponseCode.CLASS_NOT_FOUND.code()) {
+                        if(code == ResponseCode.CLASS_NOT_FOUND.code() && !isReloadJarFile) {
+                            isReloadJarFile = true;
                             String wfId = workflowResolver.getWorkflowInstance().getWorkflowId();
                             if(!workflowCommandService.haveJarsDefine(wfId))
                                 throw new WFRuntimeException("No jars to load class:" + response.getMsg());
 
                             workflowCommandService.importJars(wfId);
                         }
-                        else if (ResponseCode.CLASS_NOT_FOUND.code() < code && code < ResponseCode.JAR_FILE_NOT_FOUND.code())
-                            throw new WFRuntimeException(response.getMsg());
+                        else if (ResponseCode.CLASS_NOT_FOUND.code() <= code && code <= ResponseCode.JAR_FILE_NOT_FOUND.code())
+                            throw new WFRuntimeException("[" + code + "]" + response.getMsg());
+
+                        //发生错误时，完成错误鉴别后回滚一步
+                        workflowResolver.back();
                     }
                 }
             } catch (ConfigReadException e) {
@@ -178,7 +200,12 @@ public class StepActionImpl implements StepAction{
             } catch (UnknowExceptionInRunning unknowExceptionInRunning) {
                 log.error(unknowExceptionInRunning);
                 unknowExceptionInRunning.printStackTrace();
-                throw new WFRuntimeException(unknowExceptionInRunning.toString());
+                throw new WFRuntimeException(unknowExceptionInRunning.getMessage(), unknowExceptionInRunning);
+            }finally {
+                if(!loopDo) {
+                    String stepSign = workflowResolver.getCurrentStep().getSign();
+                    workflowResolver.getStepStatusMap().get(stepSign).setEnd(new Date());
+                }
             }
         }
     }

@@ -11,13 +11,13 @@ import org.radrso.workflow.entities.config.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
 import org.radrso.workflow.entities.exceptions.UnknowExceptionInRunning;
 import org.radrso.workflow.entities.response.WFResponse;
+import org.radrso.workflow.entities.wf.StepStatus;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
 import org.radrso.plugins.CustomClassLoader;
 import org.radrso.plugins.JsonUtils;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -40,23 +40,28 @@ public class WorkflowResolver implements Serializable{
 
     private Step currentStep;
 
-    private ConcurrentHashMap<String, Step> stepMap;
-    private ConcurrentHashMap<String, WFResponse> responseMap;
+    private Map<String, Step> stepMap;
+    private Map<String, StepStatus> stepStatusMap;
+
     private List<Step> scatterSteps;
 
     private WorkflowResolver(){
-        this.stepMap = new ConcurrentHashMap<>();
+        this.stepMap = new HashMap<>();
     }
 
     public WorkflowResolver(WorkflowConfig workflowConfig, WorkflowInstance workflowInstance){
         this();
         this.header = workflowConfig.getHeader();
         this.workflowInstance = workflowInstance;
-
-        this.responseMap = workflowInstance.getStepResponses();
+        this.stepStatusMap = workflowInstance.getStepStatusesMap();
 
         if(workflowConfig.getSteps() != null)
             workflowConfig.getSteps().forEach(step -> {
+
+                StepStatus stepStatus = new StepStatus(step.getSign());
+                stepStatus.setStatus(Step.WAIT);
+                stepStatusMap.put(step.getSign(), stepStatus);
+
                 stepMap.put(step.getSign(), step);
                 workflowInstance.getStepProcess().put(step.getSign(), Step.WAIT);
             });
@@ -70,6 +75,7 @@ public class WorkflowResolver implements Serializable{
             if(currentStep != null)
                 workflowInstance.getStepProcess().put(START, Step.RUNNING);
         }
+
         return currentStep;
     }
 
@@ -86,12 +92,13 @@ public class WorkflowResolver implements Serializable{
      * @return
      */
     public Object[] getCurrentStepParams(){
-        return workflowInstance.getStepParams().get(getCurrentStep().getSign());
+        return stepStatusMap.get(getCurrentStep().getSign()).getParams();
     }
 
     public String[] getCurrentStepParamNames(){
-        return workflowInstance.getStepParamNames().get(getCurrentStep().getSign());
+        return stepStatusMap.get(getCurrentStep().getSign()).getParamNames();
     }
+
 
     /**
      * 工作流程向下个状态转移一次:
@@ -106,10 +113,15 @@ public class WorkflowResolver implements Serializable{
 
         Step nextStep = transferToNextStep(currentTransfer);
 
+        //修改instance中每个step对应的状态
         workflowInstance.getStepProcess().put(currentStep.getSign(), Step.FINISHED);
+        stepStatusMap.get(currentStep.getSign()).setStatus(Step.FINISHED);
+
         lastStep = currentStep;
         currentStep = nextStep;
         workflowInstance.getStepProcess().put(currentStep.getSign(), Step.RUNNING);
+        stepStatusMap.get(currentStep.getSign()).setStatus(Step.RUNNING);
+
         int len = scatterSteps == null?0:scatterSteps.size();
         workflowInstance.setBranchs(workflowInstance.getBranchs() + len);
         return this;
@@ -239,8 +251,8 @@ public class WorkflowResolver implements Serializable{
             paramsNames[i] = inputItem.getName();
         }
 
-        workflowInstance.getStepParams().put(transfer.getTo(), params);
-        workflowInstance.getStepParamNames().put(transfer.getTo(), paramsNames);
+        stepStatusMap.get(transfer.getTo()).setParams(params);
+        stepStatusMap.get(transfer.getTo()).setParamNames(paramsNames);
         return params;
     }
 
@@ -264,7 +276,7 @@ public class WorkflowResolver implements Serializable{
             try {
                 paramStr = paramStr.replaceAll("\\[", ".").replaceAll("]", "");
                 sp = paramStr.split("\\.");
-                Object output = responseMap.get(sp[1]).getResponse();
+                Object output = stepStatusMap.get(sp[1]).getWfResponse().getResponse();
                 ret = output;
                 for (; i < sp.length; ++i) {
                     Class c = ret.getClass();
@@ -322,6 +334,6 @@ public class WorkflowResolver implements Serializable{
     }
 
     public void putResponse(String sign, WFResponse response){
-        responseMap.put(sign, response);
+        stepStatusMap.get(sign).setWfResponse(response);
     }
 }
