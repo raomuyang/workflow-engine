@@ -9,6 +9,7 @@ import org.radrso.workflow.entities.exceptions.ConfigReadException;
 import org.radrso.workflow.entities.exceptions.UnknowExceptionInRunning;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;
 import org.radrso.workflow.entities.response.WFResponse;
+import org.radrso.workflow.entities.wf.StepStatus;
 import org.radrso.workflow.entities.wf.WorkflowErrorLog;
 import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
@@ -40,7 +41,10 @@ public class StepActionImpl implements StepAction{
     public void stepCompleted(WorkflowResolver workflowResolver) {
         log.info("[STEP-COMPLETED] " + workflowResolver.getWorkflowInstance().getInstanceId() + " " + workflowResolver.getCurrentStep().getName());
 
-        workflowResolver.getWorkflowInstance().getStepProcess().put(workflowResolver.getCurrentStep().getSign(), Step.FINISHED);
+        String stepSign = workflowResolver.getCurrentStep().getSign();
+        workflowResolver.getWorkflowInstance().getStepProcess().put(stepSign , Step.FINISHED);
+
+        workflowResolver.getStepStatusMap().get(stepSign).setStatus(Step.FINISHED);
         workflowResolver.getWorkflowInstance().getFinishedSequence().add(
                 workflowResolver.getCurrentStep().getSign()
         );
@@ -61,6 +65,17 @@ public class StepActionImpl implements StepAction{
         else
             instance.setStatus(WorkflowInstance.EXCEPTION);
 
+        Step currentStep = workflowResolver.getCurrentStep();
+        if(currentStep != null) {
+            String stepSign = workflowResolver.getCurrentStep().getSign();
+            StepStatus stepStatus = workflowResolver.getStepStatusMap().get(stepSign);
+
+            workflowResolver.getWorkflowInstance().getStepProcess().put(stepSign, Step.STOPED);
+            if(stepStatus != null)
+                stepStatus.setStatus(Step.STOPED);
+            else
+                log.error("StepStatus is null:" + stepSign);
+        }
         workflowCommandService.updateInstance(instance);
 
         ObjectId objectId = new ObjectId();
@@ -179,6 +194,9 @@ public class StepActionImpl implements StepAction{
                 log.error(unknowExceptionInRunning);
                 unknowExceptionInRunning.printStackTrace();
                 throw new WFRuntimeException(unknowExceptionInRunning.toString());
+            }finally {
+                String stepSign = workflowResolver.getCurrentStep().getSign();
+                workflowResolver.getStepStatusMap().get(stepSign).setEnd(new Date());
             }
         }
     }

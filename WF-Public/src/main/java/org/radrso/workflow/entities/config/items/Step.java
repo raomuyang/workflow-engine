@@ -22,6 +22,8 @@ public class Step implements Serializable{
     public static final String WAIT = "wait";
     public static final String RUNNING = "running";
     public static final String FINISHED = "finished";
+    public static final String STOPED = "stoped";
+
     private String sign;
     private String name;
     private String call;
