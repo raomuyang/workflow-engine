@@ -1,0 +1,246 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="app">
+<head>
+  <meta charset="utf-8" />
+  <title>WorkflowEngine | Console</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1"/>
+  <link rel="stylesheet" href="css/app.v2.css" type="text/css" />
+  <link rel="stylesheet" href="js/calendar/bootstrap_calendar.css"
+        type="text/css"cache="false" />
+  <!--[if lt IE 9]>
+  <script src="js/ie/html5shiv.js" cache="false"></script>
+  <script src="js/ie/respond.min.js" cache="false"></script>
+  <script src="js/ie/excanvas.js" cache="false"></script>
+  <![endif]-->
+</head>
+
+<body>
+<section class="vbox">
+  <header class="bg-dark dk header navbar navbar-fixed-top-xs">
+    <div class="navbar-header aside-md">
+      <a class="btn btn-link visible-xs" data-toggle="class:nav-off-screen"
+         data-target="#nav">
+        <i class="fa fa-bars"></i>
+      </a>
+      <a href="#" class="navbar-brand" data-toggle="fullscreen">
+        <img src="images/logo.png" class="m-r-sm">WorkflowEngine</a>
+      <a class="btn btn-link visible-xs" data-toggle="dropdown"
+         data-target=".nav-user">
+        <i class="fa fa-cog"></i>
+      </a>
+    </div>
+  </header>
+
+  <section>
+
+    <section class="hbox stretch">
+
+      <!-- .aside -->
+      <aside class="bg-dark lter aside-md hidden-print" id="nav">
+        <section class="vbox">
+          <header class="header bg-primary lter text-center clearfix">
+            <div class="btn-group">
+              <button type="button" class="btn btn-sm btn-dark btn-icon"
+                      title="New workflow">
+                <i class="fa fa-plus"></i>
+              </button>
+
+              <div class="btn-group hidden-nav-xs">
+                <button type="button" class="btn btn-sm btn-primary dropdown-toggle"
+                        data-toggle="dropdown"> Switch Project
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu text-left" id="wf-list">
+                </ul>
+              </div>
+            </div>
+          </header>
+
+          <section class="w-f scrollable">
+            <div class="slim-scroll" data-height="auto" data-disable-fade-out="true"
+                 data-distance="0" data-size="5px" data-color="#333333">
+              <!-- nav -->
+              <nav class="nav-primary hidden-xs">
+                <ul class="nav">
+                  <li class="active">
+                    <a id="wf-console" href="#" class="active">
+                      <i class="fa fa-dashboard icon">
+                        <b class="bg-danger"></b>
+                      </i> <span>Console</span> </a>
+                  </li>
+
+                  <li >
+                    <a id="wf-instances" href="instances.html" >
+                      <i class="fa fa-flask icon">
+                        <b class="bg-success"></b>
+                      </i>
+                      <span>Workflow Instances</span>
+                    </a>
+                  </li>
+
+                  <li > <a id="wf-log" href="logs.html" >
+                    <i class="fa fa-file-text icon">
+                      <b class="bg-primary"></b>
+                    </i>
+                    <span>logs</span> </a>
+                  </li>
+                </ul>
+              </nav>
+              <!-- / nav -->
+            </div>
+          </section>
+
+
+          <footer class="footer lt hidden-xs b-t b-dark">
+            <div id="chat" class="dropup">
+              <section class="dropdown-menu on aside-md m-l-n">
+                <section class="panel bg-white">
+                  <header class="panel-heading b-b b-light">Active chats</header>
+                  <div class="panel-body animated fadeInRight">
+                    <p class="text-sm">No active chats.</p>
+                    <p><a href="#" class="btn btn-sm btn-default">Start a chat</a></p>
+                  </div>
+                </section>
+              </section>
+            </div>
+            <div id="invite" class="dropup">
+              <section class="dropdown-menu on aside-md m-l-n">
+                <section class="panel bg-white">
+                  <header class="panel-heading b-b b-light"> John <i class="fa fa-circle text-success"></i> </header>
+                  <div class="panel-body animated fadeInRight">
+                    <p class="text-sm">No contacts in your lists.</p>
+                    <p><a href="#" class="btn btn-sm btn-facebook"><i class="fa fa-fw fa-facebook"></i> Invite from Facebook</a></p>
+                  </div>
+                </section>
+              </section>
+            </div>
+            <a href="#nav" data-toggle="class:nav-xs" class="pull-right btn btn-sm btn-dark btn-icon"> <i class="fa fa-angle-left text"></i> <i class="fa fa-angle-right text-active"></i> </a>
+            <div class="btn-group hidden-nav-xs">
+              <button type="button" title="Chats" class="btn btn-icon btn-sm btn-dark" data-toggle="dropdown" data-target="#chat"><i class="fa fa-comment-o"></i></button>
+              <button type="button" title="Contacts" class="btn btn-icon btn-sm btn-dark" data-toggle="dropdown" data-target="#invite"><i class="fa fa-facebook"></i></button>
+            </div>
+          </footer>
+        </section>
+      </aside>
+      <!-- /导航栏 -->
+
+
+      <section id="content">
+        <section class="vbox">
+          <section class="scrollable padder">
+            <ul class="breadcrumb no-border no-radius b-b b-light pull-in">
+              <li><a href="i#"><i class="fa fa-home"></i> Workflow</a></li>
+              <li class="active">console</li>
+            </ul>
+            <div class="m-b-md">
+              <h3 class="m-b-none" id="wf-id">Workflow Engine</h3>
+              <small id="app-id">Welcome back</small> </div>
+            <section class="panel panel-default">
+              <div class="row m-l-none m-r-none bg-light lter">
+                <div class="col-sm-6 col-md-3 padder-v b-r b-light"> <span class="fa-stack fa-2x pull-left m-r-sm"> <i class="fa fa-circle fa-stack-2x text-info"></i> <i class="fa fa-sitemap fa-stack-1x text-white"></i> </span> <a class="clear" href="#">
+                  <span class="h3 block m-t-xs"><strong id="instances">0</strong></span>
+                  <small class="text-muted text-uc">Instances</small> </a>
+                </div>
+
+                <div class="col-sm-6 col-md-3 padder-v b-r b-light lt">
+                  <span class="fa-stack fa-2x pull-left m-r-sm">
+                    <i class="fa fa-circle fa-stack-2x text-warning"></i> <i class="fa fa-bug fa-stack-1x text-white"></i> <span class="easypiechart pos-abt" data-percent="100" data-line-width="4" data-track-Color="#fff" data-scale-Color="false" data-size="50" data-line-cap='butt' data-animate="2000" data-target="#bugsss" data-update="3000"></span> </span> <a class="clear" href="#">
+                  <span class="h3 block m-t-xs"><strong id="bugs">0</strong></span>
+                  <smallbugs class="text-muted text-uc">Exceptions</smallbugs> </a>
+                </div>
+
+                <div class="col-sm-6 col-md-3 padder-v b-r b-light">
+                  <span class="fa-stack fa-2x pull-left m-r-sm">
+                    <i class="fa fa-circle fa-stack-2x text-danger"></i>
+                    <i class="fa fa-tasks fa-stack-1x text-white"></i>
+                    <span class="easypiechart pos-abt"
+                          data-percent="100" data-line-width="4"
+                          data-track-Color="#f5f5f5" data-scale-Color="false"
+                          data-size="50" data-line-cap='butt'
+                          data-animate="3000" data-target="#firers"
+                          data-update="5000">
+
+                    </span>
+                  </span>
+
+                  <a class="clear" href="#">
+                    <span class="h3 block m-t-xs"><strong id="finished">0</strong></span>
+                    <small class="text-muted text-uc">FINISHED INSTANCES</small>
+                  </a>
+
+                </div>
+
+                <div class="col-sm-6 col-md-3 padder-v b-r b-light lt"> <span class="fa-stack fa-2x pull-left m-r-sm"> <i class="fa fa-circle fa-stack-2x icon-muted"></i> <i class="fa fa-clock-o fa-stack-1x text-white"></i> </span> <a class="clear" href="#">
+                  <span class="h3 block m-t-xs"><strong id="exit">-- --</strong></span>
+                  <small class="text-muted text-uc">Time to stop</small> </a>
+                </div>
+              </div>
+            </section>
+            <div class="row">
+              <div class="col-md-8">
+                <section class="panel panel-default">
+                  <header class="panel-heading font-bold">Statistics</header>
+                  <div class="panel-body">
+                    <div id="flot-1ine" style="height:210px"></div>
+                  </div>
+
+                </section>
+              </div>
+              <div class="col-md-4">
+                <section class="panel b-light">
+                  <header class="panel-heading bg-primary dker no-border">
+                    <strong>Calendar</strong></header>
+                  <div id="calendar" class="bg-primary m-l-n-xxs m-r-n-xxs"></div>
+                  <div class="list-group">
+                    <a href="#" class="list-group-item text-ellipsis">
+                      Exceptions intruded</a>
+
+                  </div>
+                </section>
+              </div>
+            </div>
+
+            <!--status-->
+            <div>
+              <div class="btn-group m-b" data-toggle="buttons">
+                <label class="btn btn-sm btn-default active">
+                  <input type="radio" name="options" id="option1">
+                  Timeline </label>
+              </div>
+
+
+              <section class="comment-list block" id="in-list">
+              </section>
+
+              <a href="#" class="btn btn-default btn-sm m-b"><i class="fa fa-plus icon-muted"></i> more</a> </div>
+          </section>
+        </section>
+
+        <a href="#" class="hide nav-off-screen-block" data-toggle="class:nav-off-screen" data-target="#nav"></a>
+      </section>
+
+
+    </section>
+
+  </section>
+</section>
+
+<div style="visibility: hidden" id="values"></div>
+<script src="js/app.v2.js"></script>
+<!-- Bootstrap -->
+<!-- App -->
+<script src="js/charts/easypiechart/jquery.easy-pie-chart.js" cache="false">
+
+</script> <script src="js/charts/sparkline/jquery.sparkline.min.js" cache="false"></script>
+<script src="js/charts/flot/jquery.flot.min.js" cache="false"></script>
+<script src="js/charts/flot/jquery.flot.tooltip.min.js" cache="false"></script>
+<script src="js/charts/flot/jquery.flot.resize.js" cache="false"></script>
+<script src="js/charts/flot/jquery.flot.grow.js" cache="false"></script>
+
+<script src="js/calendar/bootstrap_calendar.js" cache="false"></script>
+<script src="js/sortable/jquery.sortable.js" cache="false"></script>
+
+<script src="js/tools.js"></script>
+<script src="js/apps/console.js" cache="false"></script>
+</body>
+</html>
