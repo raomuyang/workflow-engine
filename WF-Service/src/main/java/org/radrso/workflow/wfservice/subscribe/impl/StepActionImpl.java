@@ -1,5 +1,6 @@
 package org.radrso.workflow.wfservice.subscribe.impl;
 
+import com.alibaba.dubbo.rpc.RpcException;
 import lombok.extern.log4j.Log4j;
 import org.bson.types.ObjectId;
 import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
@@ -179,7 +180,20 @@ public class StepActionImpl implements StepAction{
                             if(!workflowCommandService.haveJarsDefine(wfId))
                                 throw new WFRuntimeException("No jars to load class:" + response.getMsg());
 
-                            workflowCommandService.importJars(wfId);
+                            int retry = 3;
+                            while (retry > 0){
+                                try {
+                                    retry--;
+                                    workflowCommandService.importJars(wfId);
+                                    break;
+                                }catch (RpcException e){
+                                    log.error(String.format("The %s times to try rpc:", 6 - retry) + e.getMessage());
+                                    if(retry == 0)
+                                        throw new WFRuntimeException("RPC invoke timeout[importJars]");
+                                }
+                            }
+
+
                         }
                         else if (ResponseCode.CLASS_NOT_FOUND.code() <= code && code <= ResponseCode.JAR_FILE_NOT_FOUND.code())
                             throw new WFRuntimeException("[" + code + "]" + response.getMsg());
