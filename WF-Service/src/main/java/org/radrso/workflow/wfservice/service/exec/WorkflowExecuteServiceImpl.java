@@ -1,10 +1,7 @@
 package org.radrso.workflow.wfservice.service.exec;
 
-import org.radrso.plugins.FileUtils;
 import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
-import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
-import org.radrso.workflow.rmi.WorkflowInstanceExecutor;
 import org.radrso.workflow.resolvers.WorkflowResolver;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.wfservice.service.*;
@@ -14,8 +11,6 @@ import org.radrso.workflow.wfservice.subscribe.impl.StepActionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.util.List;
 
 /**
  * Created by raomengnan on 17-1-14.

@@ -1,6 +1,5 @@
 package org.radrso.workflow.wfservice.service.exec;
 
-import lombok.Data;
 import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.FileUtils;
 import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
