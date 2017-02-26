@@ -20,7 +20,7 @@
     <dubbo:protocol name="dubbo" port="${dubbo.port}" payload="16777216"/>
 
     <!--暴露服务-->
-    <dubbo:service timeout="120000" interface="org.radrso.workflow.rmi.WorkflowCommander" ref="workflowCommanderImpl"></dubbo:service>
-    <dubbo:service timeout="3000" interface="org.radrso.workflow.rmi.WorkflowInstanceExecutor" ref="workflowInstanceExecutorImpl"></dubbo:service>
+    <dubbo:service timeout="600000" interface="org.radrso.workflow.rmi.WorkflowCommander" ref="workflowCommanderImpl"></dubbo:service>
+    <dubbo:service timeout="120000" interface="org.radrso.workflow.rmi.WorkflowInstanceExecutor" ref="workflowInstanceExecutorImpl"></dubbo:service>
 
 </beans>
