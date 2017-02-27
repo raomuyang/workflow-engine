@@ -19,8 +19,6 @@ public class StepSubscriber extends Subscriber<WorkflowResolver> {
     @Override
     public void onCompleted() {
         stepAction.stepCompleted(workflowResolver);
-        if(!workflowResolver.eof())
-            WorkflowObservable.subscribe(stepAction, workflowResolver);
     }
 
     @Override
