@@ -1,6 +1,5 @@
 package org.radrso.workflow.resolvers;
 
-import com.google.gson.JsonObject;
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
 import org.radrso.workflow.entities.config.WorkflowConfig;
