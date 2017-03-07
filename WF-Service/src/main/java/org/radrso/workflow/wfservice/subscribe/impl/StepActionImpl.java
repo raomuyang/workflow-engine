@@ -45,12 +45,16 @@ public class StepActionImpl implements StepAction{
         workflowResolver.getWorkflowInstance().getFinishedSequence().add(
                 workflowResolver.getCurrentStep().getSign()
         );
-        if(workflowResolver.eof()) {
+
+        boolean eof = false;
+        if(eof = workflowResolver.eof()) {
             workflowResolver.getWorkflowInstance().setStatus(WorkflowInstance.COMPLETED);
             workflowResolver.getWorkflowInstance().setSubmitTime(new Date());
         }
 
         workflowCommandService.updateInstance(workflowResolver.getWorkflowInstance());
+        if (!eof)
+            WorkflowObservable.subscribe(this, workflowResolver);
     }
 
     @Override
