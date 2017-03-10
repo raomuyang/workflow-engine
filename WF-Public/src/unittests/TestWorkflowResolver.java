@@ -139,7 +139,7 @@ public class TestWorkflowResolver {
             "\n" +
             "      \"transfer\": {\n" +
             "\n" +
-            "        \"diedline\":\"2017-11-12\",\n" +
+            "        \"deadline\":\"2017-11-12\",\n" +
             "        \"to\": \"$FINISH\"\n" +
             "      }\n" +
             "    },\n" +

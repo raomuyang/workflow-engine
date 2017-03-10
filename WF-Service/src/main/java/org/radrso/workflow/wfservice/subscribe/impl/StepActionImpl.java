@@ -142,7 +142,7 @@ public class StepActionImpl implements StepAction{
 
                             //新分支的转移函数
                             Transfer tran = new Transfer();
-                            tran.setDiedline(lastTranInMain.getDiedline());
+                            tran.setDeadline(lastTranInMain.getDeadline());
                             tran.setInput(lastTranInMain.getInput());
                             tran.setTo(scatterNextStep.getSign());
 
@@ -228,7 +228,7 @@ public class StepActionImpl implements StepAction{
         Transfer lastTransfer = workflowResolver.getCurrentTransfer();
         Date diedline = null;
         boolean isContinue = true;
-        if (lastTransfer != null && (diedline = lastTransfer.getDiedline()) != null)
+        if (lastTransfer != null && (diedline = lastTransfer.getDeadline()) != null)
             isContinue = new Date().before(diedline);
 
         isContinue = isContinue && checkWorkflowStatus(workflowResolver);
