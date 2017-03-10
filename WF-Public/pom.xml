@@ -10,7 +10,6 @@
     <packaging>jar</packaging>
 
     <properties>
-        <spring.version>4.2.6.RELEASE</spring.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
@@ -39,6 +38,14 @@
             <artifactId>spring-data-mongodb</artifactId>
             <version>1.9.2.RELEASE</version>
         </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
