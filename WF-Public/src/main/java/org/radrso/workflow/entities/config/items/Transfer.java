@@ -22,7 +22,7 @@ import java.util.List;
 public class Transfer implements Serializable{
     private List<InputItem> input;
     private Judge judge;
-    private Date diedline;
+    private Date deadline;
     private String to;
     private List<String> scatters;
 }

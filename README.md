@@ -127,7 +127,7 @@
           {"name": "test3",  "type": "boolean", "value": true}
         ],
 
-        "diedline":"2017-11-12",
+        "deadline":"2017-11-12",
         "to": "sign-5"
       }
     },
@@ -142,7 +142,7 @@
 
       "transfer": {
 
-        "diedline":"2017-11-12",
+        "deadline":"2017-11-12",
         "to": "{FINISH}"
       }
     },
