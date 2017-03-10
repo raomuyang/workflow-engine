@@ -9,9 +9,9 @@ import java.io.Serializable;
 
 /**
  * Created by raomengnan on 16-12-8.
- * step     步奏ID
- * call     org.radrso.xxx.Methodxxx 或者 url,可以调用某个方法或者直接请求某个url
- * method   CLASS / GET / POST / PUT / DELETE...
+ * step     步骤的标志（ID）
+ * call     调用类方法如org.radrso.xxx.Methodxxx 或者 url（调用某个方法或者直接请求某个url）
+ * method   CLASS （表示调用类方法）/ GET / POST / PUT / DELETE...（表示调用Http请求）
  */
 
 @Data

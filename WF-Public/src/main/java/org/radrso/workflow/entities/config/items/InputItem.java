@@ -9,6 +9,9 @@ import java.io.Serializable;
 
 /**
  * Created by raomengnan on 16-12-8.
+ * name     参数名（可选）
+ * value    参数
+ * type     参数类型
  */
 
 @Data
@@ -16,7 +19,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @ToString
 public class InputItem implements Serializable{
-    private String name;
+    private String name = "default";
     private String value;
     private String type;
 }
