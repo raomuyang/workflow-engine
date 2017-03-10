@@ -6,7 +6,7 @@
 
   "steps": [
     {
-      "sign": "$START",
+      "sign": "&START",
       "name": "Start",
       "transfer":{
         "input": [
@@ -56,13 +56,11 @@
     },
 
     {
-      "sign": "$FINISH",
+      "sign": "&FINISH",
       "name": "Finish the workflow",
       "call": "org.radrso.xxx.XXXClass || url",
       "method": "xxxClass / GET / POST / PUT / DELETE..."
     }
-  ],
-
-  "header": "request header,在一些http请求的任务中可能会附带的"
+  ]
 
 }

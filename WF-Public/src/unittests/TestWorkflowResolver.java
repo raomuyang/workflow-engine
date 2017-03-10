@@ -67,7 +67,7 @@ public class TestWorkflowResolver {
             "  \"steps\": [\n" +
 
             "    {\n" +
-            "      \"sign\": \"$START\",\n" +
+            "      \"sign\": \"&START\",\n" +
             "      \"name\": \"Start\",\n" +
             "      \"transfer\":{\n" +
             "        \"input\": [\n" +
@@ -140,14 +140,14 @@ public class TestWorkflowResolver {
             "      \"transfer\": {\n" +
             "\n" +
             "        \"deadline\":\"2017-11-12\",\n" +
-            "        \"to\": \"$FINISH\"\n" +
+            "        \"to\": \"&FINISH\"\n" +
             "      }\n" +
             "    },\n" +
 
 
 
             "    {\n" +
-            "      \"sign\": \"$FINISH\",\n" +
+            "      \"sign\": \"&FINISH\",\n" +
             "      \"name\": \"Finish the workflow\",\n" +
             "      \"call\": \"class:org.radrso.test.TestWorkflow\",\n" +
             "      \"method\": \"finish\"\n" +

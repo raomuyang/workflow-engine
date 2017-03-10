@@ -26,7 +26,6 @@ public class WorkflowConfig implements Serializable{
     @Id
     private String id;
     private String owner;
-    private String header;
     private Date startTime;
     private Date stopTime;
     private List<Step> steps;

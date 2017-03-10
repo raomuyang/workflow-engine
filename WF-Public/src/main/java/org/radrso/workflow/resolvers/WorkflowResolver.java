@@ -26,12 +26,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @Data
 @Log4j
 public class WorkflowResolver implements Serializable{
-    public static final String START = "$START";
-    public static final String FINISH = "$FINISH";
+    public static final String START = "&START";
+    public static final String FINISH = "&FINISH";
     public static final String OUTPUT = "{output}";
     public static final String INSTANCE_ID = "{instanceid}";
 
-    private String header;
     private WorkflowInstance workflowInstance;
 
     private Step lastStep;
@@ -50,7 +49,6 @@ public class WorkflowResolver implements Serializable{
 
     public WorkflowResolver(WorkflowConfig workflowConfig, WorkflowInstance workflowInstance){
         this();
-        this.header = workflowConfig.getHeader();
         this.workflowInstance = workflowInstance;
         this.stepStatusMap = workflowInstance.getStepStatusesMap();
 
