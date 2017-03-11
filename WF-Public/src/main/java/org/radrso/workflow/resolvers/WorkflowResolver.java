@@ -2,6 +2,7 @@ package org.radrso.workflow.resolvers;
 
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
+import org.radrso.workflow.StandardString;
 import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.radrso.workflow.entities.config.items.InputItem;
 import org.radrso.workflow.entities.config.items.Judge;
@@ -26,10 +27,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Data
 @Log4j
 public class WorkflowResolver implements Serializable{
-    public static final String START = "&START";
-    public static final String FINISH = "&FINISH";
-    public static final String OUTPUT = "{output}";
-    public static final String INSTANCE_ID = "{instanceid}";
 
     private WorkflowInstance workflowInstance;
 
@@ -67,10 +64,10 @@ public class WorkflowResolver implements Serializable{
 
     public Step getCurrentStep(){
         if(currentStep == null && stepMap.size() > 0) {
-            Step s = this.stepMap.get(START);
+            Step s = this.stepMap.get(StandardString.CONF_START_SIGN);
             this.currentStep = s;
             if(currentStep != null)
-                workflowInstance.getStepProcess().put(START, Step.RUNNING);
+                workflowInstance.getStepProcess().put(StandardString.CONF_START_SIGN, Step.RUNNING);
         }
 
         return currentStep;
@@ -141,7 +138,7 @@ public class WorkflowResolver implements Serializable{
         Step step = getCurrentStep();
         if(step == null)
             return true;
-        if(getCurrentStep().getSign().equals(FINISH))
+        if(getCurrentStep().getSign().equals(StandardString.CONF_FINISH_SIGN))
             return true;
         return false;
     }
@@ -262,10 +259,10 @@ public class WorkflowResolver implements Serializable{
 
         String errorMsg = null;
 
-        if(paramStr.toLowerCase().equals(INSTANCE_ID))
+        if(paramStr.toLowerCase().equals(StandardString.CONF_INSTANCE_ID_VALUE))
             return workflowInstance.getInstanceId();
 
-        if(paramStr.indexOf(OUTPUT) >= 0){
+        if(paramStr.indexOf(StandardString.OUTPUT_VALUE) >= 0){
 
             int i = 2;
             String[] sp = null;
