@@ -35,6 +35,10 @@ public class StepExecuteResolver {
         this.paramNames = paramNames;
     }
 
+    /**
+     * 调用配置中预设的类方法
+     * @return  WFResponse中的Response是执行结果的消息实体
+     */
     public WFResponse classRequest(){
 
         String className = null;
@@ -48,12 +52,12 @@ public class StepExecuteResolver {
             return new WFResponse(ResponseCode.UNKNOW.code(), errorMsg, errorMsg);
         }
 
-        String mehtodName = step.getMethod();
-        log.info("Invoke: " + className + "-" + mehtodName);
+        String methodName = step.getMethod();
+        log.info("Invoke: " + className + "-" + methodName);
         try {
             WFResponse response = new WFResponse();
             Class clazz = CustomClassLoader.getClassLoader().loadClass(className);
-            Object ret = ReflectInvokeMethod.invoke(clazz, clazz.newInstance(), mehtodName, params);
+            Object ret = ReflectInvokeMethod.invoke(clazz, clazz.newInstance(), methodName, params);
             response.setCode(ResponseCode.HTTP_OK.code());
             response.setResponse(ret);
             return response;
@@ -84,7 +88,8 @@ public class StepExecuteResolver {
 
     }
 
-    public WFResponse netReuqest() {
+
+    public WFResponse netRequest() {
 
         //获取请求方法 GET/PUT/POST/DELETE
         Method method = null;
