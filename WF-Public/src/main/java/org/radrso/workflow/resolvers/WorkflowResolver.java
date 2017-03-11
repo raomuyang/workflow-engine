@@ -144,7 +144,7 @@ public class WorkflowResolver implements Serializable{
         return false;
     }
 
-    public Step popBranch(){
+    public Step popBranchStep(){
         if(this.scatterSteps == null || this.scatterSteps.size() == 0)
             return null;
         return this.scatterSteps.remove(0);
