@@ -97,7 +97,6 @@ public class StepActionImpl implements StepAction{
     @Override
     public void stepNext(WorkflowResolver workflowResolver) {
         boolean loopDo = true;
-        boolean isScatter = false;//判断是否已经执行分支（防止回滚后再次执行分支）
         boolean isReloadJarFile = false;//判断是否已经重新加载jar文件
 
         while (loopDo) {
@@ -108,55 +107,7 @@ public class StepActionImpl implements StepAction{
                 workflowResolver.next();
                 Step step = workflowResolver.getCurrentStep();
 
-                if(!isScatter){
-                    isScatter = true;
-                    List<Step> scatters = workflowResolver.getScatterSteps();
-                    if(scatters != null){
-                        for(int i = 0; i < scatters.size(); i++){
-                            //获取分支下一步
-                            Step scatterNextStep = scatters.get(i);
-                            String msg = String.format("Scatter to [%s] from step[%s]/[%s]",scatterNextStep.getSign(), step.getSign(), workflowResolver.getWorkflowInstance().getInstanceId());
-                            log.info(msg);
-
-                            WorkflowResolver newWFResolver = workflowCommandService.branchInstance(workflowResolver.getWorkflowInstance().getInstanceId());
-                            if(newWFResolver == null){
-                                WorkflowErrorLog log = new WorkflowErrorLog();
-                                log.setMsg("Instance not found:" + msg);
-                                log.setWorkflowId(workflowResolver.getWorkflowInstance().getWorkflowId());
-                                log.setInstanceId(workflowResolver.getWorkflowInstance().getInstanceId());
-                                log.setStepSign(workflowResolver.getCurrentStep().getSign());
-                                workflowCommandService.logError(log);
-                                continue;
-                            }
-
-                            //获取分支实例
-                            WorkflowInstance branchInstance = newWFResolver.getWorkflowInstance();
-
-                            branchInstance.setInstanceId(
-                                    workflowResolver.getWorkflowInstance().getInstanceId() + "-"
-                                            + (workflowResolver.getWorkflowInstance().getBranchs() - scatters.size() + i + 1)
-                            );
-
-                            //当前分支的上一个转移函数，用于获取input，deadline等
-                            Transfer lastTranInMain = workflowResolver.getLastTransfer();
-
-                            //新分支的转移函数
-                            Transfer tran = new Transfer();
-                            tran.setDeadline(lastTranInMain.getDeadline());
-                            tran.setInput(lastTranInMain.getInput());
-                            tran.setTo(scatterNextStep.getSign());
-
-                            //用新分支转移函数和旧分支的步奏名构成新分支的上一状态，从而next()时可以调用新分支转移函数
-                            Step ls = new Step();
-                            ls.setTransfer(tran);
-                            ls.setSign(workflowResolver.getLastStep().getSign());
-
-                            newWFResolver.setCurrentStep(ls);
-                            WorkflowObservable.subscribe(this, newWFResolver);
-                        }
-                        workflowResolver.setScatterSteps(null);
-                    }
-                }
+                execBranchs(workflowResolver);
 
                 log.info("[START] " + workflowResolver.getWorkflowInstance().getInstanceId() + " " + step.getName() + String.format(" Thread[%s]", Thread.currentThread().getId()) );
                 Object[] params = workflowResolver.getCurrentStepParams();
@@ -192,8 +143,6 @@ public class StepActionImpl implements StepAction{
                                         throw new WFRuntimeException("RPC invoke timeout[importJars]");
                                 }
                             }
-
-
                         }
                         else if (ResponseCode.CLASS_NOT_FOUND.code() <= code && code <= ResponseCode.JAR_FILE_NOT_FOUND.code())
                             throw new WFRuntimeException("[" + code + "]" + response.getMsg());
@@ -221,6 +170,57 @@ public class StepActionImpl implements StepAction{
                     workflowResolver.getStepStatusMap().get(stepSign).setEnd(new Date());
                 }
             }
+        }
+    }
+
+    private void execBranchs(WorkflowResolver workflowResolver){
+        Step currentStep = workflowResolver.getCurrentStep();
+        //获取分支下一步
+        Step scatterNextStep = workflowResolver.popBranch();
+        int num = 0;
+        while (scatterNextStep != null){
+            String msg = String.format("Scatter to [%s] from step[%s]/[%s]",
+                    scatterNextStep.getSign(), currentStep.getSign(), workflowResolver.getWorkflowInstance().getInstanceId());
+            log.info(msg);
+
+            WorkflowResolver newWFResolver = workflowCommandService.branchInstance(workflowResolver.getWorkflowInstance().getInstanceId());
+            if(newWFResolver == null){
+                WorkflowErrorLog log = new WorkflowErrorLog();
+                log.setMsg("Instance not found:" + msg);
+                log.setWorkflowId(workflowResolver.getWorkflowInstance().getWorkflowId());
+                log.setInstanceId(workflowResolver.getWorkflowInstance().getInstanceId());
+                log.setStepSign(workflowResolver.getCurrentStep().getSign());
+                workflowCommandService.logError(log);
+                continue;
+            }
+
+            //获取分支实例
+            WorkflowInstance branchInstance = newWFResolver.getWorkflowInstance();
+
+            branchInstance.setInstanceId(
+                    workflowResolver.getWorkflowInstance().getInstanceId() + "-" +
+                            (workflowResolver.getWorkflowInstance().getBranchs() - num++)
+            );
+
+            //当前分支的上一个转移函数，用于获取input，deadline等
+            Transfer lastTranInMain = workflowResolver.getLastTransfer();
+
+            //为不和主分支相互影响，克隆当前分支的上一个转移函数
+            Transfer virtualLastTransfer = new Transfer();
+            virtualLastTransfer.setDeadline(lastTranInMain.getDeadline());
+            virtualLastTransfer.setInput(lastTranInMain.getInput());
+            virtualLastTransfer.setTo(scatterNextStep.getSign());
+
+            //用克隆的转移函数和主分支的步骤标志虚构分支的上一状态（Step），从而分支进入next()时可以调用克隆的转移函数
+            Step tmpLastStep = new Step();
+            tmpLastStep.setTransfer(virtualLastTransfer);
+            tmpLastStep.setSign(workflowResolver.getLastStep().getSign());
+
+            scatterNextStep = workflowResolver.popBranch();
+            newWFResolver.setCurrentStep(tmpLastStep);
+            WorkflowObservable.subscribe(this, newWFResolver);
+
+
         }
     }
 
