@@ -20,7 +20,6 @@ import org.radrso.workflow.wfservice.subscribe.StepAction;
 import org.radrso.workflow.wfservice.subscribe.WorkflowObservable;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by raomengnan on 17-1-17.
@@ -176,7 +175,7 @@ public class StepActionImpl implements StepAction{
     private void execBranchs(WorkflowResolver workflowResolver){
         Step currentStep = workflowResolver.getCurrentStep();
         //获取分支下一步
-        Step scatterNextStep = workflowResolver.popBranch();
+        Step scatterNextStep = workflowResolver.popBranchStep();
         int num = 0;
         while (scatterNextStep != null){
             String msg = String.format("Scatter to [%s] from step[%s]/[%s]",
@@ -216,7 +215,7 @@ public class StepActionImpl implements StepAction{
             tmpLastStep.setTransfer(virtualLastTransfer);
             tmpLastStep.setSign(workflowResolver.getLastStep().getSign());
 
-            scatterNextStep = workflowResolver.popBranch();
+            scatterNextStep = workflowResolver.popBranchStep();
             newWFResolver.setCurrentStep(tmpLastStep);
             WorkflowObservable.subscribe(this, newWFResolver);
 
