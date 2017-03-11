@@ -32,12 +32,13 @@ public class WorkflowResolver implements Serializable{
 
     private Step lastStep;
     private Transfer lastTransfer;
-
     private Step currentStep;
 
     private Map<String, Step> stepMap;
+    // 与workflowInstance中个引用相同
     private Map<String, StepStatus> stepStatusMap;
 
+    //记录当前Step产生的分支，当前节点执行完毕后，分支会被置为null
     private List<Step> scatterSteps;
 
     private WorkflowResolver(){
@@ -143,6 +144,12 @@ public class WorkflowResolver implements Serializable{
         return false;
     }
 
+    public Step popBranch(){
+        if(this.scatterSteps == null || this.scatterSteps.size() == 0)
+            return null;
+        return this.scatterSteps.remove(0);
+    }
+
 
     /**
      * 状态转移函数到下一个状态的转换
@@ -179,7 +186,7 @@ public class WorkflowResolver implements Serializable{
 
         if(stepNames != null && stepNames.size() > 0)
             for(int i = 0; i < stepNames.size(); i++ ) {
-                scatterSteps.add(stepMap.get(stepNames.get(0)));
+                scatterSteps.add(stepMap.get(stepNames.get(i)));
                 workflowInstance.getBranchStepMap().put(len + i + 1, currentStep.getSign());
             }
         return scatterSteps;
@@ -224,7 +231,7 @@ public class WorkflowResolver implements Serializable{
     }
 
     /**
-     * 从状态转移函数中解析参数
+     * 从状态转移函数中解析参数，参数会自动put到StepStatusMap的StepStatus中
      * @param transfer 状态转移函数
      * @return 返回的是参数集合
      * @throws ConfigReadException
