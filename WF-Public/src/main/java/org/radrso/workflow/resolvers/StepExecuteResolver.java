@@ -103,23 +103,28 @@ public class StepExecuteResolver {
 
         //转换参数
         Map<String, Object> paramMap = new HashMap<>();
+        Map<String, Object> headers = new HashMap<>();
         if(params == null)
             params = new Object[]{};
-        for (int i = 0; i < params.length; i++)
-            paramMap.put(paramNames[i], params[i]);
+        for (int i = 0; i < params.length; i++){
+            if(paramNames[i] != null && paramNames[i].startsWith("*"))
+                headers.put(paramNames[i], params[i]);
+            else
+                paramMap.put(paramNames[i], params[i]);
+        }
 
         // 通过请求工厂创建请求，发送请求
-        RequestFactory requestFactory = new RequestFactory(
-                step.getCall(),
-                method,
-                JsonUtils.getJsonObject(paramMap),
-                ContentType.APPLICATION_JSON,
-                true
-        );
         Request request = null;
         Response response = null;
         try {
-            request = requestFactory.createRequest();
+            request = RequestFactory.createRequest(
+                    step.getCall(),
+                    method,
+                    headers,
+                    JsonUtils.getJsonObject(paramMap),
+                    ContentType.APPLICATION_JSON,
+                    true
+            );
             response = request.sendRequest();
         } catch (RequestException e) {
             log.error(e);

@@ -12,6 +12,8 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.radrso.plugins.requests.entity.Method;
 import org.radrso.plugins.requests.Request;
 
+import java.util.Map;
+
 
 /**
  * Created by raomengnan on 16-12-10.
@@ -21,8 +23,9 @@ public class HttpRequest extends Request{
     private static PoolingHttpClientConnectionManager poolManager;
     private final static int MAX_TOTAL_POOL = 200;
 
-    public HttpRequest(String url, Method method, Object params, ContentType contentType, HttpRequestBase requestBase, Boolean usePool) {
-        super(url, method, params, contentType, requestBase, usePool);
+    public HttpRequest(String url, Method method, Map<String, Object> headers,
+                       Object params, ContentType contentType, Boolean usePool) throws ReflectiveOperationException  {
+        super(url, method, headers,params, contentType, usePool);
     }
 
     @Override
@@ -41,7 +44,7 @@ public class HttpRequest extends Request{
             poolManager.setMaxTotal(MAX_TOTAL_POOL);
         }
 
-        return HttpClients.custom().setConnectionManager(poolManager).build();
+        return HttpClients.custom().setConnectionManager(poolManager).setConnectionManagerShared(true).build();
     }
 
     @Override

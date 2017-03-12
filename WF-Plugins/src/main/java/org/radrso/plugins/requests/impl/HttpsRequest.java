@@ -22,14 +22,16 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Map;
 
 /**
  * Created by raomengnan on 16-12-10.
  */
 public class HttpsRequest extends Request {
 
-    public HttpsRequest(String url, Method method, Object params, ContentType contentType, HttpRequestBase requestBase, Boolean usePool) {
-        super(url, method, params, contentType, requestBase, usePool);
+    public HttpsRequest(String url, Method method, Map<String, Object> headers,
+                        Object params, ContentType contentType, Boolean usePool) throws ReflectiveOperationException  {
+        super(url, method, headers,params, contentType, usePool);
     }
 
     @Override
@@ -109,7 +111,7 @@ public class HttpsRequest extends Request {
                 poolManager.setMaxTotal(MAX_TOTAL_POOL);
             }
 
-            return HttpClients.custom().setConnectionManager(poolManager).build();
+            return HttpClients.custom().setConnectionManager(poolManager).setConnectionManagerShared(true).build();
         }
 
     }
