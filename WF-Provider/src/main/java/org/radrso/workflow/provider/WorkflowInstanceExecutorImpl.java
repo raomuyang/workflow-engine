@@ -26,7 +26,7 @@ public class WorkflowInstanceExecutorImpl implements WorkflowInstanceExecutor {
 
         WFResponse response = null;
         if(protocol.toLowerCase().indexOf("http") >= 0)
-            response = resolver.netReuqest();
+            response = resolver.netRequest();
         else
             response = resolver.classRequest();
         return response;

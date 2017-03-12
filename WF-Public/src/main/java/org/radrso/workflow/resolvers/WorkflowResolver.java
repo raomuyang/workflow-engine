@@ -247,6 +247,7 @@ public class WorkflowResolver implements Serializable{
             InputItem inputItem = inputs.get(i);
             Object value = resolverParamString(inputItem.getValue());
             String type = inputItem.getType();
+
             value = parseValue(type, value);
             params[i] = value;
             paramsNames[i] = inputItem.getName();
@@ -258,9 +259,9 @@ public class WorkflowResolver implements Serializable{
     }
 
     /**
-     * 配置文件中的表达式语句  {output}[sign-xxx][xxx][xxx]
-     * @param paramStr
-     * @return
+     * 将配置文件中的表达式语句转为有效值
+     * @param paramStr 如{output}[sign-xxx][xxx][xxx]
+     * @return  返回转义之后的值
      */
     public Object resolverParamString(String paramStr) throws ConfigReadException, UnknowExceptionInRunning {
 
@@ -269,7 +270,7 @@ public class WorkflowResolver implements Serializable{
         if(paramStr.toLowerCase().equals(StandardString.CONF_INSTANCE_ID_VALUE))
             return workflowInstance.getInstanceId();
 
-        if(paramStr.indexOf(StandardString.OUTPUT_VALUE) >= 0){
+        if(paramStr.contains(StandardString.OUTPUT_VALUE)){
 
             int i = 2;
             String[] sp = null;
@@ -299,10 +300,8 @@ public class WorkflowResolver implements Serializable{
 
             if(errorMsg != null)
                 throw new ConfigReadException(errorMsg);
-
             return ret;
         }
-
         return paramStr;
     }
 

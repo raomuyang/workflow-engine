@@ -35,6 +35,10 @@ public class StepExecuteResolver {
         this.paramNames = paramNames;
     }
 
+    /**
+     * 调用配置中预设的类方法
+     * @return  WFResponse中的Response是执行结果的消息实体
+     */
     public WFResponse classRequest(){
 
         String className = null;
@@ -48,12 +52,12 @@ public class StepExecuteResolver {
             return new WFResponse(ResponseCode.UNKNOW.code(), errorMsg, errorMsg);
         }
 
-        String mehtodName = step.getMethod();
-        log.info("Invoke: " + className + "-" + mehtodName);
+        String methodName = step.getMethod();
+        log.info("Invoke: " + className + "-" + methodName);
         try {
             WFResponse response = new WFResponse();
             Class clazz = CustomClassLoader.getClassLoader().loadClass(className);
-            Object ret = ReflectInvokeMethod.invoke(clazz, clazz.newInstance(), mehtodName, params);
+            Object ret = ReflectInvokeMethod.invoke(clazz, clazz.newInstance(), methodName, params);
             response.setCode(ResponseCode.HTTP_OK.code());
             response.setResponse(ret);
             return response;
@@ -84,7 +88,8 @@ public class StepExecuteResolver {
 
     }
 
-    public WFResponse netReuqest() {
+
+    public WFResponse netRequest() {
 
         //获取请求方法 GET/PUT/POST/DELETE
         Method method = null;
@@ -98,23 +103,28 @@ public class StepExecuteResolver {
 
         //转换参数
         Map<String, Object> paramMap = new HashMap<>();
+        Map<String, Object> headers = new HashMap<>();
         if(params == null)
             params = new Object[]{};
-        for (int i = 0; i < params.length; i++)
-            paramMap.put(paramNames[i], params[i]);
+        for (int i = 0; i < params.length; i++){
+            if(paramNames[i] != null && paramNames[i].startsWith("*"))
+                headers.put(paramNames[i], params[i]);
+            else
+                paramMap.put(paramNames[i], params[i]);
+        }
 
         // 通过请求工厂创建请求，发送请求
-        RequestFactory requestFactory = new RequestFactory(
-                step.getCall(),
-                method,
-                JsonUtils.getJsonObject(paramMap),
-                ContentType.APPLICATION_JSON,
-                true
-        );
         Request request = null;
         Response response = null;
         try {
-            request = requestFactory.createRequest();
+            request = RequestFactory.createRequest(
+                    step.getCall(),
+                    method,
+                    headers,
+                    JsonUtils.getJsonObject(paramMap),
+                    ContentType.APPLICATION_JSON,
+                    true
+            );
             response = request.sendRequest();
         } catch (RequestException e) {
             log.error(e);
