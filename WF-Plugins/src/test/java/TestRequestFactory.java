@@ -22,6 +22,7 @@ public class TestRequestFactory {
     public void before(){
         headers.put("User-Agent",
                 "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
+        headers.put("Content-type", "text/plain");
     }
 
     @Test
@@ -77,8 +78,8 @@ public class TestRequestFactory {
         Request request = RequestFactory.createRequest(url, Method.POST, headers, params, type, true);
         Response response = request.sendRequest();
         boolean contains = response.getContent().contains("\"code\":25");
-        Assert.assertEquals(contains, true);
         System.out.println("[DEBUG]---post---" + "http post request, x-www-form: " + response.getContent());
+        Assert.assertEquals(contains, true);
 
         url = "http://www.tuling123.com/openapi/api";
         type = ContentType.APPLICATION_JSON;
@@ -89,6 +90,7 @@ public class TestRequestFactory {
         request = RequestFactory.createRequest(url, Method.POST, headers, JsonUtils.getJsonObject(body), type, true);
         response = request.sendRequest();
         System.out.println("[DEBUG]---post---" + response.getContent());
+        Assert.assertEquals(response.getStatusCode(), 200);
 
     }
 

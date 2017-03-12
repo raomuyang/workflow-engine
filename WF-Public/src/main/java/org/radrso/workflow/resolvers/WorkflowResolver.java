@@ -270,7 +270,7 @@ public class WorkflowResolver implements Serializable{
         if(paramStr.toLowerCase().equals(StandardString.CONF_INSTANCE_ID_VALUE))
             return workflowInstance.getInstanceId();
 
-        if(paramStr.contains(StandardString.OUTPUT_VALUE)){
+        if(paramStr.startsWith(StandardString.OUTPUT_VALUE)){
 
             int i = 2;
             String[] sp = null;

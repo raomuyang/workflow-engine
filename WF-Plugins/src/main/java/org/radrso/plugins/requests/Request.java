@@ -172,8 +172,8 @@ public abstract class Request {
         }
     }
     private void initRequestHeader(){
-
-        headers.put("content_type", contentType.toString());
+        if(headers.get("Content-Type") != null)
+            headers.put("Content-Type", contentType.toString());
         for(String key: headers.keySet())
             requestBase.setHeader(key, String.valueOf(headers.get(key)));
 

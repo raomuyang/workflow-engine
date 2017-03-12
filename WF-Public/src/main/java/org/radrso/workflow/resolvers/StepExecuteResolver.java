@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import lombok.extern.log4j.Log4j;
 import org.apache.http.entity.ContentType;
 import org.radrso.workflow.RequestMethodMapping;
+import org.radrso.workflow.StandardString;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.plugins.CustomClassLoader;
@@ -17,6 +18,8 @@ import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
 import org.radrso.plugins.requests.entity.exceptions.impl.RequestException;
 
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -91,6 +94,7 @@ public class StepExecuteResolver {
 
     public WFResponse netRequest() {
 
+        ContentType contentType = ContentType.APPLICATION_JSON;
         //获取请求方法 GET/PUT/POST/DELETE
         Method method = null;
         try {
@@ -101,18 +105,57 @@ public class StepExecuteResolver {
                     e.getMessage(), null);
         }
 
-        //转换参数
+        //转换参数，配置文件中以$转义的，添加到header中
         Map<String, Object> paramMap = new HashMap<>();
         Map<String, Object> headers = new HashMap<>();
+        Map<String, Object> urlParams = new HashMap<>();
         if(params == null)
             params = new Object[]{};
         for (int i = 0; i < params.length; i++){
-            if(paramNames[i] != null && paramNames[i].startsWith("*"))
-                headers.put(paramNames[i], params[i]);
+
+            if(paramNames[i] != null && paramNames[i].startsWith("$")){
+                if(paramNames[i].toLowerCase().equals("$content-type")){
+                    String type = String.valueOf(params[i]);
+                    String encoding = "utf-8";
+                    if(type.contains(";") && !type.startsWith(";")) {
+                        type = type.split(";")[0];
+                        encoding = type.split(";")[1];
+                    }
+                    Charset charset = Charset.forName("utf-8");
+                    try {
+                        charset = Charset.forName(encoding);
+                    }catch (UnsupportedCharsetException e){}
+                    contentType = ContentType.create(type, charset);
+                    headers.put("Content-Type", contentType.toString());
+                    continue;
+                }
+                headers.put(paramNames[i].substring(1), params[i]);
+            }
+
+            else if(paramNames[i].matches(StandardString.VALUES_ESCAPE)){
+                String[] matchers = StandardString.matcherValuesEscape(paramNames[i]);
+                if(matchers.length > 1)
+                    paramMap.put(paramNames[i], params[i]);
+                else {
+                    String key = matchers[0];
+                    urlParams.put(key, params[i]);
+                }
+            }
             else
                 paramMap.put(paramNames[i], params[i]);
         }
 
+        String url = step.getCall();
+        String[] replaces = StandardString.matcherValuesEscape(url);
+        if (replaces.length > 0)
+            for(String key: replaces)
+                url = url.replace(key, String.valueOf(urlParams.get(key)));
+        step.setCall(url);
+
+        return sendNetRequest(method, headers, paramMap, contentType);
+    }
+
+    private WFResponse sendNetRequest(Method method, Map headers, Map paramMap, ContentType contentType){
         // 通过请求工厂创建请求，发送请求
         Request request = null;
         Response response = null;
@@ -122,7 +165,7 @@ public class StepExecuteResolver {
                     method,
                     headers,
                     JsonUtils.getJsonObject(paramMap),
-                    ContentType.APPLICATION_JSON,
+                    contentType,
                     true
             );
             response = request.sendRequest();
@@ -151,5 +194,6 @@ public class StepExecuteResolver {
 
         return wfResponse;
     }
+
 
 }
