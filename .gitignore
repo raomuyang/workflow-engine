@@ -5,4 +5,5 @@
 *.class
 log
 /*/src/main/test/
+/Speed-Dial/dockerfile/*-*/
 *jars/*
