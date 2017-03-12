@@ -2,7 +2,9 @@ import com.google.gson.Gson;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.radrso.workflow.StandardString;
 import org.radrso.workflow.entities.config.WorkflowConfig;
+import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.config.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
 import org.radrso.workflow.entities.exceptions.UnknowExceptionInRunning;
@@ -12,6 +14,7 @@ import org.radrso.workflow.entities.wf.WorkflowInstance;
 import org.radrso.workflow.resolvers.WorkflowResolver;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by rao-mengnan on 2017/3/10.
@@ -30,7 +33,7 @@ public class TestWorkflowResolver {
 
     }
 
-    @Test
+    @Test(expected = ConfigReadException.class)
     public void testGetParam() throws UnknowExceptionInRunning, ConfigReadException {
 
         Transfer transfer = workflowConfig.getSteps().get(0).getTransfer();
@@ -55,6 +58,19 @@ public class TestWorkflowResolver {
         Object[] params_2 = workflowResolver.getParams(transfer);
         Assert.assertEquals(params_2[1].getClass(), Double.class);
 
+        body.put("test2", "asdf");
+        workflowResolver.getParams(transfer);
+
+    }
+
+    @Test
+    public void testScatterTo(){
+        Step currentStep = workflowResolver.getCurrentStep();
+        Assert.assertEquals(currentStep.getSign(), StandardString.CONF_START_SIGN);
+
+        Transfer transfer = workflowConfig.getSteps().get(0).getTransfer();
+        List<Step> steps = workflowResolver.scatterTo(transfer);
+        Assert.assertEquals(steps.get(1).getSign(), "sign-3");
     }
 
     static String wf = "{\n" +
@@ -76,7 +92,8 @@ public class TestWorkflowResolver {
             "          {\"name\": \"test3\",  \"type\": \"int\", \"value\": 2}\n" +
             "        ],\n" +
             "\n" +
-            "        \"to\": \"sign-1\"\n" +
+            "        \"to\": \"sign-1\",\n" +
+            "        \"scatters\":[\"sign-2\", \"sign-3\"]" +
             "      }\n" +
             "    },\n" +
 
