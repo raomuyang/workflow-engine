@@ -11,12 +11,14 @@ public enum ResponseCode implements Serializable{
 
     UNKNOW(5000, "Unknow Exception"),
     BUILD_REQUEST_EXCEPTION(5001, "EXCEPTION IN BUILD REQUEST"),
-    PARAM_NULL_EXCEPTION(5002, "JSON object is null"),
     UNKNOW_HOST_EXCEPTION(5003, "UNKNOW HOST EXCEPTION"),
     UNKNOW_REQUEST_EXCEPTION(5004, "Unknow exception in request"),
     UNSUPPORTED_POTOCOL(5005, "UNSUPPORT REQUEST PORTOCOL"),
     UNSUPPORTED_REQUEST_METHOD(5006, "METHOD NOT SUPPORTED"),
     SOCKET_EXCEPTION(5007, "Exception happened when build socket connect"),
+
+    NULL_PARAM_EXCEPTION(4031, "JSON object is null"),
+    CONFIG_PARSE_ERROR(4032, "Can not resolved the params in config "),
 
     CLASS_NOT_FOUND(4041, "Class not found"),
     CLASS_INSTANCE_EXCEPTION(4042, "Class instance exception"),
