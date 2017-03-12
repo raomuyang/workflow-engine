@@ -1,3 +1,4 @@
+import com.google.gson.JsonElement;
 import org.junit.Assert;
 import org.junit.Test;
 import org.radrso.workflow.entities.config.items.Step;
@@ -22,6 +23,8 @@ public class TestStepResolver {
         StepExecuteResolver resolver = new StepExecuteResolver(step, params, paramNames);
         WFResponse response = resolver.netRequest();
         System.out.println(response.getResponse());
+        System.out.println(response.getResponse().getClass());
+        Assert.assertEquals(JsonElement.class.isAssignableFrom(response.getResponse().getClass()), true);
         Assert.assertEquals(step.getCall(), "http://www.tuling123.com/openapi/api");
         Assert.assertEquals(response.getResponse().toString().contains("40001"), true);
 
