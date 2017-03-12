@@ -1,6 +1,7 @@
 package org.radrso.workflow.resolvers;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import lombok.extern.log4j.Log4j;
 import org.apache.http.entity.ContentType;
 import org.radrso.workflow.RequestMethodMapping;
@@ -164,7 +165,7 @@ public class StepExecuteResolver {
                     step.getCall(),
                     method,
                     headers,
-                    JsonUtils.getJsonObject(paramMap),
+                    JsonUtils.getJsonElement(paramMap),
                     contentType,
                     true
             );
@@ -181,12 +182,14 @@ public class StepExecuteResolver {
         if(!response.isSuccess())
             wfResponse.setMsg(response.getErrorMsg());
         try {
-            if(response.getContentType().equals(ContentType.APPLICATION_JSON.toString())){
-                JsonObject object = JsonUtils.getJsonObject(response.getContent()).getAsJsonObject();
+            try {
+                JsonObject object = JsonUtils.getJsonElement(response.getContent()).getAsJsonObject();
                 wfResponse.setResponse(object);
-            }
-            else
+            }catch (JsonParseException e){
+                log.debug(e);
                 wfResponse.setResponse(response.getContent());
+            }
+
         }catch (Throwable e){
             log.error(String.format("[%s]", response.getContent()) + e.getMessage());
             wfResponse.setResponse(response.getContent());

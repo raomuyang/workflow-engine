@@ -22,7 +22,6 @@ public class TestRequestFactory {
     public void before(){
         headers.put("User-Agent",
                 "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
-        headers.put("Content-type", "text/plain");
     }
 
     @Test
@@ -47,7 +46,7 @@ public class TestRequestFactory {
         param.put("start", 1);
         param.put("count", "30");
         param.put("tag", "文字");
-        request = RequestFactory.createRequest(url, Method.GET , headers, JsonUtils.getJsonObject(param), null, true);
+        request = RequestFactory.createRequest(url, Method.GET , headers, JsonUtils.getJsonElement(param), null, true);
         response = request.sendRequest();
         Assert.assertEquals(response.getStatusCode(), 200);
         System.out.println("[DEBUG]---get---" + response.getContent());
@@ -56,7 +55,7 @@ public class TestRequestFactory {
         url = "https://api.douban.com/v2/user/~me";
         headers.put("Authorization", "Bearer a14afef0f66fcffce3e0fcd2e34f6ff4");
         try {
-            request = RequestFactory.createRequest(url, Method.GET , headers, JsonUtils.getJsonObject(param), null, true);
+            request = RequestFactory.createRequest(url, Method.GET , headers, JsonUtils.getJsonElement(param), null, true);
             request.sendRequest();
         }catch (RequestException e){
             Assert.assertEquals(e.getCode(), ResponseCode.HTTP_BAD_REQUEST);
@@ -87,7 +86,7 @@ public class TestRequestFactory {
         body.put("key", "no_api_key");
         body.put("info", "你好");
         body.put("userid", "123456");
-        request = RequestFactory.createRequest(url, Method.POST, headers, JsonUtils.getJsonObject(body), type, true);
+        request = RequestFactory.createRequest(url, Method.POST, headers, JsonUtils.getJsonElement(body), type, true);
         response = request.sendRequest();
         System.out.println("[DEBUG]---post---" + response.getContent());
         Assert.assertEquals(response.getStatusCode(), 200);

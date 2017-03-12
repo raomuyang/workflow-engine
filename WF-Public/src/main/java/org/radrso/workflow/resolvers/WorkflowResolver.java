@@ -18,7 +18,6 @@ import org.radrso.plugins.JsonUtils;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -260,7 +259,7 @@ public class WorkflowResolver implements Serializable{
 
     /**
      * 将配置文件中的表达式语句转为有效值
-     * @param paramStr 如{output}[sign-xxx][xxx][xxx]
+     * @param paramStr 如{output}[x-step-sign][xxx][xxx]
      * @return  返回转义之后的值
      */
     public Object resolverParamString(String paramStr) throws ConfigReadException, UnknowExceptionInRunning {
@@ -272,27 +271,29 @@ public class WorkflowResolver implements Serializable{
 
         if(paramStr.startsWith(StandardString.OUTPUT_VALUE)){
 
-            int i = 2;
+            int parseStrIndex = 2;
             String[] sp = null;
-            Object ret = null;
+            Object result = null;
             try {
+                // 去除所有的中括号[],分割
                 paramStr = paramStr.replaceAll("\\[", ".").replaceAll("]", "");
                 sp = paramStr.split("\\.");
+                // sp[1]是step-sign，即该step的id。初始时result为参数表达式的step返回值。WFResponse中的response才是返回值实体
                 Object output = stepStatusMap.get(sp[1]).getWfResponse().getResponse();
-                ret = output;
-                for (; i < sp.length; ++i) {
-                    Class c = ret.getClass();
+                result = output;
+                for (; parseStrIndex < sp.length; ++parseStrIndex) {
+                    Class c = result.getClass();
                     if("java.lang".equals(c.getName().substring(0, c.getName().lastIndexOf("."))))
-                        ret = ret;
+                        return result;
                     else
-                        ret = JsonUtils.getJsonObject(ret).getAsJsonObject().get(sp[i]);
+                        result = JsonUtils.getJsonElement(result).getAsJsonObject().get(sp[parseStrIndex]);
                 }
 
             }catch (IndexOutOfBoundsException e1){
                 log.error(e1);
                 errorMsg = "Read Config Error:" + e1;
             } catch (NullPointerException e2){
-                errorMsg = "No such value: " + paramStr + "/" + sp[i];
+                errorMsg = "No such value: " + paramStr + "/" + sp[parseStrIndex];
             } catch (Throwable e3){
                 log.debug(e3);
                 throw new UnknowExceptionInRunning("Exception in resolve param [%s]".format(paramStr) + "/case:" + e3 , e3);
@@ -300,7 +301,7 @@ public class WorkflowResolver implements Serializable{
 
             if(errorMsg != null)
                 throw new ConfigReadException(errorMsg);
-            return ret;
+            return result;
         }
         return paramStr;
     }
@@ -322,7 +323,7 @@ public class WorkflowResolver implements Serializable{
     }
 
     private String casePrimitiveType(String type){
-        if(type.indexOf(".") >= 0)
+        if(type.contains("."))
             return type;
 
         type = type.substring(0,1).toUpperCase() + type.substring(1).toLowerCase();
