@@ -16,6 +16,7 @@ import org.radrso.plugins.requests.entity.exceptions.impl.RequestException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 /**
@@ -23,6 +24,7 @@ import java.util.Map;
  */
 @Data
 public abstract class Request {
+    public static ContentType APPLICATION_FORM_UTF8 = ContentType.create(ContentType.APPLICATION_FORM_URLENCODED.getMimeType(), Charset.forName("utf-8"));
     protected String url;
     protected Method method;
     protected Object params;
@@ -171,7 +173,7 @@ public abstract class Request {
     }
     private void initRequestHeader(){
 
-//        headers.put("content_type", contentType.toString());
+        headers.put("content_type", contentType.toString());
         for(String key: headers.keySet())
             requestBase.setHeader(key, String.valueOf(headers.get(key)));
 
