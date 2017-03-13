@@ -5,20 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.radrso.workflow</groupId>
-    <version>1.0-SNAPSHOT</version>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-    <artifactId>WF-Plugins</artifactId>
+    <artifactId>org.radrso.plugins</artifactId>
+    <version>1.0</version>
+    <properties>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+    </properties>
     <packaging>jar</packaging>
 
     <dependencies>
