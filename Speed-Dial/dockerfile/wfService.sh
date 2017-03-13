@@ -13,7 +13,7 @@ if [ x != x$HOST_IP ];then
   cp /etc/hosts /etc/hosts.t
   sed -i 's/1.*'$(hostname)'/'`HOST_IP`'    '`hostname`'/g' /etc/hosts.t
   cat /etc/hosts.t > /etc/hosts
-  echo "USE DEFAULT HOST_IP: "$HOST_IP
+  printf "\e[0;32;1mUSE DEFAULT HOST_IP: ${HOST_IP}\e[0m \n"
 fi
 
 function execute(){
@@ -29,10 +29,10 @@ function execute(){
     fi
 
     if [ P = P$ARG ]; then
-            echo "NEED PARAM [provider | service]"
-            exit
+            printf "\e[1;33m[INFO] NEED PARAM [provider | service]\e[0m \n"
+            exit 1
     fi
-    echo "[EXECUTE] "$P
+    printf "\e[1;33m[INFO] EXECUTE ${P} \e[0m \n"
     rm $P'.jar' -f
     cd $P
 
@@ -46,19 +46,19 @@ function execute(){
 
     IP=$ARG
     if [ IP = IP$ARG ]; then
-      echo "NEED PARAM [ --ip host-ip-address ]"
-      exit 1
+      printf "\e[1;31m[INFO]Need Param [ --ip host-ip-address ]\e[0m \n"
+      exit 2
     fi
 
     ip=$(echo $IP | grep "^-")
     if [ x$ip != x ]; then
-      echo "HOST IP FORMAT ERROR: "$ip
-      exit 1
+      printf "\e[1;31m[INFO] HOST IP FORMAT ERROR: ${ip}\e[0m \n"
+      exit 3
     fi
 
-    echo "[USE HOST_IP] "$IP
+    printf "\e[1;33m[INFO] [USE HOST_IP] ${IP}\e[0m \n"
     cp /etc/hosts /etc/hosts.t
-    sed -i 's/.*'$(hostname)'/'$IP'    '`hostname`'\n/g' /etc/hosts.t
+    sed -i 's/.*'$(hostname)'/'${IP}'    '`hostname`'\n/g' /etc/hosts.t
     cat /etc/hosts.t > /etc/hosts
 
   fi
