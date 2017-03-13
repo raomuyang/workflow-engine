@@ -3,7 +3,7 @@ package org.radrso.plugins.requests;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.apache.http.entity.ContentType;
-import org.radrso.plugins.requests.entity.Method;
+import org.radrso.plugins.requests.entity.MethodEnum;
 import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
 import org.radrso.plugins.requests.entity.exceptions.impl.RequestException;
 
@@ -18,17 +18,17 @@ import java.util.Map;
 public class RequestFactory {
 
     private String url;
-    private Method method = Method.GET;
+    private MethodEnum method = MethodEnum.GET;
     private Map<String, String> headers;
     private Object params;
     private ContentType contentType;
     private boolean usePool;
 
-    public static Request createRequest(String url, Method method, Map<String, Object> headers,
-                                        Object params, ContentType contentType, Boolean usePool) throws RequestException {
+    public static BaseRequest createRequest(String url, MethodEnum method, Map<String, Object> headers,
+                                            Object params, ContentType contentType, Boolean usePool) throws RequestException {
         String protocol = url.substring(0,url.indexOf(":"));
-        Constructor<Request> constructor = getConstructor(protocol);
-        Request request;
+        Constructor<BaseRequest> constructor = getConstructor(protocol);
+        BaseRequest request;
 
         try {
             request = constructor.newInstance(url, method, headers, params, contentType, usePool);
@@ -42,7 +42,7 @@ public class RequestFactory {
     }
 
 
-    private static Constructor<Request> getConstructor(String portocol) throws RequestException {
+    private static Constructor<BaseRequest> getConstructor(String portocol) throws RequestException {
         portocol = portocol.toLowerCase();
         char[] cs = portocol.toCharArray();
         cs[0] -= 32;
@@ -55,7 +55,7 @@ public class RequestFactory {
 
             Constructor constructor = clazz.getConstructor(
                     String.class,
-                    Method.class,
+                    MethodEnum.class,
                     Map.class,
                     Object.class,
                     ContentType.class,

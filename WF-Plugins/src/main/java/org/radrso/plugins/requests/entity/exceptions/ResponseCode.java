@@ -6,7 +6,7 @@ import java.io.Serializable;
 /**
  * Created by raomengnan on 16-12-9.
  */
-public enum ResponseCode implements Serializable{
+public enum ResponseCode implements Serializable {
 
 
     UNKNOW(5000, "Unknow Exception"),
@@ -41,11 +41,17 @@ public enum ResponseCode implements Serializable{
 
     int code;
     String info;
+
     ResponseCode(int c, String intro) {
         this.code = c;
         this.info = intro;
     }
 
-    public int code(){return code;}
-    public String info(){return this.info;}
+    public int code() {
+        return code;
+    }
+
+    public String info() {
+        return this.info;
+    }
 }

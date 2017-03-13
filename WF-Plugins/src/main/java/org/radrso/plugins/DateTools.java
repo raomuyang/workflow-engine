@@ -11,6 +11,9 @@ import java.util.Date;
  */
 public class DateTools {
 
+    private DateTools() {
+    }
+
     public static Date getDateBeforXDay(Date d, int day) {
         Calendar now = Calendar.getInstance();
         now.setTime(d);
@@ -20,14 +23,14 @@ public class DateTools {
 
     public static Date getDateBeforXDay(Timestamp d, int day) {
         Date date = new Date(d.getTime());
-        return getDateBeforXDay(date,day);
+        return getDateBeforXDay(date, day);
     }
 
-    public static Date getDateAfter(Date d, long mills){
+    public static Date getDateAfter(Date d, long mills) {
         return new Date(d.getTime() + mills);
     }
 
-    public static Date getDateAfterXDay(Date d, int day){
+    public static Date getDateAfterXDay(Date d, int day) {
         Calendar now = Calendar.getInstance();
         now.setTime(d);
         now.set(Calendar.DATE, now.get(Calendar.DATE) + day);
@@ -36,15 +39,15 @@ public class DateTools {
 
     public static Date getDateAfterXDay(Timestamp d, int day) {
         Date date = new Date(d.getTime());
-        return getDateAfterXDay(date,day);
+        return getDateAfterXDay(date, day);
     }
 
-    public static String dateFormat(Date date, String format){
+    public static String dateFormat(Date date, String format) {
         SimpleDateFormat df = new SimpleDateFormat(format);
         return df.format(date);
     }
 
-    public static Date string2Date(String dateStr){
+    public static Date string2Date(String dateStr) {
         try {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             return df.parse(dateStr);

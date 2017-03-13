@@ -11,14 +11,14 @@ public class BeanFactoryUtils {
     public final static String APPLICATION_CONTEXT_ROOT = "";
     public final static String APPLICATION_CONTEXT_PATH = APPLICATION_CONTEXT_ROOT + "applicationContext.xml";
 
-    public static void init(){
-        if(ctx_provider == null){
+    public static void init() {
+        if (ctx_provider == null) {
             String[] configLocations = new String[]{APPLICATION_CONTEXT_PATH};
             ctx_provider = new ClassPathXmlApplicationContext(configLocations);
         }
     }
 
-    public static ClassPathXmlApplicationContext getContext(){
+    public static ClassPathXmlApplicationContext getContext() {
         init();
         return ctx_provider;
     }

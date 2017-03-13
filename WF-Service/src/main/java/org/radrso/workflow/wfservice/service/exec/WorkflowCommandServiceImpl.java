@@ -3,7 +3,7 @@ package org.radrso.workflow.wfservice.service.exec;
 import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.FileUtils;
 import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
-import org.radrso.workflow.StandardString;
+import org.radrso.workflow.ConfigConstant;
 import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;
@@ -26,7 +26,7 @@ import java.util.List;
 @Service
 @Log4j
 public class WorkflowCommandServiceImpl implements WorkflowCommandService{
-    public static final String ROOT = StandardString.SERVICE_JAR_HOME;
+    public static final String ROOT = ConfigConstant.SERVICE_JAR_HOME;
 
     @Autowired
     protected WorkflowInstanceExecutor workflowInstanceExecutor;

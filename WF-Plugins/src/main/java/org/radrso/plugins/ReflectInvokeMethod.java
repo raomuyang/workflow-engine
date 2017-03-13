@@ -8,6 +8,9 @@ import java.lang.reflect.Method;
  */
 public class ReflectInvokeMethod {
 
+    private ReflectInvokeMethod() {
+    }
+
     public static Object invoke(Class clazz, Object instance, String methodName) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Object ret = clazz.getMethod(methodName).invoke(instance);
         return ret;
@@ -16,7 +19,7 @@ public class ReflectInvokeMethod {
     public static Object invoke(Class clazz, Object instance, String methodName, Object... args) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         Class[] argClasses1 = new Class[]{};
         Class[] argClasses2 = new Class[]{};
-        if(args != null) {
+        if (args != null) {
             argClasses1 = new Class[args.length];
             argClasses2 = new Class[args.length];
 
@@ -40,7 +43,7 @@ public class ReflectInvokeMethod {
                         case "Short":
                             argClasses2[i] = short.class;
                     }
-                }else if ("Boolean".equals(cla.getSimpleName()))
+                } else if ("Boolean".equals(cla.getSimpleName()))
                     argClasses2[i] = boolean.class;
             }
         }

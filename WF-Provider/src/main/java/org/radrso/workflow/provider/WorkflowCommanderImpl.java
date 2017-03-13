@@ -4,7 +4,7 @@ import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.CustomClassLoader;
 import org.radrso.plugins.FileUtils;
 import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
-import org.radrso.workflow.StandardString;
+import org.radrso.workflow.ConfigConstant;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.rmi.WorkflowCommander;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import java.io.IOException;
 @Log4j
 @Service
 public class WorkflowCommanderImpl implements WorkflowCommander{
-    public static final String ROOT = StandardString.PROVIDER_JAR_HOME;
+    public static final String ROOT = ConfigConstant.PROVIDER_JAR_HOME;
 
     /**
      *

@@ -6,10 +6,12 @@ import java.io.*;
  * Created by Raomengnan on 2016/9/4.
  */
 public class FileUtils {
+    private FileUtils() {
+    }
 
-    public static boolean deleteFile(String path){
+    public static boolean deleteFile(String path) {
         File file = new File(path);
-        if(file.exists())
+        if (file.exists())
             return file.delete();
         return false;
     }
@@ -18,14 +20,14 @@ public class FileUtils {
         FileOutputStream outputStream = null;
         try {
             File filePath = new File(path);
-            if(!filePath.exists())
+            if (!filePath.exists())
                 filePath.mkdirs();
 
             File file = new File(filePath, name);
             outputStream = new FileOutputStream(file);
             outputStream.write(bytes);
-        }finally {
-            if(outputStream != null)
+        } finally {
+            if (outputStream != null)
                 try {
                     outputStream.close();
                 } catch (IOException e) {
@@ -37,8 +39,8 @@ public class FileUtils {
 
     }
 
-    public static byte[] getByte(File file){
-        if(file == null || !file.exists())
+    public static byte[] getByte(File file) {
+        if (file == null || !file.exists())
             return null;
         FileInputStream is = null;
         ByteArrayOutputStream bos = null;
@@ -50,12 +52,12 @@ public class FileUtils {
             int len = 0;
             while ((len = is.read(buf)) != -1)
                 bos.write(buf, 0, len);
-            buffer =  bos.toByteArray();
+            buffer = bos.toByteArray();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
                 is.close();
                 bos.close();
@@ -66,7 +68,7 @@ public class FileUtils {
         return buffer;
     }
 
-    public byte[] getByte(String filePath){
+    public byte[] getByte(String filePath) {
         return getByte(new File(filePath));
     }
 
@@ -83,12 +85,12 @@ public class FileUtils {
     }
 
 
-    public static String getUserHome(){
+    public static String getUserHome() {
         String path = System.getProperties().getProperty("user.home") + File.separator;
         return path;
     }
 
-    public static String getProjectHome(){
+    public static String getProjectHome() {
         return System.getProperty("user.dir") + File.separator;
     }
 

@@ -2,7 +2,7 @@ package org.radrso.workflow.wfservice.service.impl;
 
 import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.FileUtils;
-import org.radrso.workflow.StandardString;
+import org.radrso.workflow.ConfigConstant;
 import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
 import org.radrso.workflow.wfservice.repositories.WorkflowRepository;
@@ -82,7 +82,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 
     @Override
     public boolean transferJarFile(String application, MultipartFile originFile) {
-        String jarRoots = StandardString.SERVICE_JAR_HOME + application + File.separator;
+        String jarRoots = ConfigConstant.SERVICE_JAR_HOME + application + File.separator;
         String originalFileName = originFile.getOriginalFilename();
         try {
            return FileUtils.writeFile(jarRoots , originalFileName, originFile.getBytes());

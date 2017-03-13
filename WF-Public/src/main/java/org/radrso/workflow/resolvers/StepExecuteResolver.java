@@ -5,15 +5,15 @@ import com.google.gson.JsonParseException;
 import lombok.extern.log4j.Log4j;
 import org.apache.http.entity.ContentType;
 import org.radrso.workflow.RequestMethodMapping;
-import org.radrso.workflow.StandardString;
+import org.radrso.workflow.ConfigConstant;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.plugins.CustomClassLoader;
 import org.radrso.plugins.JsonUtils;
 import org.radrso.plugins.ReflectInvokeMethod;
-import org.radrso.plugins.requests.Request;
+import org.radrso.plugins.requests.BaseRequest;
 import org.radrso.plugins.requests.RequestFactory;
-import org.radrso.plugins.requests.entity.Method;
+import org.radrso.plugins.requests.entity.MethodEnum;
 import org.radrso.plugins.requests.entity.Response;
 import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
 import org.radrso.plugins.requests.entity.exceptions.impl.RequestException;
@@ -97,7 +97,7 @@ public class StepExecuteResolver {
 
         ContentType contentType = ContentType.APPLICATION_JSON;
         //获取请求方法 GET/PUT/POST/DELETE
-        Method method = null;
+        MethodEnum method = null;
         try {
             method = RequestMethodMapping.getMethod(step.getMethod());
         } catch (RequestException e) {
@@ -133,8 +133,8 @@ public class StepExecuteResolver {
                 headers.put(paramNames[i].substring(1), params[i]);
             }
 
-            else if(paramNames[i].matches(StandardString.VALUES_ESCAPE)){
-                String[] matchers = StandardString.matcherValuesEscape(paramNames[i]);
+            else if(paramNames[i].matches(ConfigConstant.VALUES_ESCAPE)){
+                String[] matchers = ConfigConstant.matcherValuesEscape(paramNames[i]);
                 if(matchers.length > 1)
                     paramMap.put(paramNames[i], params[i]);
                 else {
@@ -147,7 +147,7 @@ public class StepExecuteResolver {
         }
 
         String url = step.getCall();
-        String[] replaces = StandardString.matcherValuesEscape(url);
+        String[] replaces = ConfigConstant.matcherValuesEscape(url);
         if (replaces.length > 0)
             for(String key: replaces)
                 url = url.replace(key, String.valueOf(urlParams.get(key)));
@@ -156,9 +156,9 @@ public class StepExecuteResolver {
         return sendNetRequest(method, headers, paramMap, contentType);
     }
 
-    private WFResponse sendNetRequest(Method method, Map headers, Map paramMap, ContentType contentType){
+    private WFResponse sendNetRequest(MethodEnum method, Map headers, Map paramMap, ContentType contentType){
         // 通过请求工厂创建请求，发送请求
-        Request request = null;
+        BaseRequest request = null;
         Response response = null;
         try {
             request = RequestFactory.createRequest(

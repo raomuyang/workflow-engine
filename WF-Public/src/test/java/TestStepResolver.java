@@ -10,10 +10,11 @@ import org.radrso.workflow.resolvers.StepExecuteResolver;
  */
 public class TestStepResolver {
     @Test
-    public void testClassRequest(){}
+    public void testClassRequest() {
+    }
 
     @Test
-    public void testNetRequest(){
+    public void testNetRequest() {
         Step step = new Step();
         step.setCall("http://www.tuling123.com/openapi/{endpoint}");
         step.setMethod("POsT");

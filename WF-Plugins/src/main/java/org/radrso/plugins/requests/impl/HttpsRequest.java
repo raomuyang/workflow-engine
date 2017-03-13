@@ -13,8 +13,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.ssl.SSLContexts;
-import org.radrso.plugins.requests.Request;
-import org.radrso.plugins.requests.entity.Method;
+import org.radrso.plugins.requests.BaseRequest;
+import org.radrso.plugins.requests.entity.MethodEnum;
 
 import javax.net.ssl.SSLContext;
 import java.security.KeyManagementException;
@@ -27,9 +27,9 @@ import java.util.Map;
 /**
  * Created by raomengnan on 16-12-10.
  */
-public class HttpsRequest extends Request {
+public class HttpsRequest extends BaseRequest {
 
-    public HttpsRequest(String url, Method method, Map<String, Object> headers,
+    public HttpsRequest(String url, MethodEnum method, Map<String, Object> headers,
                         Object params, ContentType contentType, Boolean usePool) throws ReflectiveOperationException  {
         super(url, method, headers,params, contentType, usePool);
     }

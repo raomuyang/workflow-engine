@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 /**
  * Created by raomengnan on 17-1-20.
  */
-public interface StandardString {
+public interface ConfigConstant {
      String PROVIDER_JAR_HOME = FileUtils.getProjectHome() + File.separator + "provider-jars" + File.separator;
      String SERVICE_JAR_HOME = FileUtils.getProjectHome() + File.separator + "service-jars" + File.separator;
 
