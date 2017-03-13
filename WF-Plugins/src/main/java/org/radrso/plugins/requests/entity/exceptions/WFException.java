@@ -7,24 +7,25 @@ package org.radrso.plugins.requests.entity.exceptions;
 public class WFException extends Exception {
     protected ResponseCode code;
 
-    public WFException(){
+    public WFException() {
         super();
     }
 
-    public WFException(ResponseCode code){
+    public WFException(ResponseCode code) {
         this(code.info(), code);
     }
 
-    public WFException(String message, ResponseCode code){
+    public WFException(String message, ResponseCode code) {
         super(message);
         this.code = code;
     }
 
-    public WFException(ResponseCode code, Throwable cause){
+    public WFException(ResponseCode code, Throwable cause) {
         super(cause);
         this.code = code;
     }
-    public WFException(String message, ResponseCode code, Throwable cause){
+
+    public WFException(String message, ResponseCode code, Throwable cause) {
         super(message, cause);
         this.code = code;
     }
@@ -38,7 +39,7 @@ public class WFException extends Exception {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return super.toString() + "," + code.code();
     }
 }

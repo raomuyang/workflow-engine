@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 @Data
 @ToString
-public class Response implements Serializable{
+public class Response implements Serializable {
     private String content;
     private int statusCode;
     private String errorMsg;
@@ -25,7 +25,7 @@ public class Response implements Serializable{
         this.content = getContent(response);
         this.statusCode = response.getStatusLine().getStatusCode();
         this.success = (statusCode / 100 == 2);
-        if(response.getEntity().getContentType() != null)
+        if (response.getEntity().getContentType() != null)
             this.contentType = response.getEntity().getContentType().getValue();
     }
 

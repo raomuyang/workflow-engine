@@ -2,7 +2,7 @@ package org.radrso.workflow.resolvers;
 
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
-import org.radrso.workflow.StandardString;
+import org.radrso.workflow.ConfigConstant;
 import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.radrso.workflow.entities.config.items.InputItem;
 import org.radrso.workflow.entities.config.items.Judge;
@@ -64,10 +64,10 @@ public class WorkflowResolver implements Serializable{
 
     public Step getCurrentStep(){
         if(currentStep == null && stepMap.size() > 0) {
-            Step s = this.stepMap.get(StandardString.CONF_START_SIGN);
+            Step s = this.stepMap.get(ConfigConstant.CONF_START_SIGN);
             this.currentStep = s;
             if(currentStep != null)
-                workflowInstance.getStepProcess().put(StandardString.CONF_START_SIGN, Step.RUNNING);
+                workflowInstance.getStepProcess().put(ConfigConstant.CONF_START_SIGN, Step.RUNNING);
         }
 
         return currentStep;
@@ -138,7 +138,7 @@ public class WorkflowResolver implements Serializable{
         Step step = getCurrentStep();
         if(step == null)
             return true;
-        if(getCurrentStep().getSign().equals(StandardString.CONF_FINISH_SIGN))
+        if(getCurrentStep().getSign().equals(ConfigConstant.CONF_FINISH_SIGN))
             return true;
         return false;
     }
@@ -266,10 +266,10 @@ public class WorkflowResolver implements Serializable{
 
         String errorMsg = null;
 
-        if(paramStr.toLowerCase().equals(StandardString.CONF_INSTANCE_ID_VALUE))
+        if(paramStr.toLowerCase().equals(ConfigConstant.CONF_INSTANCE_ID_VALUE))
             return workflowInstance.getInstanceId();
 
-        if(paramStr.startsWith(StandardString.OUTPUT_VALUE)){
+        if(paramStr.startsWith(ConfigConstant.OUTPUT_VALUE)){
 
             int parseStrIndex = 2;
             String[] sp = null;

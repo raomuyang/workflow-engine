@@ -14,20 +14,23 @@ import java.util.List;
 @Log4j
 public class JsonUtils {
 
-    public static <T> T mapToBean(String jsonStr, Class<T> clazz){
+    private JsonUtils() {
+    }
+
+    public static <T> T mapToBean(String jsonStr, Class<T> clazz) {
         Gson gson = new Gson();
         return gson.fromJson(jsonStr, clazz);
     }
 
-    public static <T> T mapToBean(JsonElement e, Class<T> clazz){
+    public static <T> T mapToBean(JsonElement e, Class<T> clazz) {
         return new Gson().fromJson(e, clazz);
     }
 
-    public static List mapToList(String jsonStr){
+    public static List mapToList(String jsonStr) {
         List l = null;
         try {
             l = mapToBean(jsonStr, List.class);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(e);
             l = new ArrayList();
             l.add(jsonStr);
@@ -35,7 +38,7 @@ public class JsonUtils {
         return l;
     }
 
-    public static <T> T loadJsonFile(String filePath, Class<T> clazz){
+    public static <T> T loadJsonFile(String filePath, Class<T> clazz) {
 
         FileInputStream fileInputStream = null;
         try {
@@ -49,9 +52,9 @@ public class JsonUtils {
             return gson.fromJson(reader, clazz);
         } catch (FileNotFoundException e) {
             log.error(e.getMessage());
-        }finally {
+        } finally {
             try {
-                if(fileInputStream != null)
+                if (fileInputStream != null)
                     fileInputStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -60,17 +63,17 @@ public class JsonUtils {
         return null;
     }
 
-    public static JsonElement getJsonElement(Object o){
-        if(String.class.isAssignableFrom(o.getClass()))
+    public static JsonElement getJsonElement(Object o) {
+        if (String.class.isAssignableFrom(o.getClass()))
             return new JsonParser().parse(o.toString());
-        if(JsonElement.class.isAssignableFrom(o.getClass()))
+        if (JsonElement.class.isAssignableFrom(o.getClass()))
             return (JsonElement) o;
         String json = new Gson().toJson(o);
         JsonElement element = new JsonParser().parse(json);
         return element;
     }
 
-    public static JsonArray getJsonArray(Object o){
+    public static JsonArray getJsonArray(Object o) {
         String json = new Gson().toJson(o);
         JsonElement element = new JsonParser().parse(json);
         return element.getAsJsonArray();

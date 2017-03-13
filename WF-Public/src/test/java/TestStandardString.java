@@ -1,6 +1,6 @@
 import org.junit.Assert;
 import org.junit.Test;
-import org.radrso.workflow.StandardString;
+import org.radrso.workflow.ConfigConstant;
 
 /**
  * Created by rao-mengnan on 2017/3/12.
@@ -8,12 +8,12 @@ import org.radrso.workflow.StandardString;
 public class TestStandardString {
 
     @Test
-    public void testMatcher(){
+    public void testMatcher() {
         String str = "{asdf}{ghjk}{lmnb}";
-        String[] matchers0 = StandardString.matcherValuesEscape(str);
+        String[] matchers0 = ConfigConstant.matcherValuesEscape(str);
         Assert.assertEquals(matchers0[1], "{ghjk}");
 
-        String[] matchers1 = StandardString.matcherValuesEscape(str, 1);
+        String[] matchers1 = ConfigConstant.matcherValuesEscape(str, 1);
         Assert.assertEquals(matchers1[2], "lmnb");
     }
 }

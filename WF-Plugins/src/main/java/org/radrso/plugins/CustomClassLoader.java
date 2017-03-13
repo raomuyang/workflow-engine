@@ -16,6 +16,7 @@ public class CustomClassLoader extends URLClassLoader {
 
     private static volatile CustomClassLoader customClassLoader;
     private static volatile List<URL> urls = new ArrayList<>();
+
     static {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
@@ -30,7 +31,7 @@ public class CustomClassLoader extends URLClassLoader {
         }));
     }
 
-    public static CustomClassLoader getClassLoader(){
+    public static CustomClassLoader getClassLoader() {
 
         if (customClassLoader == null) {
             URL[] urls = new URL[]{};
@@ -39,9 +40,10 @@ public class CustomClassLoader extends URLClassLoader {
         return customClassLoader;
     }
 
-    private CustomClassLoader(URL[] urls){
+    private CustomClassLoader(URL[] urls) {
         super(urls);
     }
+
     private CustomClassLoader(URL[] urls, ClassLoader parent) {
         super(urls, parent);
     }
@@ -51,7 +53,7 @@ public class CustomClassLoader extends URLClassLoader {
     }
 
 
-    public void addJar(URL url){
+    public void addJar(URL url) {
         this.addURL(url);
         urls.add(url);
     }
@@ -62,7 +64,7 @@ public class CustomClassLoader extends URLClassLoader {
         urls.add(url);
     }
 
-    public static List<URL> getUrls(){
+    public static List<URL> getUrls() {
         return urls;
     }
 

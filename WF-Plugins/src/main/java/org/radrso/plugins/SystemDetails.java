@@ -3,6 +3,7 @@ package org.radrso.plugins;
 /**
  * Created by raomengnan on 16-12-2.
  */
+
 import lombok.Data;
 import lombok.ToString;
 
@@ -20,26 +21,26 @@ public class SystemDetails {
     private String osArch;
     private String osVersion;
 
-    public SystemDetails(){
+    public SystemDetails() {
         setTimeZone();
         setCurrentTime();
         setOS();
     }
 
-    private void setTimeZone(){
+    private void setTimeZone() {
         Calendar cal = Calendar.getInstance();
         TimeZone timeZ = cal.getTimeZone();
-        timeZone =  timeZ.getDisplayName();
+        timeZone = timeZ.getDisplayName();
     }
 
-    private void setCurrentTime(){
+    private void setCurrentTime() {
         String fromFormat = "yyyy-MM-dd HH:mm:ss";
         SimpleDateFormat format = new SimpleDateFormat(fromFormat);
         Date myDate = new Date();
         currentTime = format.format(myDate);
     }
 
-    private void setOS(){
+    private void setOS() {
         os = System.getProperty("os.name"); //操作系统名称
         osArch = System.getProperty("os.arch"); //操作系统构架
         osVersion = System.getProperty("os.version"); //操作系统版本

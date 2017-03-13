@@ -2,7 +2,7 @@ import com.google.gson.Gson;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.radrso.workflow.StandardString;
+import org.radrso.workflow.ConfigConstant;
 import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.config.items.Transfer;
@@ -26,7 +26,7 @@ public class TestWorkflowResolver {
     WorkflowConfig workflowConfig;
 
     @Before
-    public void before(){
+    public void before() {
         workflowConfig = new Gson().fromJson(wf, WorkflowConfig.class);
         workflowInstance = new WorkflowInstance("workflow-test", "instance-test");
         workflowResolver = new WorkflowResolver(workflowConfig, workflowInstance);
@@ -64,9 +64,9 @@ public class TestWorkflowResolver {
     }
 
     @Test
-    public void testScatterTo(){
+    public void testScatterTo() {
         Step currentStep = workflowResolver.getCurrentStep();
-        Assert.assertEquals(currentStep.getSign(), StandardString.CONF_START_SIGN);
+        Assert.assertEquals(currentStep.getSign(), ConfigConstant.CONF_START_SIGN);
 
         Transfer transfer = workflowConfig.getSteps().get(0).getTransfer();
         List<Step> steps = workflowResolver.scatterTo(transfer);
@@ -109,7 +109,7 @@ public class TestWorkflowResolver {
 
             "        \"input\": [\n" +
             "          {\"name\": \"test1\",  \"type\": \"String\", \"value\": \"{output}[sign-1][test1]\"},\n" +
-            "          {\"name\": \"test2\",  \"type\": \"double\", \"value\": \"{output}[sign-1][test2]\"}\n"+
+            "          {\"name\": \"test2\",  \"type\": \"double\", \"value\": \"{output}[sign-1][test2]\"}\n" +
             "        ],\n" +
 
             "        \"to\": \"sign-3\"  \n" +
@@ -160,7 +160,6 @@ public class TestWorkflowResolver {
             "        \"to\": \"&FINISH\"\n" +
             "      }\n" +
             "    },\n" +
-
 
 
             "    {\n" +
