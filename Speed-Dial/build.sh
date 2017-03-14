@@ -29,6 +29,10 @@ if [ x${COMMAND} = x'-b' ] || [ x${COMMAND} = x'--build' ] ; then
     if [ ! -d Speed-Dial/dockerfile/${WF_SERVICE_FLOODER} ]; then
         mkdir Speed-Dial/dockerfile/${WF_SERVICE_FLOODER}
     fi
+
+    rm -rf Speed-Dial/dockerfile/${WF_PROVIDER_FLO0DER}/*
+    rm -rf Speed-Dial/dockerfile/${WF_SERVICE_FLOODER}/*
+
     tar -zxvf WF-Service/target/Workflow-Engine-*.jar -C Speed-Dial/dockerfile/${WF_SERVICE_FLOODER}/
     tar -zxvf WF-Provider/target/Workflow-Engine-*.jar -C Speed-Dial/dockerfile/${WF_PROVIDER_FLO0DER}/
 
