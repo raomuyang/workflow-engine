@@ -1,4 +1,4 @@
-package org.radrso.workflow.wfservice.service.exec;
+package org.radrso.workflow.wfservice.executor;
 
 import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.FileUtils;
@@ -10,28 +10,31 @@ import org.radrso.workflow.entities.exceptions.WFRuntimeException;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.entities.wf.WorkflowErrorLog;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
-import org.radrso.workflow.resolvers.WorkflowResolver;
-import org.radrso.workflow.rmi.WorkflowCommander;
-import org.radrso.workflow.rmi.WorkflowInstanceExecutor;
-import org.radrso.workflow.wfservice.service.*;
+import org.radrso.workflow.persistence.BaseWorkflowSynchronize;
+import org.radrso.workflow.rmi.WorkflowFilesSync;
+import org.radrso.workflow.rmi.WorkflowExecutor;
+import org.radrso.workflow.wfservice.service.WorkflowExecuteStatusService;
+import org.radrso.workflow.wfservice.service.WorkflowInstanceService;
+import org.radrso.workflow.wfservice.service.WorkflowLogService;
+import org.radrso.workflow.wfservice.service.WorkflowService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.util.List;
 
 /**
- * Created by raomengnan on 17-1-19.
+ * Created by rao-mengnan on 2017/3/14.
  */
-@Service
+@Component
 @Log4j
-public class WorkflowCommandServiceImpl implements WorkflowCommandService{
+public class WorkflowSyncironze implements BaseWorkflowSynchronize{
     public static final String ROOT = ConfigConstant.SERVICE_JAR_HOME;
 
     @Autowired
-    protected WorkflowInstanceExecutor workflowInstanceExecutor;
+    protected WorkflowExecutor workflowExecutor;
     @Autowired
-    protected WorkflowCommander workflowCommander;
+    protected WorkflowFilesSync workflowFilesSync;
 
     @Autowired
     protected WorkflowService workflowService;
@@ -42,61 +45,61 @@ public class WorkflowCommandServiceImpl implements WorkflowCommandService{
     @Autowired
     protected WorkflowLogService workflowLogService;
 
-
+    /**
+     * 将jar导入到默认的jar文件夹目录下
+     * @param workflowId 根据workflowId找到workflow配置，并根以此定义jar的目录
+     * @return
+     */
     @Override
-    public boolean haveJarsDefine(String workflowId){
-        WorkflowConfig workflowConfig = workflowService.getByWorkflowId(workflowId);
-        if(workflowConfig == null)
-            return false;
-        List<String> jars = workflowConfig.getJars();
-        if(jars == null || jars.size() == 0)
-            return false;
-        return true;
-    }
-
-    @Override
-    public void importJars(String workflowId) {
+    public boolean importJars(String workflowId) {
         WorkflowConfig workflowConfig = workflowService.getByWorkflowId(workflowId);
         String app = workflowConfig.getApplication();
         String jarsRoot = ROOT + app + File.separator ;
         List<String> jars = workflowConfig.getJars();
         if(jars == null)
-            return;
+            return false;
 
         jars.forEach(j->{
             File jarFile = new File(jarsRoot + j);
             if(!jarFile.exists())
                 throw new WFRuntimeException(WFRuntimeException.JAR_FILE_NO_FOUND + String.format("[%s]", jarsRoot + j));
 
-            WFResponse response = workflowCommander.checkAndImportJar(app, j);
+            WFResponse response = workflowFilesSync.checkAndImportJar(app, j);
             if(response.getCode() == ResponseCode.JAR_FILE_NOT_FOUND.code()) {
                 log.info(String.format("UPLOAD Local JAR[%s]", app + "/" + j));
-                response = workflowCommander.importJar(app, j, FileUtils.getByte(jarFile));
+                response = workflowFilesSync.importJar(app, j, FileUtils.getByte(jarFile));
             }else
                 log.info(String.format("NEEDN'T UPLOAD FILE[%s]", app + "/" + j));
 
             if(response.getCode() / 100 != 2)
                 throw new WFRuntimeException("Jar file upload failed:" + response.getMsg());
         });
+        return true;
     }
 
     @Override
-    public boolean logError(WorkflowErrorLog log){
+    public boolean logError(WorkflowErrorLog log) {
         return workflowLogService.save(log);
     }
 
     @Override
-    public boolean updateInstance(WorkflowInstance instance){
+    public boolean updateInstance(WorkflowInstance instance) {
         return workflowInstanceService.save(instance);
     }
 
     @Override
-    public WFResponse execute(Step step, Object[] params, String[] paramNames){
-        return workflowInstanceExecutor.execute(step, params, paramNames);
+    public WorkflowConfig getWorkflow(String instanceId) {
+        WorkflowInstance instance = workflowInstanceService.getByInstanceId(instanceId);
+        return workflowService.getByWorkflowId(instance.getWorkflowId());
     }
 
+    /**
+     *
+     * @param workflowId 工作流(配置)的ID
+     * @return CREATED = "created";START = "started";STOP = "stopped";EXCEPTION = "exception";
+     */
     @Override
-    public String getWFStatus(String workflowId){
+    public String getWorkflowStatus(String workflowId) {
         WorkflowConfig workflowConfig = workflowService.getByWorkflowId(workflowId);
         if(workflowConfig == null)
             return null;
@@ -105,12 +108,7 @@ public class WorkflowCommandServiceImpl implements WorkflowCommandService{
     }
 
     @Override
-    public WorkflowResolver branchInstance(String instanceId){
-        WorkflowInstance instance = workflowInstanceService.getByInstanceId(instanceId);
-        if(instance == null)
-            return null;
-        WorkflowConfig config = workflowService.getByWorkflowId(instance.getWorkflowId());
-        WorkflowInstance newInstance = new WorkflowInstance(config.getId(), instanceId);
-        return new WorkflowResolver(config, newInstance);
+    public WFResponse startStep(Step step, Object[] params, String[] paramNames) {
+        return workflowExecutor.execute(step, params, paramNames);
     }
 }

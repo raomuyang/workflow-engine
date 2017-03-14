@@ -1,4 +1,4 @@
-package org.radrso.workflow.wfservice.subscribe;
+package org.radrso.workflow.exec.base;
 
 import org.radrso.workflow.resolvers.WorkflowResolver;
 import rx.Subscriber;
@@ -10,9 +10,9 @@ import rx.Subscriber;
 public class StepSubscriber extends Subscriber<WorkflowResolver> {
 
     private WorkflowResolver workflowResolver;
-    private StepAction stepAction;
+    private BaseStepAction stepAction;
 
-    public StepSubscriber(StepAction action){
+    public StepSubscriber(BaseStepAction action){
         this.stepAction = action;
     }
 

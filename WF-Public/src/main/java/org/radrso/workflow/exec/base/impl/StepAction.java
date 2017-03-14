@@ -1,9 +1,10 @@
-package org.radrso.workflow.wfservice.subscribe.impl;
+package org.radrso.workflow.exec.base.impl;
 
 import com.alibaba.dubbo.rpc.RpcException;
 import lombok.extern.log4j.Log4j;
 import org.bson.types.ObjectId;
 import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
+import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.config.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
@@ -14,10 +15,10 @@ import org.radrso.workflow.entities.wf.StepStatus;
 import org.radrso.workflow.entities.wf.WorkflowErrorLog;
 import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
+import org.radrso.workflow.exec.base.BaseStepAction;
+import org.radrso.workflow.exec.StepExecutor;
+import org.radrso.workflow.persistence.BaseWorkflowSynchronize;
 import org.radrso.workflow.resolvers.WorkflowResolver;
-import org.radrso.workflow.wfservice.service.WorkflowCommandService;
-import org.radrso.workflow.wfservice.subscribe.StepAction;
-import org.radrso.workflow.wfservice.subscribe.WorkflowObservable;
 
 import java.util.Date;
 
@@ -25,12 +26,12 @@ import java.util.Date;
  * Created by raomengnan on 17-1-17.
  */
 @Log4j
-public class StepActionImpl implements StepAction{
+public class StepAction implements BaseStepAction {
 
-    private WorkflowCommandService workflowCommandService;
+    private BaseWorkflowSynchronize workflowSynchronize;
 
-    public StepActionImpl(WorkflowCommandService workflowCommandService) {
-        this.workflowCommandService = workflowCommandService;
+    public StepAction(BaseWorkflowSynchronize workflowSynchronize) {
+        this.workflowSynchronize = workflowSynchronize;
     }
 
     @Override
@@ -38,7 +39,7 @@ public class StepActionImpl implements StepAction{
         log.info("[STEP-COMPLETED] " + workflowResolver.getWorkflowInstance().getInstanceId() + " " + workflowResolver.getCurrentStep().getName());
 
         String stepSign = workflowResolver.getCurrentStep().getSign();
-        workflowResolver.getWorkflowInstance().getStepProcess().put(stepSign , Step.FINISHED);
+        workflowResolver.getWorkflowInstance().getStepProcess().put(stepSign, Step.FINISHED);
 
         workflowResolver.getStepStatusMap().get(stepSign).setStatus(Step.FINISHED);
         workflowResolver.getWorkflowInstance().getFinishedSequence().add(
@@ -46,41 +47,41 @@ public class StepActionImpl implements StepAction{
         );
 
         boolean eof = false;
-        if(eof = workflowResolver.eof()) {
+        if (eof = workflowResolver.eof()) {
             workflowResolver.getWorkflowInstance().setStatus(WorkflowInstance.COMPLETED);
             workflowResolver.getWorkflowInstance().setSubmitTime(new Date());
         }
 
-        workflowCommandService.updateInstance(workflowResolver.getWorkflowInstance());
+        workflowSynchronize.updateInstance(workflowResolver.getWorkflowInstance());
         if (!eof)
-            WorkflowObservable.subscribe(this, workflowResolver);
+            StepExecutor.execute(this, workflowResolver);
     }
 
     @Override
     public void stepError(WorkflowResolver workflowResolver, Throwable throwable) {
         WorkflowInstance instance = workflowResolver.getWorkflowInstance();
-        log.error("[STEP-EXCEPTION] " +   instance.getInstanceId() + " " + workflowResolver.getCurrentStep().getSign() + " " + throwable);
-        if(WFRuntimeException.WORKFLOW_EXPIRED.equals(throwable.getMessage()))
+        log.error("[STEP-EXCEPTION] " + instance.getInstanceId() + " " + workflowResolver.getCurrentStep().getSign() + " " + throwable);
+        if (WFRuntimeException.WORKFLOW_EXPIRED.equals(throwable.getMessage()))
             instance.setStatus(WorkflowInstance.EXPIRED);
         else
             instance.setStatus(WorkflowInstance.EXCEPTION);
 
         Step currentStep = workflowResolver.getCurrentStep();
-        if(currentStep != null) {
+        if (currentStep != null) {
             String stepSign = workflowResolver.getCurrentStep().getSign();
             StepStatus stepStatus = workflowResolver.getStepStatusMap().get(stepSign);
 
             workflowResolver.getWorkflowInstance().getStepProcess().put(stepSign, Step.STOPED);
-            if(stepStatus != null)
+            if (stepStatus != null)
                 stepStatus.setStatus(Step.STOPED);
             else
                 log.error("StepStatus is null:" + stepSign);
         }
-        workflowCommandService.updateInstance(instance);
+        workflowSynchronize.updateInstance(instance);
 
         ObjectId objectId = new ObjectId();
         String msg = throwable.getMessage();
-        if(msg == null || msg.equals(""))
+        if (msg == null || msg.equals(""))
             msg = throwable.toString();
         WorkflowErrorLog log = new WorkflowErrorLog(
                 objectId.toHexString(),
@@ -90,7 +91,7 @@ public class StepActionImpl implements StepAction{
                 msg,
                 objectId.getDate(),
                 throwable);
-        workflowCommandService.logError(log);
+        workflowSynchronize.logError(log);
     }
 
     @Override
@@ -108,42 +109,46 @@ public class StepActionImpl implements StepAction{
 
                 execBranchs(workflowResolver);
 
-                log.info("[START] " + workflowResolver.getWorkflowInstance().getInstanceId() + " " + step.getName() + String.format(" Thread[%s]", Thread.currentThread().getId()) );
+                log.info("[START] " + workflowResolver.getWorkflowInstance().getInstanceId() + " " + step.getName() + String.format(" Thread[%s]", Thread.currentThread().getId()));
                 Object[] params = workflowResolver.getCurrentStepParams();
                 String[] paramNames = workflowResolver.getCurrentStepParamNames();
 
                 WFResponse response = null;
                 if (step.getCall() != null)
-                    response = workflowCommandService.execute(step, params, paramNames);
+                    response = workflowSynchronize.startStep(step, params, paramNames);
 
-                if(response != null){
+                if (response != null) {
                     int code = response.getCode();
 
-                    if(code == ResponseCode.HTTP_OK.code())
+                    if (code == ResponseCode.HTTP_OK.code())
                         workflowResolver.putResponse(step.getSign(), response);
 
                     else {
                         loopDo = true;
-                        if(code == ResponseCode.CLASS_NOT_FOUND.code() && !isReloadJarFile) {
+                        if (code == ResponseCode.CLASS_NOT_FOUND.code() && !isReloadJarFile) {
                             isReloadJarFile = true;
                             String wfId = workflowResolver.getWorkflowInstance().getWorkflowId();
-                            if(!workflowCommandService.haveJarsDefine(wfId))
+                            WorkflowConfig workflowConfig = workflowSynchronize.getWorkflow(workflowResolver.getWorkflowInstance().getInstanceId());
+                            if (workflowConfig != null && !BaseWorkflowSynchronize.isDefinedJarsFiles(workflowConfig))
                                 throw new WFRuntimeException("No jars to load class:" + response.getMsg());
 
+                            //若使用RPC执行，最大重试次数为3
                             int retry = 3;
-                            while (retry > 0){
+                            while (retry > 0) {
                                 try {
                                     retry--;
-                                    workflowCommandService.importJars(wfId);
-                                    break;
-                                }catch (RpcException e){
+                                    boolean isImported = workflowSynchronize.importJars(wfId);
+                                    if (isImported)
+                                        break;
+                                    if (retry < 0)
+                                        throw new WFRuntimeException("Jar files import failed");
+                                } catch (RpcException e) {
                                     log.error(String.format("The %s times to try rpc:", 6 - retry) + e.getMessage());
-                                    if(retry == 0)
+                                    if (retry == 0)
                                         throw new WFRuntimeException("RPC invoke timeout[importJars]");
                                 }
                             }
-                        }
-                        else if (ResponseCode.CLASS_NOT_FOUND.code() <= code && code <= ResponseCode.JAR_FILE_NOT_FOUND.code())
+                        } else if (ResponseCode.CLASS_NOT_FOUND.code() <= code && code <= ResponseCode.JAR_FILE_NOT_FOUND.code())
                             throw new WFRuntimeException("[" + code + "]" + response.getMsg());
 
                         //发生错误时，完成错误鉴别后回滚一步
@@ -163,8 +168,8 @@ public class StepActionImpl implements StepAction{
                 log.error(unknowExceptionInRunning);
                 unknowExceptionInRunning.printStackTrace();
                 throw new WFRuntimeException(unknowExceptionInRunning.getMessage(), unknowExceptionInRunning);
-            }finally {
-                if(!loopDo) {
+            } finally {
+                if (!loopDo) {
                     String stepSign = workflowResolver.getCurrentStep().getSign();
                     workflowResolver.getStepStatusMap().get(stepSign).setEnd(new Date());
                 }
@@ -172,34 +177,36 @@ public class StepActionImpl implements StepAction{
         }
     }
 
-    private void execBranchs(WorkflowResolver workflowResolver){
+    private void execBranchs(WorkflowResolver workflowResolver) {
         Step currentStep = workflowResolver.getCurrentStep();
         //获取分支下一步
         Step scatterNextStep = workflowResolver.popBranchStep();
         int num = 0;
-        while (scatterNextStep != null){
+        while (scatterNextStep != null) {
             String msg = String.format("Scatter to [%s] from step[%s]/[%s]",
                     scatterNextStep.getSign(), currentStep.getSign(), workflowResolver.getWorkflowInstance().getInstanceId());
             log.info(msg);
 
-            WorkflowResolver newWFResolver = workflowCommandService.branchInstance(workflowResolver.getWorkflowInstance().getInstanceId());
-            if(newWFResolver == null){
+            // 克隆workflowConfig对象
+            String instanceId = workflowResolver.getWorkflowInstance().getInstanceId();
+            WorkflowConfig workflowConfig = workflowSynchronize.getWorkflow(instanceId);
+
+            if (workflowConfig == null) {
                 WorkflowErrorLog log = new WorkflowErrorLog();
                 log.setMsg("Instance not found:" + msg);
                 log.setWorkflowId(workflowResolver.getWorkflowInstance().getWorkflowId());
                 log.setInstanceId(workflowResolver.getWorkflowInstance().getInstanceId());
                 log.setStepSign(workflowResolver.getCurrentStep().getSign());
-                workflowCommandService.logError(log);
+                workflowSynchronize.logError(log);
                 continue;
             }
 
-            //获取分支实例
-            WorkflowInstance branchInstance = newWFResolver.getWorkflowInstance();
-
+            WorkflowInstance branchInstance = new WorkflowInstance(workflowConfig.getId(), null);
             branchInstance.setInstanceId(
                     workflowResolver.getWorkflowInstance().getInstanceId() + "-" +
                             (workflowResolver.getWorkflowInstance().getBranchs() - num++)
             );
+            WorkflowResolver newWFResolver = new WorkflowResolver(workflowConfig, branchInstance);
 
             //当前分支的上一个转移函数，用于获取input，deadline等
             Transfer lastTranInMain = workflowResolver.getLastTransfer();
@@ -217,13 +224,12 @@ public class StepActionImpl implements StepAction{
 
             scatterNextStep = workflowResolver.popBranchStep();
             newWFResolver.setCurrentStep(tmpLastStep);
-            WorkflowObservable.subscribe(this, newWFResolver);
-
+            StepExecutor.execute(this, newWFResolver);
 
         }
     }
 
-    private void verifyDate(WorkflowResolver workflowResolver){
+    private void verifyDate(WorkflowResolver workflowResolver) {
         Transfer lastTransfer = workflowResolver.getCurrentTransfer();
         Date diedline = null;
         boolean isContinue = true;
@@ -231,19 +237,19 @@ public class StepActionImpl implements StepAction{
             isContinue = new Date().before(diedline);
 
         isContinue = isContinue && checkWorkflowStatus(workflowResolver);
-        if(! isContinue)
+        if (!isContinue)
             throw new WFRuntimeException(WFRuntimeException.WORKFLOW_EXPIRED);
 
     }
 
-    private boolean checkWorkflowStatus(WorkflowResolver workflowResolver){
-        String status = workflowCommandService.getWFStatus(
-                    workflowResolver.getWorkflowInstance()
-                            .getWorkflowId());
-        if(status == null)
+    private boolean checkWorkflowStatus(WorkflowResolver workflowResolver) {
+        String status = workflowSynchronize.getWorkflowStatus(
+                workflowResolver.getWorkflowInstance()
+                        .getWorkflowId());
+        if (status == null)
             throw new WFRuntimeException(WFRuntimeException.NO_SUCH_WORKFLOW_STATUS);
         boolean isStart = WorkflowExecuteStatus.START.equals(status);
-        //还没有验证工作流是否停止
+        // TODO 还没有验证工作流是否停止
 
         return true;
     }

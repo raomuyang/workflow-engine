@@ -1,25 +1,26 @@
-package org.radrso.workflow.wfservice.service.exec;
+package org.radrso.workflow.wfservice.executor.impl;
 
 import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
+import org.radrso.workflow.exec.StepExecutor;
+import org.radrso.workflow.exec.base.impl.StepAction;
 import org.radrso.workflow.resolvers.WorkflowResolver;
 import org.radrso.workflow.entities.response.WFResponse;
-import org.radrso.workflow.wfservice.service.*;
-import org.radrso.workflow.wfservice.subscribe.StepAction;
-import org.radrso.workflow.wfservice.subscribe.WorkflowObservable;
-import org.radrso.workflow.wfservice.subscribe.impl.StepActionImpl;
+import org.radrso.workflow.wfservice.executor.InstanceJobRunner;
+import org.radrso.workflow.wfservice.executor.WorkflowSyncironze;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 
 /**
  * Created by raomengnan on 17-1-14.
+ * 只做启动工作流实例的任务
  */
-@Service
-public class WorkflowExecuteServiceImpl implements WorkflowExecuteService {
+@Component
+public class InstanceJobRunnerImpl implements InstanceJobRunner {
 
     @Autowired
-    private WorkflowCommandService commandService;
+    private WorkflowSyncironze workflowSyncironze;
 
     @Override
     public WFResponse startExecute(WorkflowResolver workflowResolver) {
@@ -30,9 +31,8 @@ public class WorkflowExecuteServiceImpl implements WorkflowExecuteService {
                 return new WFResponse(ResponseCode.HTTP_OK.code(), "workflow instance complated", null);
 
 
-        StepAction stepAction = new StepActionImpl(commandService);
-
-        WorkflowObservable.subscribe(stepAction, workflowResolver);
+        StepAction stepAction = new StepAction(workflowSyncironze);
+        StepExecutor.execute(stepAction, workflowResolver);
 
         String instanceStatus = workflowResolver.getWorkflowInstance().getStatus();
         if(WorkflowInstance.RUNNING.equals(instanceStatus))
