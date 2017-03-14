@@ -21,36 +21,6 @@ public class StepCommander {
     public static final String RESPONSE = "success";
 
     /**
-     * 批量导入jar文件
-     * @param jarFileNames
-     * @param dir
-     * @return
-     */
-    public static boolean importJars(List<String> jarFileNames, String dir) {
-        if (jarFileNames == null)
-            return false;
-
-        jarFileNames.forEach(j -> {
-            String path = dir + File.separator + j;
-            File jarFile = new File(path);
-            if (!jarFile.exists())
-                throw new WFRuntimeException(WFRuntimeException.JAR_FILE_NO_FOUND + String.format("[%s]", path));
-
-            WFResponse response = checkAndImportJar(dir, j);
-            if (response.getCode() == ResponseCode.JAR_FILE_NOT_FOUND.code()) {
-                log.info(String.format("Local file isn't exists JAR[%s]", path));
-                response = importJar(dir, j, FileUtils.getByte(jarFile));
-            } else
-                log.info(String.format("Local file exists FILE[%s]", path));
-
-            if (response.getCode() / 100 != 2)
-                throw new WFRuntimeException("Jar file import failed:" + response.getMsg());
-        });
-
-        return true;
-    }
-
-    /**
      * 导入jar文件
      *
      * @param dir     jar文件的路径，不包含jar文件本身

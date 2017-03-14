@@ -1,15 +1,18 @@
 package org.radrso.workflow.wfservice.executor;
 
+import lombok.extern.log4j.Log4j;
+import org.radrso.plugins.FileUtils;
+import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
 import org.radrso.workflow.ConfigConstant;
 import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.radrso.workflow.entities.config.items.Step;
+import org.radrso.workflow.entities.exceptions.WFRuntimeException;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.entities.wf.WorkflowErrorLog;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
-import org.radrso.workflow.exec.StepCommander;
 import org.radrso.workflow.persistence.BaseWorkflowSynchronize;
-import org.radrso.workflow.rmi.WorkflowCommander;
-import org.radrso.workflow.rmi.WorkflowInstanceExecutor;
+import org.radrso.workflow.rmi.WorkflowFilesSync;
+import org.radrso.workflow.rmi.WorkflowExecutor;
 import org.radrso.workflow.wfservice.service.WorkflowExecuteStatusService;
 import org.radrso.workflow.wfservice.service.WorkflowInstanceService;
 import org.radrso.workflow.wfservice.service.WorkflowLogService;
@@ -24,13 +27,14 @@ import java.util.List;
  * Created by rao-mengnan on 2017/3/14.
  */
 @Component
+@Log4j
 public class WorkflowSyncironze implements BaseWorkflowSynchronize{
     public static final String ROOT = ConfigConstant.SERVICE_JAR_HOME;
 
     @Autowired
-    protected WorkflowInstanceExecutor workflowInstanceExecutor;
+    protected WorkflowExecutor workflowExecutor;
     @Autowired
-    protected WorkflowCommander workflowCommander;
+    protected WorkflowFilesSync workflowFilesSync;
 
     @Autowired
     protected WorkflowService workflowService;
@@ -52,8 +56,25 @@ public class WorkflowSyncironze implements BaseWorkflowSynchronize{
         String app = workflowConfig.getApplication();
         String jarsRoot = ROOT + app + File.separator ;
         List<String> jars = workflowConfig.getJars();
+        if(jars == null)
+            return false;
 
-        return StepCommander.importJars(jars, jarsRoot);
+        jars.forEach(j->{
+            File jarFile = new File(jarsRoot + j);
+            if(!jarFile.exists())
+                throw new WFRuntimeException(WFRuntimeException.JAR_FILE_NO_FOUND + String.format("[%s]", jarsRoot + j));
+
+            WFResponse response = workflowFilesSync.checkAndImportJar(app, j);
+            if(response.getCode() == ResponseCode.JAR_FILE_NOT_FOUND.code()) {
+                log.info(String.format("UPLOAD Local JAR[%s]", app + "/" + j));
+                response = workflowFilesSync.importJar(app, j, FileUtils.getByte(jarFile));
+            }else
+                log.info(String.format("NEEDN'T UPLOAD FILE[%s]", app + "/" + j));
+
+            if(response.getCode() / 100 != 2)
+                throw new WFRuntimeException("Jar file upload failed:" + response.getMsg());
+        });
+        return true;
     }
 
     @Override
@@ -88,6 +109,6 @@ public class WorkflowSyncironze implements BaseWorkflowSynchronize{
 
     @Override
     public WFResponse startStep(Step step, Object[] params, String[] paramNames) {
-        return workflowInstanceExecutor.execute(step, params, paramNames);
+        return workflowExecutor.execute(step, params, paramNames);
     }
 }
