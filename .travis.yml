@@ -1,6 +1,6 @@
 language: java
 jdk:
-    - Oracle JDK 8
+    - oraclejdk8
 services:
     - docker
 script:
