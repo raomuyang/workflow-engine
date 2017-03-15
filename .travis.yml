@@ -4,5 +4,5 @@ jdk:
 services:
     - docker
 script:
-    - bash Speed-Dial/build.sh -b
+    - cd Speed-Dial/ && bash build.sh -b
 
