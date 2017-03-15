@@ -1,0 +1,9 @@
+language: java
+jdk:
+    - oralejdk8
+    - openjdk8
+services:
+    - docker
+script:
+    - bash Speed-Dial/build.sh -b
+
