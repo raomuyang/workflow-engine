@@ -1,13 +1,13 @@
 package org.radrso.plugins.requests.entity.exceptions.impl;
 
-import org.radrso.plugins.requests.entity.exceptions.WFException;
+import org.radrso.plugins.requests.entity.exceptions.BaseException;
 import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
 
 /**
  * Created by raomengnan on 16-12-9.
  */
 
-public class RequestException extends WFException {
+public class RequestException extends BaseException {
     public RequestException() {
         super();
     }
