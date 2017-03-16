@@ -5,7 +5,7 @@ import org.radrso.workflow.ConfigConstant;
 /**
  * Created by rao-mengnan on 2017/3/12.
  */
-public class TestStandardString {
+public class TestConfigConstant {
 
     @Test
     public void testMatcher() {

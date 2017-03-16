@@ -1,3 +1,5 @@
+package org.radrso.workflow.resolvers;
+
 import com.google.gson.JsonElement;
 import org.junit.Assert;
 import org.junit.Test;
