@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/raomuyang/workflow-engine.svg?branch=master)](https://travis-ci.org/raomuyang/workflow-engine)  
+
 ### Simple workflow config
 ```
 {
@@ -8,7 +10,7 @@
 
   "steps": [
     {
-      "sign": "{START}",
+      "sign": "&START",
       "name": "Start",
       "transfer":{
         "input": [
@@ -67,7 +69,7 @@
           "passTransfer":{
             "input":[],
             "to": "sign-3",
-            "scatters":["{FINISH}"]
+            "scatters":["&FINISH"]
           },
           "nopassTransfer":{
             "input":[],
@@ -143,12 +145,12 @@
       "transfer": {
 
         "deadline":"2017-11-12",
-        "to": "{FINISH}"
+        "to": "&FINISH"
       }
     },
 
     {
-      "sign": "{FINISH}",
+      "sign": "&FINISH",
       "name": "Finish the workflow",
       "call": "class:org.radrso.test.TestWorkflow",
       "method": "finish"
