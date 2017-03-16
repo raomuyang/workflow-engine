@@ -1,4 +1,4 @@
-package org.radrso.workflow.resolvers;
+package org.radrso.workflow.resolvers.impl;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -17,6 +17,7 @@ import org.radrso.plugins.requests.entity.MethodEnum;
 import org.radrso.plugins.requests.entity.Response;
 import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
 import org.radrso.plugins.requests.entity.exceptions.impl.RequestException;
+import org.radrso.workflow.resolvers.BaseStepExecuteResolver;
 
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
@@ -28,7 +29,7 @@ import java.util.Map;
  * Created by raomengnan on 17-1-15.
  */
 @Log4j
-public class StepExecuteResolver {
+public class StepExecuteResolver implements BaseStepExecuteResolver{
     private Step step;
     private Object[] params;
     private String[] paramNames;
@@ -40,9 +41,12 @@ public class StepExecuteResolver {
     }
 
     /**
-     * 调用配置中预设的类方法
+     * 调用配置中预设的类方法，调用的方法入参如果带有可变长参数或基本参数的数组，则可能会失败，
+     * 不建议调用目标方法入参有基本类型数组或者可变长参数的方法
+     * 目标方法最好封装为list
      * @return  WFResponse中的Response是执行结果的消息实体
      */
+    @Override
     public WFResponse classRequest(){
 
         String className = null;
@@ -92,7 +96,11 @@ public class StepExecuteResolver {
 
     }
 
-
+    /**
+     * 调用网络请求
+     * @return  WFResponse中的Response是执行结果的消息实体
+     */
+    @Override
     public WFResponse netRequest() {
 
         ContentType contentType = ContentType.APPLICATION_JSON;

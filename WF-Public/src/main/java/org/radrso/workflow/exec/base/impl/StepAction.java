@@ -18,9 +18,11 @@ import org.radrso.workflow.entities.wf.WorkflowInstance;
 import org.radrso.workflow.exec.base.BaseStepAction;
 import org.radrso.workflow.exec.StepExecutor;
 import org.radrso.workflow.persistence.BaseWorkflowSynchronize;
-import org.radrso.workflow.resolvers.WorkflowResolver;
+import org.radrso.workflow.resolvers.BaseWorkflowConfigResolver;
+import org.radrso.workflow.resolvers.ResolverChain;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by raomengnan on 17-1-17.
@@ -35,13 +37,14 @@ public class StepAction implements BaseStepAction {
     }
 
     @Override
-    public void stepCompleted(WorkflowResolver workflowResolver) {
+    public void stepCompleted(BaseWorkflowConfigResolver workflowResolver) {
         log.info("[STEP-COMPLETED] " + workflowResolver.getWorkflowInstance().getInstanceId() + " " + workflowResolver.getCurrentStep().getName());
 
         String stepSign = workflowResolver.getCurrentStep().getSign();
         workflowResolver.getWorkflowInstance().getStepProcess().put(stepSign, Step.FINISHED);
 
-        workflowResolver.getStepStatusMap().get(stepSign).setStatus(Step.FINISHED);
+        Map<String, StepStatus> stepStatusMap = workflowResolver.getWorkflowInstance().getStepStatusesMap();
+        stepStatusMap.get(stepSign).setStatus(Step.FINISHED);
         workflowResolver.getWorkflowInstance().getFinishedSequence().add(
                 workflowResolver.getCurrentStep().getSign()
         );
@@ -58,7 +61,7 @@ public class StepAction implements BaseStepAction {
     }
 
     @Override
-    public void stepError(WorkflowResolver workflowResolver, Throwable throwable) {
+    public void stepError(BaseWorkflowConfigResolver workflowResolver, Throwable throwable) {
         WorkflowInstance instance = workflowResolver.getWorkflowInstance();
         log.error("[STEP-EXCEPTION] " + instance.getInstanceId() + " " + workflowResolver.getCurrentStep().getSign() + " " + throwable);
         if (WFRuntimeException.WORKFLOW_EXPIRED.equals(throwable.getMessage()))
@@ -69,7 +72,8 @@ public class StepAction implements BaseStepAction {
         Step currentStep = workflowResolver.getCurrentStep();
         if (currentStep != null) {
             String stepSign = workflowResolver.getCurrentStep().getSign();
-            StepStatus stepStatus = workflowResolver.getStepStatusMap().get(stepSign);
+            Map<String, StepStatus> stepStatusMap = workflowResolver.getWorkflowInstance().getStepStatusesMap();
+            StepStatus stepStatus = stepStatusMap.get(stepSign);
 
             workflowResolver.getWorkflowInstance().getStepProcess().put(stepSign, Step.STOPED);
             if (stepStatus != null)
@@ -83,7 +87,7 @@ public class StepAction implements BaseStepAction {
         String msg = throwable.getMessage();
         if (msg == null || msg.equals(""))
             msg = throwable.toString();
-        WorkflowErrorLog log = new WorkflowErrorLog(
+        WorkflowErrorLog errorLog = new WorkflowErrorLog(
                 objectId.toHexString(),
                 instance.getWorkflowId(),
                 instance.getInstanceId(),
@@ -91,11 +95,11 @@ public class StepAction implements BaseStepAction {
                 msg,
                 objectId.getDate(),
                 throwable);
-        workflowSynchronize.logError(log);
+        workflowSynchronize.logError(errorLog);
     }
 
     @Override
-    public void stepNext(WorkflowResolver workflowResolver) {
+    public void stepNext(BaseWorkflowConfigResolver workflowResolver) {
         boolean loopDo = true;
         boolean isReloadJarFile = false;//判断是否已经重新加载jar文件
 
@@ -121,7 +125,7 @@ public class StepAction implements BaseStepAction {
                     int code = response.getCode();
 
                     if (code == ResponseCode.HTTP_OK.code())
-                        workflowResolver.putResponse(step.getSign(), response);
+                        workflowResolver.updateResponse(step.getSign(), response);
 
                     else {
                         loopDo = true;
@@ -152,13 +156,13 @@ public class StepAction implements BaseStepAction {
                             throw new WFRuntimeException("[" + code + "]" + response.getMsg());
 
                         //发生错误时，完成错误鉴别后回滚一步
-                        workflowResolver.back();
+                        workflowResolver.rollback();
                     }
                 }
             } catch (ConfigReadException e) {
                 System.out.println(e);
                 loopDo = true;
-                workflowResolver.back();
+                workflowResolver.rollback();
                 try {
                     Thread.sleep(1000 * 60);
                 } catch (InterruptedException e1) {
@@ -171,13 +175,13 @@ public class StepAction implements BaseStepAction {
             } finally {
                 if (!loopDo) {
                     String stepSign = workflowResolver.getCurrentStep().getSign();
-                    workflowResolver.getStepStatusMap().get(stepSign).setEnd(new Date());
+                    workflowResolver.getWorkflowInstance().getStepStatusesMap().get(stepSign).setEnd(new Date());
                 }
             }
         }
     }
 
-    private void execBranchs(WorkflowResolver workflowResolver) {
+    private void execBranchs(BaseWorkflowConfigResolver workflowResolver) {
         Step currentStep = workflowResolver.getCurrentStep();
         //获取分支下一步
         Step scatterNextStep = workflowResolver.popBranchStep();
@@ -206,7 +210,7 @@ public class StepAction implements BaseStepAction {
                     workflowResolver.getWorkflowInstance().getInstanceId() + "-" +
                             (workflowResolver.getWorkflowInstance().getBranchs() - num++)
             );
-            WorkflowResolver newWFResolver = new WorkflowResolver(workflowConfig, branchInstance);
+            BaseWorkflowConfigResolver newWFResolver = ResolverChain.getWorkflowConfigResolver(workflowConfig, branchInstance);
 
             //当前分支的上一个转移函数，用于获取input，deadline等
             Transfer lastTranInMain = workflowResolver.getLastTransfer();
@@ -229,7 +233,7 @@ public class StepAction implements BaseStepAction {
         }
     }
 
-    private void verifyDate(WorkflowResolver workflowResolver) {
+    private void verifyDate(BaseWorkflowConfigResolver workflowResolver) {
         Transfer lastTransfer = workflowResolver.getCurrentTransfer();
         Date diedline = null;
         boolean isContinue = true;
@@ -242,7 +246,7 @@ public class StepAction implements BaseStepAction {
 
     }
 
-    private boolean checkWorkflowStatus(WorkflowResolver workflowResolver) {
+    private boolean checkWorkflowStatus(BaseWorkflowConfigResolver workflowResolver) {
         String status = workflowSynchronize.getWorkflowStatus(
                 workflowResolver.getWorkflowInstance()
                         .getWorkflowId());

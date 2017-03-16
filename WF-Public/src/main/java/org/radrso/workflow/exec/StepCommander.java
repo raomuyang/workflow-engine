@@ -6,7 +6,8 @@ import org.radrso.plugins.FileUtils;
 import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.response.WFResponse;
-import org.radrso.workflow.resolvers.StepExecuteResolver;
+import org.radrso.workflow.resolvers.BaseStepExecuteResolver;
+import org.radrso.workflow.resolvers.ResolverChain;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,7 +64,7 @@ public class StepCommander {
      * @return 返回WFResponse，封装对象的response属性才是执行结果
      */
     public static WFResponse execute(Step step, Object[] params, String[] paramNames) {
-        StepExecuteResolver resolver = new StepExecuteResolver(step, params, paramNames);
+        BaseStepExecuteResolver resolver = ResolverChain.getWorkflowExecuteResolver(step, params, paramNames);
         if (step.getCall() == null || step.getCall().indexOf(":") < 0) {
             return new WFResponse(ResponseCode.HTTP_BAD_REQUEST.code(), "Error Protocol:" + step.getCall(), null);
         }

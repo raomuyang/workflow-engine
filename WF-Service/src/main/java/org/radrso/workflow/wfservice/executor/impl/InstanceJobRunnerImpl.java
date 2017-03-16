@@ -4,7 +4,7 @@ import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
 import org.radrso.workflow.exec.StepExecutor;
 import org.radrso.workflow.exec.base.impl.StepAction;
-import org.radrso.workflow.resolvers.WorkflowResolver;
+import org.radrso.workflow.resolvers.BaseWorkflowConfigResolver;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.wfservice.executor.InstanceJobRunner;
 import org.radrso.workflow.wfservice.executor.WorkflowSyncironze;
@@ -23,7 +23,7 @@ public class InstanceJobRunnerImpl implements InstanceJobRunner {
     private WorkflowSyncironze workflowSyncironze;
 
     @Override
-    public WFResponse startExecute(WorkflowResolver workflowResolver) {
+    public WFResponse startExecute(BaseWorkflowConfigResolver workflowResolver) {
         //保证调用的幂等性
         WorkflowInstance instance = workflowResolver.getWorkflowInstance();
         if(instance != null)

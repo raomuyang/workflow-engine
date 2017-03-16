@@ -1,15 +1,15 @@
 package org.radrso.workflow.exec.base;
 
-import org.radrso.workflow.resolvers.WorkflowResolver;
+import org.radrso.workflow.resolvers.BaseWorkflowConfigResolver;
 import rx.Subscriber;
 
 /**
  * Created by raomengnan on 17-1-17.
  */
 
-public class StepSubscriber extends Subscriber<WorkflowResolver> {
+public class StepSubscriber extends Subscriber<BaseWorkflowConfigResolver> {
 
-    private WorkflowResolver workflowResolver;
+    private BaseWorkflowConfigResolver workflowResolver;
     private BaseStepAction stepAction;
 
     public StepSubscriber(BaseStepAction action){
@@ -27,7 +27,7 @@ public class StepSubscriber extends Subscriber<WorkflowResolver> {
     }
 
     @Override
-    public void onNext(WorkflowResolver workflowResolver) {
+    public void onNext(BaseWorkflowConfigResolver workflowResolver) {
         this.workflowResolver = workflowResolver;
         stepAction.stepNext(workflowResolver);
     }
