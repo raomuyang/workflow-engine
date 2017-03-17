@@ -13,162 +13,130 @@
 ### Simple workflow config
 ```
 {
-  "application": "application-test",
-  "id": "wf-test",
-  "startTime":"2016-01-01",
-  "stopTime":"2017-12-01",
+  "application": "Daisy-oneday",
+  "id": "daisy",
+  "startTime": "2016-01-01",
+  "stopTime": "2999-01-01",
 
   "steps": [
     {
       "sign": "&START",
-      "name": "Start",
+      "name": "One day start",
       "transfer":{
         "input": [
-          {"name": "test1",  "type": "String", "value": "test"},
-          {"name": "test2",  "type": "double", "value": 11},
-          {"name": "test3",  "type": "int", "value": 2}
+          {"type": "String", "value": "Daisy"}
         ],
-
-        "to": "sign-1"
+        "to": "id-hello-daisy"
       }
     },
 
     {
-      "sign": "sign-1",
-      "name": "step-test-1",
-      "call": "class:org.radrso.test.TestWorkflow",
-      "method": "testStep1",
-      "loop": 1,
+      "sign": "id-hello-daisy",
+      "name": "Robot say hello to Daisy",
+      "call": "class:org.radrso.workflow.jobdemo.Hello",
+      "method": "hello",
 
       "transfer": {
+        "input": [
+          {"name": "{key}", "value": "99ezvsj9m86eozbt"},
+          {"name": "{city}", "value": "北京"}
+        ],
+        "to": "id-search-weather",
 
-        "judge":
-        {
-          "compute": "{output}[sign-1][test2]",
-          "computeWith": 1234,
-          "type": "double",
-          "expression": "<",
-          "passTransfer":{
-            "input":[],
-            "to": "sign-2"
-          },
-          "nopassTransfer":{
-            "input":[],
-            "to": "sign-3"
+        "scatters": [
+          {
+            "input": [{"type": "String", "value": "Mike"}],
+            "to": "id-wake-up-mike"
           }
-        }
-
+        ]
       }
     },
 
     {
-      "sign": "sign-2",
-      "name": "step-test-2",
-      "call": "class:org.radrso.test.TestWorkflow",
-      "method": "testStep2",
-      "loop": 1,
-
+      "sign": "id-wake-up-mike",
+      "name": "Wake Mike up",
+      "call": "class:org.radrso.workflow.jobdemo.Hello",
+      "method": "wakeup",
       "transfer": {
-
-        "judge":
-        {
-          "compute": "{output}[sign-2][test2]",
-          "computeWith": 1000,
-          "type": "double",
-          "expression": "<",
-          "passTransfer":{
-            "input":[],
-            "to": "sign-3",
-            "scatters":["&FINISH"]
-          },
-          "nopassTransfer":{
-            "input":[],
-            "to": "start"
-          }
-        }
+        "input": [{"name": "list", "type": "Integer[]", "value": "[3, 2, 1, 4, 5, 7, 6]"}],
+        "to": "id-mike-home-work"
       }
     },
 
     {
-      "sign": "sign-3",
-      "name": "step-test-3",
-      "call": "class:org.radrso.test.TestWorkflow",
-      "method": "testStep3",
-      "loop": 1,
-
+      "sign": "id-search-weather",
+      "name": "Search city weather",
+      "call": "https://api.thinkpage.cn/v3/weather/now.json?key={key}&location={city}&language=zh-Hans&unit=c",
+      "method": "Get",
       "transfer": {
-
-        "judge":
-        {
-          "compute": "{output}[sign-3][test1]",
-          "computeWith": "a",
+        "judge": {
+          "compute": "{output}[id-search-weather][results][0][now][text]",
+          "computeWith": "晴天",
           "type": "String",
           "expression": "=",
 
           "passTransfer":{
             "input": [
-              {"name": "test1",  "type": "boolean", "value": true},
-              {"name": "test2",  "type": "int", "value": 1},
-              {"name": "test3",  "type": "string", "value": "test"}
+              {"name": "info", "value": "北京周边哪里好玩"},
+              {"name": "key", "value": ""}
             ],
-
-            "to": "sign-4"
+            "to": "id-outing"
           },
-
           "nopassTransfer":{
-            "input":[],
-            "to": "sign-3"
+            "input": [
+              {"name": "info", "value": "红烧肉怎么做"},
+              {"name": "key", "value": ""}
+            ],
+            "to": "id-cooking"
           }
         }
-
       }
     },
 
-
     {
-      "sign": "sign-4",
-      "name": "step-test-4",
-      "call": "class:org.radrso.test.TestWorkflow",
-      "method": "testStep4",
-      "loop": 1,
+      "sign": "id-cooking",
+      "name": "Cooking in the house",
+      "call": "http://www.tuling123.com/openapi/api",
+      "method": "Post",
 
-      "transfer": {
-        "input": [
-          {"name": "test1",  "type": "int", "value": 1},
-          {"name": "test2",  "type": "string", "value": "test"},
-          {"name": "test3",  "type": "boolean", "value": true}
-        ],
-
-        "deadline":"2017-11-12",
-        "to": "sign-5"
+      "transfer":{
+        "input":[{"type": "String", "value": "Daisy"}],
+        "to": "&FINISH"
       }
     },
 
+    {
+      "sign": "id-outing",
+      "name": "Outing",
+      "call": "http://www.tuling123.com/openapi/api",
+      "method": "Post",
+
+      "transfer":{
+        "input":[{"type": "String", "value": "Daisy"}],
+        "to": "&FINISH"
+      }
+    },
 
     {
-      "sign": "sign-5",
-      "name": "step-test-5",
-      "call": "class:org.radrso.test.TestWorkflow",
-      "method": "testStep5",
-      "loop": 1,
-
+      "sign": "id-mike-home-work",
+      "name": "Mike do homework",
+      "call": "class:org.radrso.workflow.jobdemo.SimpleSort",
+      "method": "quickSort",
       "transfer": {
-
-        "deadline":"2017-11-12",
+        "input":[{"type": "String", "value": "Mike"}],
         "to": "&FINISH"
       }
     },
 
     {
       "sign": "&FINISH",
-      "name": "Finish the workflow",
-      "call": "class:org.radrso.test.TestWorkflow",
+      "name": "Finished the day",
+      "call": "class:org.radrso.workflow.jobdemo.Hello",
       "method": "finish"
     }
   ],
 
-  "header": "request header,在一些http请求的任务中可能会附带的",
-  "jars": ["Test-1.0.jar"]
+  "jars": ["org.radrso.workflow.jobdemo-1.0.jar"]
 }
 ```
 
