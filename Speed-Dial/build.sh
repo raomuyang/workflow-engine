@@ -91,6 +91,7 @@ printf "\e[0;33;1m[STEP-3] Copy config files \e[0m \n"
 printf "\e[0;33;1m--------------------------------------- \e[0m \n"
 cp WF-Service/target/classes/*.* Speed-Dial/dockerfile/${WF_SERVICE_FLOODER}/
 cp WF-Provider/target/classes/*.* Speed-Dial/dockerfile/${WF_PROVIDER_FLO0DER}/
+rm -r Speed-Dial/dockerfile/service-jars/*
 cp -r service-jars Speed-Dial/dockerfile/
 if [ $? != 0 ]; then
     printf "\e[0;31;1m[ERROR] Move WF-Engine-Plugins-UPDATE failed \e[0m \n"
