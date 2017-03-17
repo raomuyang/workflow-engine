@@ -1,0 +1,114 @@
+{
+  "application": "Daisy-oneday",
+  "id": "daisy",
+  "startTime": "2016-01-01",
+  "stopTime": "2999-01-01",
+
+  "steps": [
+    {
+      "sign": "&START",
+      "name": "One day start",
+      "transfer":{
+        "input": [
+          {"type": "String", "value": "Daisy"}
+        ],
+        "to": "id-hello-daisy"
+      }
+    },
+
+    {
+      "sign": "id-hello-daisy",
+      "name": "Robot say hello to Daisy",
+      "call": "class:org.radrso.workflow.jobdemo.Hello",
+      "method": "hello",
+
+      "transfer": {
+        "input": [
+          {"name": "city", "value": "上饶"}
+        ],
+        "to": "id-search-weather",
+
+        "scatters": [
+          {
+            "input": [{"type": "String", "value": "Mike"}],
+            "to": "id-wake-up-mike"
+          }
+        ]
+      }
+    },
+
+    {
+      "sign": "id-wake-up-mike",
+      "name": "Wake Mike up",
+      "call": "class:org.radrso.workflow.jobdemo.Hello",
+      "method": "wakeup",
+      "transfer": {
+        "input": {"name": "list", "type": "Integer[]", "value": "[3, 2, 1, 4, 5, 7, 6]"},
+        "to": "id-mike-home-work"
+      }
+    },
+
+    {
+      "sign": "id-search-weather",
+      "name": "Search city weather",
+      "call": "http://api",
+      "method": "Get",
+      "transfer": {
+        "judge": {
+          "compute": "{output}[id-search-weather][weather]",
+          "computeWith": "晴天",
+          "type": "String",
+          "expression": "=",
+
+          "passTransfer":{
+            "input": [{"name": "info", "value": "周边哪里好玩"}],
+            "to": "id-outing"
+          },
+          "nopassTransfer":{
+            "input": [{"name": "info", "value": "红烧肉怎么做"}],
+            "to": "id-cooking"
+          }
+        }
+      }
+    },
+
+    {
+      "sign": "id-cooking",
+      "name": "Cooking in the house",
+      "call": "http://api",
+      "method": "Get",
+
+      "transfer":{
+        "to": "&FINISH"
+      }
+    },
+
+    {
+      "sign": "id-outing",
+      "name": "Outing",
+      "call": "http://api",
+      "method": "Get",
+
+      "transfer":{
+        "to": "&FINISH"
+      }
+    },
+
+    {
+      "sign": "id-mike-home-work",
+      "name": "Mike do homework",
+      "call": "class:org.radrso.workflow.jobdemo.SimpleSort",
+      "method": "quickSort",
+      "transfer": {
+        "to": "&FINISH"
+      }
+    },
+
+    {
+      "sign": "&FINISH",
+      "name": "Finish the day"
+    }
+  ],
+
+  "jars": ["org.radrso.workflow.jobdemo"]
+}
