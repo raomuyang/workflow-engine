@@ -1,7 +1,5 @@
 package org.radrso.workflow.resolvers.impl;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import lombok.extern.log4j.Log4j;
 import org.apache.http.entity.ContentType;
 import org.radrso.workflow.RequestMethodMapping;
@@ -75,7 +73,7 @@ public class StepExecuteResolver implements BaseStepExecuteResolver{
             Class clazz = CustomClassLoader.getClassLoader().loadClass(className);
             Object ret = ReflectInvokeMethod.invoke(clazz, clazz.newInstance(), methodName, params);
             response.setCode(ResponseCode.HTTP_OK.code());
-            response.setResponse(ret);
+            response.setBody(ret);
             return response;
 
         } catch (ClassNotFoundException e) {
@@ -203,20 +201,8 @@ public class StepExecuteResolver implements BaseStepExecuteResolver{
         wfResponse.setCode(response.getStatusCode());
         if(!response.isSuccess())
             wfResponse.setMsg(response.getErrorMsg());
-        try {
-            try {
-                JsonObject object = JsonUtils.getJsonElement(response.getContent()).getAsJsonObject();
-                wfResponse.setResponse(object);
-            }catch (JsonParseException e){
-                log.debug(e);
-                wfResponse.setResponse(response.getContent());
-            }
 
-        }catch (Throwable e){
-            log.error(String.format("[%s]", response.getContent()) + e.getMessage());
-            wfResponse.setResponse(response.getContent());
-        }
-
+        wfResponse.setBody(response.getContent());
         return wfResponse;
     }
 

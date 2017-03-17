@@ -23,7 +23,7 @@ import java.util.*;
  * Created by raomengnan on 17-1-14.
  */
 @Log4j
-public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Serializable{
+public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Serializable {
 
     private WorkflowInstance workflowInstance;
     private BaseParamsResolver paramsResolver;
@@ -31,23 +31,23 @@ public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Seria
     private Step lastStep;
     private Transfer lastTransfer;
     private Step currentStep;
+    private List<Transfer> currentBranches;
 
     private Map<String, Step> stepMap;
+    // 用于准确统计分支次数
+    private Set<String> branchesPool;
 
-    private List<Transfer> currentBranches;
-    //记录当前Step产生的分支，当前节点执行完毕后，分支会被置为null
-    private List<Step> scatterSteps;
-
-    private WorkflowConfigResolver(){
+    private WorkflowConfigResolver() {
         this.stepMap = new HashMap<>();
     }
 
-    public WorkflowConfigResolver(WorkflowConfig workflowConfig, WorkflowInstance workflowInstance){
+    public WorkflowConfigResolver(WorkflowConfig workflowConfig, WorkflowInstance workflowInstance) {
         this();
         this.workflowInstance = workflowInstance;
         this.paramsResolver = ResolverChain.getParamsResolver(workflowInstance);
+        this.branchesPool = new HashSet<>();
 
-        if(workflowConfig.getSteps() != null)
+        if (workflowConfig.getSteps() != null)
             workflowConfig.getSteps().forEach(step -> {
 
                 StepStatus stepStatus = new StepStatus(step.getSign());
@@ -61,14 +61,15 @@ public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Seria
 
     /**
      * 工作流程向下个状态转移一次:
-     *      当前状态 -- > 当前转移函数 -- > 下一个转移状态 + 分支状态
+     * 当前状态 -- > 当前转移函数 -- > 下一个转移状态 + 分支状态
+     *
      * @return 当前的resolver
      * @throws ConfigReadException
      */
     @Override
     public WorkflowConfigResolver next() throws ConfigReadException, UnknowExceptionInRunning {
         Transfer currentTransfer = getCurrentTransfer();
-        if(currentTransfer == null)
+        if (currentTransfer == null)
             return null;
 
         Step nextStep = transferToNextStep(currentTransfer);
@@ -82,31 +83,29 @@ public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Seria
         workflowInstance.getStepProcess().put(currentStep.getSign(), Step.RUNNING);
         workflowInstance.getStepStatusesMap().get(currentStep.getSign()).setStatus(Step.RUNNING);
 
-        int len = scatterSteps == null?0:scatterSteps.size();
-        workflowInstance.setBranches(workflowInstance.getBranches() + len);
         return this;
     }
 
     /**
      * 回滚到上一步
+     *
      * @return
      */
     @Override
-    public WorkflowConfigResolver rollback(){
+    public WorkflowConfigResolver rollback() {
         currentStep = lastStep;
         return this;
     }
 
     /**
-     *
      * @return 当前是否为最后一步
      */
     @Override
-    public boolean eof(){
+    public boolean eof() {
         Step step = getCurrentStep();
-        if(step == null)
+        if (step == null)
             return true;
-        if(getCurrentStep().getSign().equals(ConfigConstant.CONF_FINISH_SIGN))
+        if (getCurrentStep().getSign().equals(ConfigConstant.CONF_FINISH_SIGN))
             return true;
         return false;
     }
@@ -114,11 +113,12 @@ public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Seria
     /**
      * 从分支列表中取出一条
      * get and remove
+     *
      * @return
      */
     @Override
-    public Transfer popBranchTransfer(){
-        if(this.currentBranches == null || this.currentBranches.size() == 0)
+    public Transfer popBranchTransfer() {
+        if (this.currentBranches == null || this.currentBranches.size() == 0)
             return null;
         return this.currentBranches.remove(0);
     }
@@ -128,16 +128,17 @@ public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Seria
      * 状态转移函数到下一个状态的转换
      * 若没有判断函数，则直接转移到状态转移函数定义的下一个状态以及分支状态
      * 若有判断函数，判断函数 --> 状态转移函数 --> 下一状态
+     *
      * @param transfer
      * @return
      * @throws ConfigReadException
      */
     @Override
     public Step transferToNextStep(Transfer transfer) throws ConfigReadException, UnknowExceptionInRunning {
-        if(transfer == null)
+        if (transfer == null)
             return null;
 
-        if(transfer.getJudge() == null) {
+        if (transfer.getJudge() == null) {
             getScatterBranches(transfer);
             paramsResolver.resolverTransferParams(transfer);
             lastTransfer = transfer;
@@ -150,6 +151,7 @@ public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Seria
 
     /**
      * 通过判断函数获取下一个要转移的的状态
+     *
      * @param judge
      * @return
      * @throws ConfigReadException
@@ -171,22 +173,22 @@ public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Seria
         Comparable b = (Comparable) computeB;
 
         String condition = judge.getExpression();
-        switch (condition){
+        switch (condition) {
             case ">":
-                return (a.compareTo(b) > 0)?judge.getPassTransfer():judge.getNopassTransfer();
+                return (a.compareTo(b) > 0) ? judge.getPassTransfer() : judge.getNopassTransfer();
             case "=":
             case "==":
-                return (a.compareTo(b) == 0)?judge.getPassTransfer():judge.getNopassTransfer();
+                return (a.compareTo(b) == 0) ? judge.getPassTransfer() : judge.getNopassTransfer();
             case "<":
-                return (a.compareTo(b) < 0)?judge.getPassTransfer():judge.getNopassTransfer();
-            case  ">=":
-                return (a.compareTo(b) >= 0)?judge.getPassTransfer():judge.getNopassTransfer();
+                return (a.compareTo(b) < 0) ? judge.getPassTransfer() : judge.getNopassTransfer();
+            case ">=":
+                return (a.compareTo(b) >= 0) ? judge.getPassTransfer() : judge.getNopassTransfer();
             case "<=":
-                return (a.compareTo(b) <= 0)?judge.getPassTransfer():judge.getNopassTransfer();
+                return (a.compareTo(b) <= 0) ? judge.getPassTransfer() : judge.getNopassTransfer();
             case "&&":
-                return ((Boolean)computeA && (Boolean)computeB)?judge.getPassTransfer():judge.getNopassTransfer();
+                return ((Boolean) computeA && (Boolean) computeB) ? judge.getPassTransfer() : judge.getNopassTransfer();
             case "||":
-                return ((Boolean)computeA || (Boolean)computeB)?judge.getPassTransfer():judge.getNopassTransfer();
+                return ((Boolean) computeA || (Boolean) computeB) ? judge.getPassTransfer() : judge.getNopassTransfer();
             default:
                 throw new ConfigReadException("Unknow expression: " + condition);
         }
@@ -199,11 +201,11 @@ public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Seria
     }
 
     @Override
-    public Step getCurrentStep(){
-        if(currentStep == null && stepMap.size() > 0) {
+    public Step getCurrentStep() {
+        if (currentStep == null && stepMap.size() > 0) {
             Step s = this.stepMap.get(ConfigConstant.CONF_START_SIGN);
             this.currentStep = s;
-            if(currentStep != null)
+            if (currentStep != null)
                 workflowInstance.getStepProcess().put(ConfigConstant.CONF_START_SIGN, Step.RUNNING);
         }
 
@@ -211,8 +213,8 @@ public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Seria
     }
 
     @Override
-    public Transfer getCurrentTransfer(){
-        if(getCurrentStep() == null)
+    public Transfer getCurrentTransfer() {
+        if (getCurrentStep() == null)
             return null;
         else {
             return currentStep.getTransfer();
@@ -221,15 +223,16 @@ public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Seria
 
     /**
      * 通过sign-params 的映射返回当前状态的入参
+     *
      * @return
      */
     @Override
-    public Object[] getCurrentStepParams(){
+    public Object[] getCurrentStepParams() {
         return workflowInstance.getStepStatusesMap().get(getCurrentStep().getSign()).getParams();
     }
 
     @Override
-    public String[] getCurrentStepParamNames(){
+    public String[] getCurrentStepParamNames() {
         return workflowInstance.getStepStatusesMap().get(getCurrentStep().getSign()).getParamNames();
     }
 
@@ -238,19 +241,22 @@ public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Seria
      * @return 非空的一个List
      */
     @Override
-    public List<Transfer> getScatterBranches(Transfer transfer){
+    public List<Transfer> getScatterBranches(Transfer transfer) {
         int len = workflowInstance.getBranches();
         String currentStepSign = currentStep.getSign();
         List<Transfer> scatterBranches = new ArrayList<>();
 
         int branchNum = 1;
-        if (transfer.getScatters() != null){
-            for (Transfer bTran: transfer.getScatters()){
+        if (transfer.getScatters() != null) {
+            for (Transfer bTran : transfer.getScatters()) {
                 scatterBranches.add(bTran);
                 workflowInstance.getBranchStepMap().put(len + branchNum, currentStepSign);
+                this.branchesPool.add(currentStepSign + branchNum);
+                branchNum++;
             }
         }
         this.currentBranches = scatterBranches;
+        this.workflowInstance.setBranches(branchesPool.size());
         return scatterBranches;
     }
 
@@ -265,7 +271,7 @@ public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Seria
     }
 
     @Override
-    public void updateResponse(String sign, WFResponse response){
+    public void updateResponse(String sign, WFResponse response) {
         workflowInstance.getStepStatusesMap().get(sign).setWfResponse(response);
     }
 

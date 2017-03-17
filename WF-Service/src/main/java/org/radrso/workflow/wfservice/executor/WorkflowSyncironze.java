@@ -53,7 +53,7 @@ public class WorkflowSyncironze implements BaseWorkflowSynchronize{
     @Override
     public boolean importJars(String workflowId) {
         WorkflowConfig workflowConfig = workflowService.getByWorkflowId(workflowId);
-        String app = workflowConfig.getApplication();
+        String app = workflowConfig.getId();
         String jarsRoot = ROOT + app + File.separator ;
         List<String> jars = workflowConfig.getJars();
         if(jars == null)
@@ -110,5 +110,10 @@ public class WorkflowSyncironze implements BaseWorkflowSynchronize{
     @Override
     public WFResponse startStep(Step step, Object[] params, String[] paramNames) {
         return workflowExecutor.execute(step, params, paramNames);
+    }
+
+    @Override
+    public WorkflowInstance getInstance(String instanceId) {
+        return workflowInstanceService.getByInstanceId(instanceId);
     }
 }

@@ -16,4 +16,8 @@ public class Hello {
         }
         return String.format("Already wake %s up", name);
     }
+
+    public String finish(String name){
+        return name + " finished the day";
+    }
 }

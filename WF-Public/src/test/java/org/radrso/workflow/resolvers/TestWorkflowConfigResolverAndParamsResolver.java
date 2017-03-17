@@ -74,7 +74,7 @@ public class TestWorkflowConfigResolverAndParamsResolver {
         HashMap<String, String> body = new HashMap<>();
         body.put("test1", "test");
         body.put("test2", "1.23");
-        response_1.setResponse(body);
+        response_1.setBody(body);
         stepStatus_1.setWfResponse(response_1);
 
         // step2的参数根据step1的输出结果确定
