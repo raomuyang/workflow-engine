@@ -26,6 +26,7 @@ public enum ResponseCode implements Serializable {
     METHOD_ACCESS_ERROR(4044, "Method access error"),
     METHOD_INVOCATION_ERROR(4045, "Method access exception"),
     JAR_FILE_NOT_FOUND(4046, "Jar file not found"),
+    ILLEGAL_ArGMENT_EXCEPTION(4047, "Argument type mismatch"),
 
 
     HTTP_OK(200, "HTTP_OK"),

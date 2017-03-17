@@ -69,7 +69,7 @@ public class TestReflectInvodeMethod {
 
         System.out.println("testInvokeListParam: will except");
         Integer[] params_2 = new Integer[]{1, 2, 3, 4, 5, 6, 7};
-        ret = ReflectInvokeMethod.invoke(TestReflectInvodeMethod.class,
+        ReflectInvokeMethod.invoke(TestReflectInvodeMethod.class,
                 TestReflectInvodeMethod.class.newInstance(), "sum_1", new Object[]{params_2});
 
 
@@ -115,7 +115,7 @@ public class TestReflectInvodeMethod {
         Object list = new ArrayList();
         Object ret = ReflectInvokeMethod.invoke(TestReflectInvodeMethod.class,
                 TestReflectInvodeMethod.class.newInstance(),
-                "sum_4",
+                "list",
                 new Object[]{list});
 
     }
