@@ -16,6 +16,7 @@ import org.radrso.workflow.entities.wf.WorkflowInstance;
 import org.radrso.workflow.resolvers.impl.ParamsResolver;
 import org.radrso.workflow.resolvers.impl.WorkflowConfigResolver;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,26 +28,45 @@ public class TestWorkflowConfigResolverAndParamsResolver {
     WorkflowConfigResolver workflowResolver;
     WorkflowInstance workflowInstance;
     WorkflowConfig workflowConfig;
+    ParamsResolver paramsResolver;
 
     @Before
     public void before() {
         workflowConfig = new Gson().fromJson(wf, WorkflowConfig.class);
         workflowInstance = new WorkflowInstance("workflow-test", "instance-test");
         workflowResolver = new WorkflowConfigResolver(workflowConfig, workflowInstance);
+        paramsResolver = new ParamsResolver(workflowInstance);
 
     }
 
-    @Test(expected = ConfigReadException.class)
+    @Test
     public void testGetParam() throws UnknowExceptionInRunning, ConfigReadException {
 
         Transfer transfer = workflowConfig.getSteps().get(0).getTransfer();
-        ParamsResolver paramsResolver = new ParamsResolver(workflowInstance);
         paramsResolver.resolverTransferParams(transfer);
 
         StepStatus stepStatus_1 = workflowResolver.getWorkflowInstance().getStepStatusesMap().get("sign-1");
         Assert.assertEquals(stepStatus_1.getParams()[0].getClass(), String.class);
         Assert.assertEquals(stepStatus_1.getParams()[1].getClass(), Double.class);
         Assert.assertEquals(stepStatus_1.getParams()[2].getClass(), Integer.class);
+
+        System.out.println("List.class:" + stepStatus_1.getParams()[3].getClass());
+        Assert.assertEquals(stepStatus_1.getParams()[3].getClass(), ArrayList.class);
+
+        System.out.println("int[].class:" + stepStatus_1.getParams()[4].getClass());
+        Assert.assertEquals(stepStatus_1.getParams()[4].getClass(), int[].class);
+        Assert.assertEquals(stepStatus_1.getParams()[4].getClass(), int[].class);
+
+        System.out.println("Double[].class:" + stepStatus_1.getParams()[5].getClass());
+        Assert.assertEquals(stepStatus_1.getParams()[5].getClass(), Double[].class);
+    }
+
+    @Test(expected = ConfigReadException.class)
+    public void testResolveResponseParam() throws UnknowExceptionInRunning, ConfigReadException {
+        Transfer transfer = workflowConfig.getSteps().get(0).getTransfer();
+        paramsResolver.resolverTransferParams(transfer);
+
+        StepStatus stepStatus_1 = workflowResolver.getWorkflowInstance().getStepStatusesMap().get("sign-1");
 
         WFResponse response_1 = new WFResponse();
         response_1.setCode(200);
@@ -64,7 +84,6 @@ public class TestWorkflowConfigResolverAndParamsResolver {
 
         body.put("test2", "asdf");
         paramsResolver.resolverTransferParams(transfer);
-
     }
 
     @Test
@@ -93,7 +112,10 @@ public class TestWorkflowConfigResolverAndParamsResolver {
             "        \"input\": [\n" +
             "          {\"name\": \"test1\",  \"type\": \"String\", \"value\": \"test\"},\n" +
             "          {\"name\": \"test2\",  \"type\": \"double\", \"value\": 11},\n" +
-            "          {\"name\": \"test3\",  \"type\": \"int\", \"value\": 2}\n" +
+            "          {\"name\": \"test3\",  \"type\": \"int\", \"value\": 2},\n" +
+            "          {\"name\": \"list\",  \"type\": \"List\", \"value\": \"[1,2]\"}," +
+            "          {\"name\": \"list\",  \"type\": \"int[]\", \"value\": \"[3,4]\"}," +
+            "          {\"name\": \"list\",  \"type\": \"Double[]\", \"value\": \"[5,6,7]\"}" +
             "        ],\n" +
             "\n" +
             "        \"to\": \"sign-1\",\n" +

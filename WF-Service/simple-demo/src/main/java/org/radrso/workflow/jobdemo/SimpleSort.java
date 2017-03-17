@@ -1,16 +1,17 @@
 package org.radrso.workflow.jobdemo;
 
+
 /**
  * Created by rao-mengnan on 2017/3/15.
  */
 public class SimpleSort {
 
-    public static int[] quickSort(int[] args){
+    public static Integer[] quickSort(Integer[] args){
         sort(args, 0, args.length - 1);
         return args;
     }
 
-    private static void sort(int[] args,  int left, int right){
+    private static void sort(Integer[] args,  int left, int right){
         int start = left;
         int end = right;
         if (start > end)
