@@ -24,7 +24,8 @@
 
       "transfer": {
         "input": [
-          {"name": "city", "value": "上饶"}
+          {"name": "{key}", "value": "99ezvsj9m86eozbt"},
+          {"name": "{city}", "value": "北京"}
         ],
         "to": "id-search-weather",
 
@@ -43,7 +44,7 @@
       "call": "class:org.radrso.workflow.jobdemo.Hello",
       "method": "wakeup",
       "transfer": {
-        "input": {"name": "list", "type": "Integer[]", "value": "[3, 2, 1, 4, 5, 7, 6]"},
+        "input": [{"name": "list", "type": "Integer[]", "value": "[3, 2, 1, 4, 5, 7, 6]"}],
         "to": "id-mike-home-work"
       }
     },
@@ -51,21 +52,27 @@
     {
       "sign": "id-search-weather",
       "name": "Search city weather",
-      "call": "http://api",
+      "call": "https://api.thinkpage.cn/v3/weather/now.json?key={key}&location={city}&language=zh-Hans&unit=c",
       "method": "Get",
       "transfer": {
         "judge": {
-          "compute": "{output}[id-search-weather][weather]",
+          "compute": "{output}[id-search-weather]",
           "computeWith": "晴天",
           "type": "String",
           "expression": "=",
 
           "passTransfer":{
-            "input": [{"name": "info", "value": "周边哪里好玩"}],
+            "input": [
+              {"name": "info", "value": "北京周边哪里好玩"},
+              {"name": "key", "value": ""}
+            ],
             "to": "id-outing"
           },
           "nopassTransfer":{
-            "input": [{"name": "info", "value": "红烧肉怎么做"}],
+            "input": [
+              {"name": "info", "value": "红烧肉怎么做"},
+              {"name": "key", "value": ""}
+            ],
             "to": "id-cooking"
           }
         }
@@ -75,8 +82,8 @@
     {
       "sign": "id-cooking",
       "name": "Cooking in the house",
-      "call": "http://api",
-      "method": "Get",
+      "call": "http://www.tuling123.com/openapi/api",
+      "method": "Post",
 
       "transfer":{
         "to": "&FINISH"
@@ -86,8 +93,8 @@
     {
       "sign": "id-outing",
       "name": "Outing",
-      "call": "http://api",
-      "method": "Get",
+      "call": "http://www.tuling123.com/openapi/api",
+      "method": "Post",
 
       "transfer":{
         "to": "&FINISH"
@@ -110,5 +117,5 @@
     }
   ],
 
-  "jars": ["org.radrso.workflow.jobdemo"]
+  "jars": ["org.radrso.workflow.jobdemo-1.0.jar"]
 }

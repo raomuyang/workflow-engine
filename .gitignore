@@ -7,3 +7,4 @@ log
 /*/src/main/test/
 /Speed-Dial/dockerfile/*-*/
 *jars/*
+/WF-Service/simple-demo/target

@@ -39,7 +39,7 @@ public interface BaseWorkflowConfigResolver {
      * get and remove
      * @return
      */
-    Step popBranchStep();
+    Transfer popBranchTransfer();
 
     /**
      * 状态转移函数到下一个状态的转换
@@ -72,7 +72,7 @@ public interface BaseWorkflowConfigResolver {
     Transfer getCurrentTransfer();
     Object[] getCurrentStepParams();
     String[] getCurrentStepParamNames();
-    List<Step> getScatterBranches(Transfer transfer);
+    List<Transfer> getScatterBranches(Transfer transfer);
 
     Step getLastStep();
     Transfer getLastTransfer();

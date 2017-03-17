@@ -183,12 +183,15 @@ public class StepAction implements BaseStepAction {
 
     private void execBranchs(BaseWorkflowConfigResolver workflowResolver) {
         Step currentStep = workflowResolver.getCurrentStep();
-        //获取分支下一步
-        Step scatterNextStep = workflowResolver.popBranchStep();
+        //获取分支的转移函数
+        Transfer scatterTransfer = workflowResolver.popBranchTransfer();
+//        Step scatterNextStep = workflowResolver.popBranchTransfer();
+
+        //标记当前是第几个分支
         int num = 0;
-        while (scatterNextStep != null) {
+        while (scatterTransfer != null) {
             String msg = String.format("Scatter to [%s] from step[%s]/[%s]",
-                    scatterNextStep.getSign(), currentStep.getSign(), workflowResolver.getWorkflowInstance().getInstanceId());
+                    scatterTransfer.getTo(), currentStep.getSign(), workflowResolver.getWorkflowInstance().getInstanceId());
             log.info(msg);
 
             // 克隆workflowConfig对象
@@ -208,25 +211,25 @@ public class StepAction implements BaseStepAction {
             WorkflowInstance branchInstance = new WorkflowInstance(workflowConfig.getId(), null);
             branchInstance.setInstanceId(
                     workflowResolver.getWorkflowInstance().getInstanceId() + "-" +
-                            (workflowResolver.getWorkflowInstance().getBranchs() - num++)
+                            (workflowResolver.getWorkflowInstance().getBranches() - num++)
             );
             BaseWorkflowConfigResolver newWFResolver = ResolverChain.getWorkflowConfigResolver(workflowConfig, branchInstance);
 
-            //当前分支的上一个转移函数，用于获取input，deadline等
-            Transfer lastTranInMain = workflowResolver.getLastTransfer();
+//            //当前分支的上一个转移函数，用于获取input，deadline等
+//            Transfer lastTranInMain = workflowResolver.getLastTransfer();
 
             //为不和主分支相互影响，克隆当前分支的上一个转移函数
-            Transfer virtualLastTransfer = new Transfer();
-            virtualLastTransfer.setDeadline(lastTranInMain.getDeadline());
-            virtualLastTransfer.setInput(lastTranInMain.getInput());
-            virtualLastTransfer.setTo(scatterNextStep.getSign());
+//            Transfer virtualLastTransfer = new Transfer();
+//            virtualLastTransfer.setDeadline(lastTranInMain.getDeadline());
+//            virtualLastTransfer.setInput(lastTranInMain.getInput());
+//            virtualLastTransfer.setTo(scatterNextStep.getSign());
 
             //用克隆的转移函数和主分支的步骤标志虚构分支的上一状态（Step），从而分支进入next()时可以调用克隆的转移函数
             Step tmpLastStep = new Step();
-            tmpLastStep.setTransfer(virtualLastTransfer);
+            tmpLastStep.setTransfer(scatterTransfer);
             tmpLastStep.setSign(workflowResolver.getLastStep().getSign());
 
-            scatterNextStep = workflowResolver.popBranchStep();
+            scatterTransfer = workflowResolver.popBranchTransfer();
             newWFResolver.setCurrentStep(tmpLastStep);
             StepExecutor.execute(this, newWFResolver);
 
@@ -252,9 +255,10 @@ public class StepAction implements BaseStepAction {
                         .getWorkflowId());
         if (status == null)
             throw new WFRuntimeException(WFRuntimeException.NO_SUCH_WORKFLOW_STATUS);
-        boolean isStart = WorkflowExecuteStatus.START.equals(status);
         // TODO 还没有验证工作流是否停止
-
+        boolean isStart = WorkflowExecuteStatus.START.equals(status);
+        if (!isStart)
+            return false;
         return true;
     }
 }

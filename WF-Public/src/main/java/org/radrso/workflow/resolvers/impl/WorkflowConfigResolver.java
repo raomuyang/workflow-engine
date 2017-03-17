@@ -34,6 +34,7 @@ public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Seria
 
     private Map<String, Step> stepMap;
 
+    private List<Transfer> currentBranches;
     //记录当前Step产生的分支，当前节点执行完毕后，分支会被置为null
     private List<Step> scatterSteps;
 
@@ -82,7 +83,7 @@ public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Seria
         workflowInstance.getStepStatusesMap().get(currentStep.getSign()).setStatus(Step.RUNNING);
 
         int len = scatterSteps == null?0:scatterSteps.size();
-        workflowInstance.setBranchs(workflowInstance.getBranchs() + len);
+        workflowInstance.setBranches(workflowInstance.getBranches() + len);
         return this;
     }
 
@@ -116,10 +117,10 @@ public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Seria
      * @return
      */
     @Override
-    public Step popBranchStep(){
-        if(this.scatterSteps == null || this.scatterSteps.size() == 0)
+    public Transfer popBranchTransfer(){
+        if(this.currentBranches == null || this.currentBranches.size() == 0)
             return null;
-        return this.scatterSteps.remove(0);
+        return this.currentBranches.remove(0);
     }
 
 
@@ -237,18 +238,20 @@ public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Seria
      * @return 非空的一个List
      */
     @Override
-    public List<Step> getScatterBranches(Transfer transfer){
-        List<String> stepNames = transfer.getScatters();
-        scatterSteps = scatterSteps == null ? new ArrayList<>():scatterSteps;
+    public List<Transfer> getScatterBranches(Transfer transfer){
+        int len = workflowInstance.getBranches();
+        String currentStepSign = currentStep.getSign();
+        List<Transfer> scatterBranches = new ArrayList<>();
 
-        int len = workflowInstance.getBranchs();
-
-        if(stepNames != null && stepNames.size() > 0)
-            for(int i = 0; i < stepNames.size(); i++ ) {
-                scatterSteps.add(stepMap.get(stepNames.get(i)));
-                workflowInstance.getBranchStepMap().put(len + i + 1, currentStep.getSign());
+        int branchNum = 1;
+        if (transfer.getScatters() != null){
+            for (Transfer bTran: transfer.getScatters()){
+                scatterBranches.add(bTran);
+                workflowInstance.getBranchStepMap().put(len + branchNum, currentStepSign);
             }
-        return scatterSteps;
+        }
+        this.currentBranches = scatterBranches;
+        return scatterBranches;
     }
 
     @Override
