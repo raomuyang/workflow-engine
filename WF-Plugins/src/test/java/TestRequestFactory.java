@@ -26,22 +26,15 @@ public class TestRequestFactory {
 
     @Test
     public void testGet() throws RequestException {
-        String url = "http://gc.ditu.aliyun.com/geocoding";
-        Map<String, Object> param = new HashMap<>();
-        param.put("a", "南京");
-        BaseRequest request = RequestFactory.createRequest(url, MethodEnum.GET, headers, param, null, false);
+
+        String url = "https://api.douban.com/v2/book/1220562";
+        BaseRequest request = RequestFactory.createRequest(url, MethodEnum.GET, headers, null, null, false);
         Response response = request.sendRequest();
         Assert.assertEquals(response.getStatusCode(), 200);
         System.out.println("[DEBUG]---get---" + response.getContent());
 
-        url = "https://api.douban.com/v2/book/1220562";
-        request = RequestFactory.createRequest(url, MethodEnum.GET, headers, null, null, false);
-        response = request.sendRequest();
-        Assert.assertEquals(response.getStatusCode(), 200);
-        System.out.println("[DEBUG]---get---" + response.getContent());
-
         url = "https://api.douban.com/v2/book/search";
-        param = new HashMap<>();
+        Map param = new HashMap<>();
         param.put("q", "东野圭吾");
         param.put("start", 1);
         param.put("count", "30");
