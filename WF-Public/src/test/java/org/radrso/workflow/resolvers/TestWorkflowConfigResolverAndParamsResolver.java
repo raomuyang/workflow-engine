@@ -13,7 +13,8 @@ import org.radrso.workflow.entities.exceptions.UnknowExceptionInRunning;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.entities.wf.StepStatus;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
-import org.radrso.workflow.resolvers.WorkflowResolver;
+import org.radrso.workflow.resolvers.impl.ParamsResolver;
+import org.radrso.workflow.resolvers.impl.WorkflowConfigResolver;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,8 +23,8 @@ import java.util.List;
  * Created by rao-mengnan on 2017/3/10.
  */
 
-public class TestWorkflowResolver {
-    WorkflowResolver workflowResolver;
+public class TestWorkflowConfigResolverAndParamsResolver {
+    WorkflowConfigResolver workflowResolver;
     WorkflowInstance workflowInstance;
     WorkflowConfig workflowConfig;
 
@@ -31,7 +32,7 @@ public class TestWorkflowResolver {
     public void before() {
         workflowConfig = new Gson().fromJson(wf, WorkflowConfig.class);
         workflowInstance = new WorkflowInstance("workflow-test", "instance-test");
-        workflowResolver = new WorkflowResolver(workflowConfig, workflowInstance);
+        workflowResolver = new WorkflowConfigResolver(workflowConfig, workflowInstance);
 
     }
 
@@ -39,9 +40,10 @@ public class TestWorkflowResolver {
     public void testGetParam() throws UnknowExceptionInRunning, ConfigReadException {
 
         Transfer transfer = workflowConfig.getSteps().get(0).getTransfer();
-        workflowResolver.getParams(transfer);
+        ParamsResolver paramsResolver = new ParamsResolver(workflowInstance);
+        paramsResolver.resolverTransferParams(transfer);
 
-        StepStatus stepStatus_1 = workflowResolver.getStepStatusMap().get("sign-1");
+        StepStatus stepStatus_1 = workflowResolver.getWorkflowInstance().getStepStatusesMap().get("sign-1");
         Assert.assertEquals(stepStatus_1.getParams()[0].getClass(), String.class);
         Assert.assertEquals(stepStatus_1.getParams()[1].getClass(), Double.class);
         Assert.assertEquals(stepStatus_1.getParams()[2].getClass(), Integer.class);
@@ -57,11 +59,11 @@ public class TestWorkflowResolver {
 
         // step2的参数根据step1的输出结果确定
         transfer = workflowConfig.getSteps().get(1).getTransfer();
-        Object[] params_2 = workflowResolver.getParams(transfer);
+        Object[] params_2 = paramsResolver.resolverTransferParams(transfer);
         Assert.assertEquals(params_2[1].getClass(), Double.class);
 
         body.put("test2", "asdf");
-        workflowResolver.getParams(transfer);
+        paramsResolver.resolverTransferParams(transfer);
 
     }
 
@@ -71,7 +73,7 @@ public class TestWorkflowResolver {
         Assert.assertEquals(currentStep.getSign(), ConfigConstant.CONF_START_SIGN);
 
         Transfer transfer = workflowConfig.getSteps().get(0).getTransfer();
-        List<Step> steps = workflowResolver.scatterTo(transfer);
+        List<Step> steps = workflowResolver.getScatterBranches(transfer);
         Assert.assertEquals(steps.get(1).getSign(), "sign-3");
     }
 

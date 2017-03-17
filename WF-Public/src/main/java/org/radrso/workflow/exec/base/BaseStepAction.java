@@ -1,6 +1,6 @@
 package org.radrso.workflow.exec.base;
 
-import org.radrso.workflow.resolvers.WorkflowResolver;
+import org.radrso.workflow.resolvers.BaseWorkflowConfigResolver;
 
 
 /**
@@ -8,7 +8,7 @@ import org.radrso.workflow.resolvers.WorkflowResolver;
  */
 
 public interface BaseStepAction {
-    void stepNext(WorkflowResolver workflowResolver);
-    void stepError(WorkflowResolver workflowResolver, Throwable throwable);
-    void stepCompleted(WorkflowResolver workflowResolver);
+    void stepNext(BaseWorkflowConfigResolver workflowResolver);
+    void stepError(BaseWorkflowConfigResolver workflowResolver, Throwable throwable);
+    void stepCompleted(BaseWorkflowConfigResolver workflowResolver);
 }
