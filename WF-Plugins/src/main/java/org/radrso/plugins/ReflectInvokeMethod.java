@@ -93,6 +93,11 @@ public class ReflectInvokeMethod {
             return;
         }
 
+        if (Map.class.isAssignableFrom(cla)) {
+            argClasses2[position] = Map.class;
+            return;
+        }
+
         if ("Boolean".equals(cla.getSimpleName())) {
             argClasses2[position] = boolean.class;
         }
