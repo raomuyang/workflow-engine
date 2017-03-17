@@ -27,5 +27,5 @@ public class Transfer implements Serializable{
     private Judge judge;
     private Date deadline;
     private String to;
-    private List<String> scatters;
+    private List<Transfer> scatters;
 }

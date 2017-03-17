@@ -1,6 +1,5 @@
 package org.radrso.workflow.resolvers;
 
-import com.google.gson.JsonElement;
 import org.junit.Assert;
 import org.junit.Test;
 import org.radrso.workflow.entities.config.items.Step;
@@ -52,11 +51,10 @@ public class TestStepResolver {
 
         StepExecuteResolver resolver = new StepExecuteResolver(step, params, paramNames);
         WFResponse response = resolver.netRequest();
-        System.out.println(response.getResponse());
-        System.out.println(response.getResponse().getClass());
-        Assert.assertEquals(JsonElement.class.isAssignableFrom(response.getResponse().getClass()), true);
+        System.out.println(response.getBody());
+        System.out.println(response.getBody().getClass());
         Assert.assertEquals(step.getCall(), "http://www.tuling123.com/openapi/api");
-        Assert.assertEquals(response.getResponse().toString().contains("40001"), true);
+        Assert.assertEquals(response.getBody().toString().contains("40001"), true);
 
 
         step.setCall("https://api.douban.com/v2/user/~me");

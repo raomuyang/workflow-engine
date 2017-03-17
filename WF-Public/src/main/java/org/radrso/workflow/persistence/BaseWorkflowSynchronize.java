@@ -25,6 +25,8 @@ public interface BaseWorkflowSynchronize {
 
     WFResponse startStep(Step step, Object[] params, String[] paramNames);
 
+    WorkflowInstance getInstance(String instanceId);
+
     static boolean isDefinedJarsFiles(WorkflowConfig workflowConfig) {
         if (workflowConfig == null)
             return false;
@@ -33,4 +35,6 @@ public interface BaseWorkflowSynchronize {
             return false;
         return true;
     }
+
+
 }

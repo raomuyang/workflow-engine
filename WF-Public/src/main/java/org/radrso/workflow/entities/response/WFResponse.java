@@ -17,5 +17,5 @@ import java.io.Serializable;
 public class WFResponse implements Serializable{
     private int    code;
     private String msg;
-    private Object response;
+    private Object body;
 }

@@ -66,6 +66,8 @@ public class JsonUtils {
     public static JsonElement getJsonElement(Object o) {
         if (String.class.isAssignableFrom(o.getClass()))
             return new JsonParser().parse(o.toString());
+        if (JsonElement.class.equals(o.getClass()))
+            return (JsonElement) o;
         if (JsonElement.class.isAssignableFrom(o.getClass()))
             return (JsonElement) o;
         String json = new Gson().toJson(o);

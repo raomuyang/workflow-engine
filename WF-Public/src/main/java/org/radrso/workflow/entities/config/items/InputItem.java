@@ -21,5 +21,5 @@ import java.io.Serializable;
 public class InputItem implements Serializable{
     private String name = "default";
     private String value;
-    private String type;
+    private String type = "String";
 }

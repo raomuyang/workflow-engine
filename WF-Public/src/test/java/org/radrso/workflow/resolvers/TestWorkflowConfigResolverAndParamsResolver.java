@@ -74,7 +74,7 @@ public class TestWorkflowConfigResolverAndParamsResolver {
         HashMap<String, String> body = new HashMap<>();
         body.put("test1", "test");
         body.put("test2", "1.23");
-        response_1.setResponse(body);
+        response_1.setBody(body);
         stepStatus_1.setWfResponse(response_1);
 
         // step2的参数根据step1的输出结果确定
@@ -92,8 +92,8 @@ public class TestWorkflowConfigResolverAndParamsResolver {
         Assert.assertEquals(currentStep.getSign(), ConfigConstant.CONF_START_SIGN);
 
         Transfer transfer = workflowConfig.getSteps().get(0).getTransfer();
-        List<Step> steps = workflowResolver.getScatterBranches(transfer);
-        Assert.assertEquals(steps.get(1).getSign(), "sign-3");
+        List<Transfer> steps = workflowResolver.getScatterBranches(transfer);
+        Assert.assertEquals(steps.get(1).getTo(), "sign-3");
     }
 
     static String wf = "{\n" +
@@ -119,7 +119,10 @@ public class TestWorkflowConfigResolverAndParamsResolver {
             "        ],\n" +
             "\n" +
             "        \"to\": \"sign-1\",\n" +
-            "        \"scatters\":[\"sign-2\", \"sign-3\"]" +
+            "        \"scatters\":[" +
+            "                      {\"to\": \"sign-2\"}," +
+            "                      {\"to\": \"sign-3\"}" +
+            "               ]" +
             "      }\n" +
             "    },\n" +
 
@@ -161,8 +164,7 @@ public class TestWorkflowConfigResolverAndParamsResolver {
             "          \"expression\": \"<\",\n" +
             "          \"passTransfer\":{\n" +
             "            \"input\":[],\n" +
-            "            \"to\": \"sign-3\",\n" +
-            "            \"scatters\":[\"$FINISH\"]\n" +
+            "            \"to\": \"sign-3\"\n" +
             "          },\n" +
             "          \"nopassTransfer\":{\n" +
             "            \"input\":[],\n" +
