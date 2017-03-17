@@ -15,4 +15,12 @@ public class TestJsonUtils {
         System.out.println(element);
         Assert.assertEquals(element.getAsJsonArray().get(0).getAsString(), "1");
     }
+
+    @Test
+    public void testMapToBean(){
+        String str = "[1, 2, 3, 4, 5]";
+        int[] list = JsonUtils.mapToBean(str, int[].class);
+        System.out.println(list[0]);
+        Assert.assertEquals(list[0], 1);
+    }
 }

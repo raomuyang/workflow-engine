@@ -35,7 +35,7 @@ public interface ConfigConstant {
                list.add(matcher.group(group));
           if(list.size() == 0)
                return new String[]{};
-          String[]  ret = new String[]{};
+          String[]  ret = new String[list.size()];
           return list.toArray(ret);
      }
 }

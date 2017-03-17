@@ -12,6 +12,7 @@ import org.radrso.workflow.entities.wf.StepStatus;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
 import org.radrso.workflow.resolvers.BaseParamsResolver;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +21,24 @@ import java.util.Map;
  */
 @Log4j
 public class ParamsResolver implements BaseParamsResolver {
-
+    private static final String UTILS_CLASS = "Data|List|Map";
+    private static final Map<String, Class> classMap;
+    static {
+        classMap = new HashMap<>();
+        classMap.put("int[]", int[].class);
+        classMap.put("double[]", double[].class);
+        classMap.put("float[]", float[].class);
+        classMap.put("short", short[].class);
+        classMap.put("byte[]", byte[].class);
+        classMap.put("char[]", char[].class);
+        classMap.put("Integer[]", Integer[].class);
+        classMap.put("Double[]", Double[].class);
+        classMap.put("Float[]", Float[].class);
+        classMap.put("Short[]", Short[].class);
+        classMap.put("Byte[]", Byte[].class);
+        classMap.put("Character[]", Character[].class);
+        classMap.put("Boolean[]", Boolean[].class);
+    }
     private WorkflowInstance workflowInstance;
 
     public ParamsResolver(WorkflowInstance workflowInstance){
@@ -100,22 +118,28 @@ public class ParamsResolver implements BaseParamsResolver {
             return o.toString();
         try {
             type = casePrimitiveType(type);
-            Class clazz = CustomClassLoader.getClassLoader().loadClass(type);
+            Class clazz;
+            if(type.contains("["))
+                clazz = classMap.get(type);
+            else
+                clazz = CustomClassLoader.getClassLoader().loadClass(type);
+            if (clazz == null)
+                throw new ClassNotFoundException(String.format("No such class [%s]", type));
             return JsonUtils.mapToBean(o.toString(), clazz);
         } catch (ClassNotFoundException e) {
             throw new ConfigReadException(String.format("Param type error: (%s)", type) + e);
         } catch (Throwable throwable){
-            throw new ConfigReadException("Value case error: " + throwable);
+            throw new ConfigReadException("Value case error: " + throwable.getMessage());
         }
 
     }
 
     private String casePrimitiveType(String type){
-        if(type.contains("."))
+        if(type.contains(".") || type.contains("["))
             return type;
 
         type = type.substring(0,1).toUpperCase() + type.substring(1).toLowerCase();
-        if("Date".equals(type))
+        if(UTILS_CLASS.contains(type) && !type.contains("|"))
             return "java.util." + type;
         if(type.equals("Int"))
             type = "Integer";

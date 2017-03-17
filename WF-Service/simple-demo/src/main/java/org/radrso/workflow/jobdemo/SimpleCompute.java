@@ -5,7 +5,7 @@ package org.radrso.workflow.jobdemo;
  */
 public class SimpleCompute {
 
-    public int sum(int... args) {
+    public int sum(Integer... args) {
         int sum = 0;
         if (args.length > 0) {
             for (int i = 0; i < args.length; ++i) {
@@ -15,7 +15,7 @@ public class SimpleCompute {
         return sum;
     }
 
-    public double arerage(int ...args){
+    public double arerage(Integer ...args){
         double sum = 0;
         if (args.length > 0) {
             for (int i = 0; i < args.length; ++i) {
