@@ -104,7 +104,7 @@ public class ParamsResolver implements BaseParamsResolver {
 
                     }
 
-                    JsonElement element = (JsonElement) result;
+                    JsonElement element = JsonUtils.getJsonElement(result);
                     // 判断是否为Json数组
                     if (StringUtils.isInteger(sp[parseStrIndex])) {
                         JsonArray array = element.getAsJsonArray();
