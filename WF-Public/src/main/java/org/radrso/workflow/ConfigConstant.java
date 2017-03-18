@@ -23,13 +23,13 @@ public interface ConfigConstant {
 
      String HEADER_PARAMS_ESCAPE = "$";
      String VALUES_ESCAPE = "\\{(.*?)\\}";
+     Pattern VALUES_ESCAPE_PATTERN = Pattern.compile(VALUES_ESCAPE);
 
      static String[] matcherValuesEscape(String str){
           return matcherValuesEscape(str, 0);
      }
      static String[] matcherValuesEscape(String str, int group){
-          Pattern pattern = Pattern.compile(VALUES_ESCAPE);
-          Matcher matcher = pattern.matcher(str);
+          Matcher matcher = VALUES_ESCAPE_PATTERN.matcher(str);
           List<String> list = new ArrayList<>();
           while (matcher.find())
                list.add(matcher.group(group));
