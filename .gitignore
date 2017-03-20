@@ -5,6 +5,6 @@
 *.class
 log
 /*/src/main/test/
-/Speed-Dial/dockerfile/*-*/
+/Speed-Dial/dockerfile/*-*
 *jars/*
 /WF-Service/simple-demo/target
