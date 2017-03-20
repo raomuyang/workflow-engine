@@ -26,7 +26,6 @@ public class Judge implements Serializable{
     private Object computeWith;
     private String type;
     private String expression;
-    private String next;
     private Transfer passTransfer;
     private Transfer nopassTransfer;
 }

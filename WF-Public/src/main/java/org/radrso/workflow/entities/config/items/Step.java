@@ -28,6 +28,5 @@ public class Step implements Serializable{
     private String name;
     private String call;
     private String method;
-    private int loop = 1;
     private Transfer transfer;
 }
