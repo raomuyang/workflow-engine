@@ -12,7 +12,7 @@ if [ x${COMMAND} = x'-b' ] || [ x${COMMAND} = x'--build' ] ; then
     printf "\e[0;33;1m[INFO] Start Build \e[0m \n"
     cd ../
     printf "\e[0;33;1m[STEP-1] Maven package \e[0m \n"
-    printf "\e[0;33;1m" ---------------------------------------
+    printf "\e[0;33;1m ---------------------------------------  \e[0m \n"
     mvn clean
     mvn package
 
