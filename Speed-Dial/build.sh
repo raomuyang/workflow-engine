@@ -12,7 +12,7 @@ if [ x${COMMAND} = x'-b' ] || [ x${COMMAND} = x'--build' ] ; then
     printf "\e[0;33;1m[INFO] Start Build \e[0m \n"
     cd ../
     printf "\e[0;33;1m[STEP-1] Maven package \e[0m \n"
-    printf"\e[0;33;1m" ---------------------------------------
+    printf "\e[0;33;1m ---------------------------------------  \e[0m \n"
     mvn clean
     mvn package
 
@@ -87,6 +87,7 @@ if [ x${COMMAND} = x'-u' ] || [ x${COMMAND} = x'--update' ] ; then
 
 fi
 
+printf "\e[0;32;1m[INFO] Now you can startup WFE by [./Speed-Dial/dockerfile/wfService.sh -r provider|service] \e[0m \n"
 printf "\e[0;33;1m[STEP-3] Copy config files \e[0m \n"
 printf "\e[0;33;1m--------------------------------------- \e[0m \n"
 cp WF-Service/target/classes/*.* Speed-Dial/dockerfile/${WF_SERVICE_FLOODER}/
@@ -100,13 +101,14 @@ fi
 printf "\e[0;32;1m[SUCCESS] Move WF-Engine-Plugins-UPDATE successed \e[0m \n\n"
 
 
-printf "\e[0;33;1m[STEP-4] Make image \e[0m \n"
+printf "\e[0;33;1m[STEP-4] Build image \e[0m \n"
 printf "\e[0;33;1m--------------------------------------- \e[0m \n"
 cd Speed-Dial/dockerfile
 docker build -t raomengnan/workflow-engine ./
 if [ $? != 0 ]; then
-        printf "\e[0;31;1m[ERROR] Make image failed \e[0m \n"
+        printf "\e[0;31;1m[ERROR] Build image failed \e[0m \n"
         exit 6
 fi
-printf "\e[0;32;1m[SUCCESS] Make image success \e[0m \n"
+printf "\e[0;32;1m[SUCCESS] Build image success \e[0m \n"
+printf "\e[0;32;1m[INFO] Now you can startup WFE by [docker run raomengnan/workflow-engine -r service|provider]\e[0m \n"
 
