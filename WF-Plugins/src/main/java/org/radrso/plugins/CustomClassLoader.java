@@ -15,7 +15,6 @@ import java.util.List;
 public class CustomClassLoader extends URLClassLoader {
 
     private static volatile CustomClassLoader customClassLoader;
-    private static volatile List<URL> urls = new ArrayList<>();
 
     static {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
@@ -55,17 +54,12 @@ public class CustomClassLoader extends URLClassLoader {
 
     public void addJar(URL url) {
         this.addURL(url);
-        urls.add(url);
     }
 
     public void addJar(File file) throws MalformedURLException {
         URL url = file.toURL();
         this.addURL(url);
-        urls.add(url);
     }
 
-    public static List<URL> getUrls() {
-        return urls;
-    }
 
 }
