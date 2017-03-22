@@ -67,7 +67,7 @@ public class StepExecuteResolver implements BaseStepExecuteResolver{
         }
 
         String methodName = step.getMethod();
-        log.info("Invoke: " + className + "-" + methodName);
+        log.info("[Invoke] " + className + "-" + methodName);
         try {
             WFResponse response = new WFResponse();
             Class clazz = CustomClassLoader.getClassLoader().loadClass(className);

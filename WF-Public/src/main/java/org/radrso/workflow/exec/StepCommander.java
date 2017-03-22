@@ -32,13 +32,13 @@ public class StepCommander {
         String path = dir + File.separator + jarName;
         boolean added;
         try {
-            log.info(String.format("Write and import jar_file[%s]", path));
+            log.info(String.format("[Import] Write and import jar_file[%s]", path));
             added = FileUtils.writeFile(dir, jarName, stream);
             if (added)
                 CustomClassLoader.getClassLoader().addJar(new File(path));
-            log.info(String.format("[Success] Write and import jar_file[%s]", path));
+            log.info(String.format("[Import] Success:Write and import jar_file[%s]", path));
         } catch (IOException e) {
-            log.error("[Import] " + e);
+            log.error("[Import] Failed:" + e);
             return new WFResponse(ResponseCode.UNKNOW_HOST_EXCEPTION.code(), e.getMessage(), e);
         }
 
@@ -49,7 +49,7 @@ public class StepCommander {
         String path = dir + File.separator + jarName;
         File file = new File(path);
         if (file.exists()) {
-            log.info(String.format("Import local exists jar_file[%s]", path));
+            log.info(String.format("[Import] add local existed jar_file[%s]", path));
             return importJar(dir, jarName, FileUtils.getByte(file));
         } else
             return new WFResponse(ResponseCode.JAR_FILE_NOT_FOUND.code(), ResponseCode.JAR_FILE_NOT_FOUND.info(), null);
