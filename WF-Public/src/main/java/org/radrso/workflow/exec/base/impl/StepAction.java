@@ -113,7 +113,7 @@ public class StepAction implements BaseStepAction {
 
                 execBranchs(workflowResolver);
 
-                log.info("[START] " + workflowResolver.getWorkflowInstance().getInstanceId() + " " + step.getName() + String.format(" Thread[%s]", Thread.currentThread().getId()));
+                log.info("[STEP-START] " + workflowResolver.getWorkflowInstance().getInstanceId() + " " + step.getName() + String.format(" Thread[%s]", Thread.currentThread().getId()));
                 Object[] params = workflowResolver.getCurrentStepParams();
                 String[] paramNames = workflowResolver.getCurrentStepParamNames();
 
