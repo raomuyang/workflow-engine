@@ -55,11 +55,11 @@ if [ x${COMMAND} = x'-u' ] || [ x${COMMAND} = x'--update' ] ; then
     fi
     mkdir -p tmp
     tar -zxvf WF-Service/target/Workflow-Engine-*.jar.original -C tmp/
-    cp -r tmp/org Speed-Dial/dockerfile/${WF_SERVICE_FLOODER}/
+    cp -r tmp/org Speed-Dial/dockerfile/${WF_SERVICE_FLOODER}/BOOT-INF/classes/
     rm -r tmp/*
 
     tar -zxvf WF-Provider/target/Workflow-Engine-*.jar.original -C tmp/
-    cp -r tmp/org Speed-Dial/dockerfile/${WF_PROVIDER_FLO0DER}/
+    cp -r tmp/org Speed-Dial/dockerfile/${WF_PROVIDER_FLO0DER}/BOOT-INF/classes/
     if [ $? != 0 ]; then
         printf "\e[0;31;1m[ERROR] Package failed \e[0m \n"
         exit 4
@@ -70,13 +70,13 @@ if [ x${COMMAND} = x'-u' ] || [ x${COMMAND} = x'--update' ] ; then
     printf "\e[0;33;1m[STEP-2] UPDATE org.radrso.*  \e[0m \n"
     printf "\e[0;33;1m--------------------------------------- \e[0m \n"
 
-    cp WF-Plugins/target/org.radrso.plugins-*.jar  Speed-Dial/dockerfile/${WF_SERVICE_FLOODER}/lib/
+    cp WF-Plugins/target/org.radrso.plugins-*.jar  Speed-Dial/dockerfile/${WF_SERVICE_FLOODER}/BOOT-INF/lib/
     result=${result}$?
-    cp WF-Plugins/target/org.radrso.plugins-*.jar  Speed-Dial/dockerfile/${WF_PROVIDER_FLO0DER}/lib/
+    cp WF-Plugins/target/org.radrso.plugins-*.jar  Speed-Dial/dockerfile/${WF_PROVIDER_FLO0DER}/BOOT-INF/lib/
     result=${result}$?
-    cp WF-Public/target/org.radrso.workflow.core-*.jar  Speed-Dial/dockerfile/${WF_SERVICE_FLOODER}/lib/
+    cp WF-Core/target/org.radrso.workflow.core-*.jar  Speed-Dial/dockerfile/${WF_SERVICE_FLOODER}/BOOT-INF/lib/
     result=${result}$?
-    cp WF-Public/target/org.radrso.workflow.core-*.jar  Speed-Dial/dockerfile/${WF_PROVIDER_FLO0DER}/lib/
+    cp WF-Core/target/org.radrso.workflow.core-*.jar  Speed-Dial/dockerfile/${WF_PROVIDER_FLO0DER}/BOOT-INF/lib/
     result=${result}$?
 
     if [ ${result} != "0000" ]; then
