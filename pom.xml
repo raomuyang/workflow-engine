@@ -13,7 +13,7 @@
     </parent>
 
     <modules>
-        <module>WF-Public</module>
+        <module>WF-Core</module>
         <module>WF-Provider</module>
         <module>WF-Service</module>
         <module>WF-Plugins</module>
