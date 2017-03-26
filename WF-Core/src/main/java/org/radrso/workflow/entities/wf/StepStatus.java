@@ -32,5 +32,6 @@ public class StepStatus implements Serializable{
 
     public StepStatus(String sign, String name) {
         this.sign = sign;
+        this.name = name;
     }
 }
