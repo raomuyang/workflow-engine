@@ -214,7 +214,7 @@ public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Seria
 
     @Override
     public Transfer getCurrentTransfer() {
-        if (getCurrentStep() == null)
+        if (this.currentStep == null)
             return null;
         else {
             return currentStep.getTransfer();
