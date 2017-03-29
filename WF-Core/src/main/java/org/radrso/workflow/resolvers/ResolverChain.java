@@ -4,7 +4,7 @@ import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
 import org.radrso.workflow.resolvers.impl.ParamsResolver;
-import org.radrso.workflow.resolvers.impl.StepExecuteResolver;
+import org.radrso.workflow.resolvers.impl.StepActionResolver;
 import org.radrso.workflow.resolvers.impl.WorkflowConfigResolver;
 
 /**
@@ -20,7 +20,7 @@ public class ResolverChain {
         return new WorkflowConfigResolver(workflowConfig, workflowInstance);
     }
 
-    public static BaseStepExecuteResolver getWorkflowExecuteResolver(Step step, Object[] params, String[] paramNames){
-        return new StepExecuteResolver(step, params, paramNames);
+    public static BaseStepActionResolver getStepActionResolver(Step step, Object[] params, String[] paramNames){
+        return new StepActionResolver(step, params, paramNames);
     }
 }

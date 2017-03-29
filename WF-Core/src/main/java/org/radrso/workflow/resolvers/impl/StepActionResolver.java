@@ -15,7 +15,7 @@ import org.radrso.plugins.requests.entity.MethodEnum;
 import org.radrso.plugins.requests.entity.Response;
 import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
 import org.radrso.plugins.requests.entity.exceptions.impl.RequestException;
-import org.radrso.workflow.resolvers.BaseStepExecuteResolver;
+import org.radrso.workflow.resolvers.BaseStepActionResolver;
 
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
@@ -28,12 +28,12 @@ import java.util.Map;
  * 解析步骤的执行，请求URL或者调用指定方法
  */
 @Log4j
-public class StepExecuteResolver implements BaseStepExecuteResolver{
+public class StepActionResolver implements BaseStepActionResolver {
     private Step step;
     private Object[] params;
     private String[] paramNames;
 
-    public StepExecuteResolver(Step step, Object[] params, String[] paramNames){
+    public StepActionResolver(Step step, Object[] params, String[] paramNames){
         this.step = step;
         this.params = params;
         this.paramNames = paramNames;

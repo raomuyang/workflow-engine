@@ -89,7 +89,14 @@ public class WorkflowSyncironze implements BaseWorkflowSynchronize{
 
     @Override
     public WorkflowConfig getWorkflow(String instanceId) {
-        WorkflowInstance instance = workflowInstanceService.getByInstanceId(instanceId);
+        String id = instanceId;
+        if (id.contains("-")) {
+            id = id.substring(0, id.indexOf("-"));
+        }
+        WorkflowInstance instance = workflowInstanceService.getByInstanceId(id);
+        if (instance == null) {
+            return null;
+        }
         return workflowService.getByWorkflowId(instance.getWorkflowId());
     }
 

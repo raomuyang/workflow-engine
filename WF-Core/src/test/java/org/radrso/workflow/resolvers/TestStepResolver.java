@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.response.WFResponse;
-import org.radrso.workflow.resolvers.impl.StepExecuteResolver;
+import org.radrso.workflow.resolvers.impl.StepActionResolver;
 
 /**
  * Created by rao-mengnan on 2017/3/12.
@@ -32,7 +32,7 @@ public class TestStepResolver {
         step.setMethod("sum_1");
         String[] paramNames = new String[]{"default", "default", "default", "default", "default"};
         Integer[] params = new Integer[]{1, 2, 3, 4, 5};
-        StepExecuteResolver resolver = new StepExecuteResolver(step, new Object[]{"test:", params}, paramNames);
+        StepActionResolver resolver = new StepActionResolver(step, new Object[]{"test:", params}, paramNames);
         WFResponse response = resolver.classRequest();
         System.out.println("Result:" + response);
 
@@ -49,7 +49,7 @@ public class TestStepResolver {
         String[] paramNames = new String[]{"key", "info", "userid", "{endpoint}", "$Content-Type"};
         String[] params = new String[]{"asdf", "你好", "12345678", "api", "asdfasf"};
 
-        StepExecuteResolver resolver = new StepExecuteResolver(step, params, paramNames);
+        StepActionResolver resolver = new StepActionResolver(step, params, paramNames);
         WFResponse response = resolver.netRequest();
         System.out.println(response.getBody());
         System.out.println(response.getBody().getClass());
@@ -61,7 +61,7 @@ public class TestStepResolver {
         paramNames = new String[]{"$Authorization"};
         params = new String[]{"Bearer a14afef0f66fcffce3e0fcd2e34f6ff4"};
         step.setMethod("get");
-        resolver = new StepExecuteResolver(step, params, paramNames);
+        resolver = new StepActionResolver(step, params, paramNames);
         response = resolver.netRequest();
         System.out.println(response);
         Assert.assertEquals(response.getMsg().contains("a14afef0f66fcffce3e0fcd2e34f6ff4"), true);

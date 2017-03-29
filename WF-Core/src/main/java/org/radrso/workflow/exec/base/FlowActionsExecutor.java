@@ -1,4 +1,4 @@
-package org.radrso.workflow.exec.base.impl;
+package org.radrso.workflow.exec.base;
 
 import com.alibaba.dubbo.rpc.RpcException;
 import lombok.extern.log4j.Log4j;
@@ -15,8 +15,8 @@ import org.radrso.workflow.entities.wf.StepStatus;
 import org.radrso.workflow.entities.wf.WorkflowErrorLog;
 import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
-import org.radrso.workflow.exec.base.BaseStepAction;
-import org.radrso.workflow.exec.StepExecutor;
+import org.radrso.workflow.exec.BaseFlowActionsExecutor;
+import org.radrso.workflow.exec.FlowActonExecutorChain;
 import org.radrso.workflow.persistence.BaseWorkflowSynchronize;
 import org.radrso.workflow.resolvers.BaseWorkflowConfigResolver;
 import org.radrso.workflow.resolvers.ResolverChain;
@@ -25,19 +25,18 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Created by raomengnan on 17-1-17.
+ * Created by rao-mengnan on 2017/3/29.
  */
 @Log4j
-public class StepAction implements BaseStepAction {
-
+public class FlowActionsExecutor extends BaseFlowActionsExecutor{
     private BaseWorkflowSynchronize workflowSynchronize;
 
-    public StepAction(BaseWorkflowSynchronize workflowSynchronize) {
+    public FlowActionsExecutor(BaseWorkflowSynchronize workflowSynchronize) {
         this.workflowSynchronize = workflowSynchronize;
     }
 
     @Override
-    public void stepCompleted(BaseWorkflowConfigResolver workflowResolver) {
+    public void doOnStepComplated(BaseWorkflowConfigResolver workflowResolver) {
         log.info("[STEP-COMPLETED] " + workflowResolver.getWorkflowInstance().getInstanceId() + " " + workflowResolver.getCurrentStep().getName());
 
         String stepSign = workflowResolver.getCurrentStep().getSign();
@@ -57,11 +56,11 @@ public class StepAction implements BaseStepAction {
 
         workflowSynchronize.updateInstance(workflowResolver.getWorkflowInstance());
         if (!eof)
-            StepExecutor.execute(this, workflowResolver);
+            FlowActonExecutorChain.getFlowAction(workflowSynchronize).execute(workflowResolver);
     }
 
     @Override
-    public void stepError(BaseWorkflowConfigResolver workflowResolver, Throwable throwable) {
+    public void doOnStepError(BaseWorkflowConfigResolver workflowResolver, Throwable throwable) {
         WorkflowInstance instance = workflowResolver.getWorkflowInstance();
         log.error("[STEP-EXCEPTION] " + instance.getInstanceId() + " " + workflowResolver.getCurrentStep().getSign() + " " + throwable);
         if (WFRuntimeException.WORKFLOW_EXPIRED.equals(throwable.getMessage()))
@@ -99,7 +98,7 @@ public class StepAction implements BaseStepAction {
     }
 
     @Override
-    public void stepNext(BaseWorkflowConfigResolver workflowResolver) {
+    public void doNextStep(BaseWorkflowConfigResolver workflowResolver) {
         boolean loopDo = true;
         boolean isReloadJarFile = false;//判断是否已经重新加载jar文件
 
@@ -137,7 +136,12 @@ public class StepAction implements BaseStepAction {
                         if (code == ResponseCode.CLASS_NOT_FOUND.code() && !isReloadJarFile) {
                             isReloadJarFile = true;
                             String wfId = workflowResolver.getWorkflowInstance().getWorkflowId();
-                            WorkflowConfig workflowConfig = workflowSynchronize.getWorkflow(workflowResolver.getWorkflowInstance().getInstanceId());
+                            String instanceId = workflowResolver.getWorkflowInstance().getInstanceId();
+                            WorkflowConfig workflowConfig = workflowSynchronize.getWorkflow(instanceId);
+
+                            if (workflowConfig == null){
+                                throw new WFRuntimeException("No such instance: " + instanceId);
+                            }
                             if (workflowConfig != null && !BaseWorkflowSynchronize.isDefinedJarsFiles(workflowConfig))
                                 throw new WFRuntimeException("No jars to load class:" + response.getMsg());
 
@@ -177,7 +181,11 @@ public class StepAction implements BaseStepAction {
                 log.error(unknowExceptionInRunning);
                 unknowExceptionInRunning.printStackTrace();
                 throw new WFRuntimeException(unknowExceptionInRunning.getMessage(), unknowExceptionInRunning);
-            } finally {
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+                log.error(e);
+            }
+            finally {
                 if (!loopDo) {
                     String stepSign = workflowResolver.getCurrentStep().getSign();
                     workflowResolver.getWorkflowInstance().getStepStatusesMap().get(stepSign).setEnd(new Date());
@@ -232,8 +240,7 @@ public class StepAction implements BaseStepAction {
 
             scatterTransfer = workflowResolver.popBranchTransfer();
             newWFResolver.setCurrentStep(tmpLastStep);
-            StepExecutor.execute(this, newWFResolver);
-
+            FlowActonExecutorChain.getFlowAction(workflowSynchronize).execute(newWFResolver);
         }
     }
 
