@@ -61,8 +61,10 @@ public class WorkflowSyncironze implements BaseWorkflowSynchronize{
 
         jars.forEach(j->{
             File jarFile = new File(jarsRoot + j);
-            if(!jarFile.exists())
-                throw new WFRuntimeException(WFRuntimeException.JAR_FILE_NO_FOUND + String.format("[%s]", jarsRoot + j));
+            if(!jarFile.exists()) {
+                String msg = WFRuntimeException.JAR_FILE_NO_FOUND + String.format("[%s]", jarsRoot + j);
+                throw new WFRuntimeException(msg, ResponseCode.JAR_FILE_NOT_FOUND.code());
+            }
 
             WFResponse response = workflowFilesSync.checkAndImportJar(app, j);
             if(response.getCode() == ResponseCode.JAR_FILE_NOT_FOUND.code()) {
@@ -72,7 +74,7 @@ public class WorkflowSyncironze implements BaseWorkflowSynchronize{
                 log.info(String.format("NEEDN'T UPLOAD FILE[%s]", app + "/" + j));
 
             if(response.getCode() / 100 != 2)
-                throw new WFRuntimeException("Jar file upload failed:" + response.getMsg());
+                throw new WFRuntimeException("Jar file upload failed:" + response.getMsg(), ResponseCode.SOCKET_EXCEPTION.code());
         });
         return true;
     }

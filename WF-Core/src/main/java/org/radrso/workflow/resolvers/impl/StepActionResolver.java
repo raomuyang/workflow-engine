@@ -99,7 +99,7 @@ public class StepActionResolver implements BaseStepActionResolver {
                     e.getMessage(), e.getMessage());
         } catch (IllegalArgumentException e){
             log.error(e);
-            return new WFResponse(ResponseCode.ILLEGAL_ArGMENT_EXCEPTION.code(),
+            return new WFResponse(ResponseCode.ILLEGAL_ARGMENT_EXCEPTION.code(),
                     e.getMessage(), e.getMessage());
         }
 

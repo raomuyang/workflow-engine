@@ -86,8 +86,12 @@ public class FlowActionsExecutor extends BaseFlowActionsExecutor{
         String msg = throwable.getMessage();
         if (msg == null || msg.equals(""))
             msg = throwable.toString();
+        int code = ResponseCode.UNKNOW.code();
+        if (WFRuntimeException.class.isInstance(throwable))
+            code = ((WFRuntimeException) throwable).getCode();
         WorkflowErrorLog errorLog = new WorkflowErrorLog(
                 objectId.toHexString(),
+                code,
                 instance.getWorkflowId(),
                 instance.getInstanceId(),
                 workflowResolver.getCurrentStep().getSign(),
@@ -140,10 +144,10 @@ public class FlowActionsExecutor extends BaseFlowActionsExecutor{
                             WorkflowConfig workflowConfig = workflowSynchronize.getWorkflow(instanceId);
 
                             if (workflowConfig == null){
-                                throw new WFRuntimeException("No such instance: " + instanceId);
+                                throw new WFRuntimeException("No such instance: " + instanceId, ResponseCode.ILLEGAL_ARGMENT_EXCEPTION.code());
                             }
                             if (workflowConfig != null && !BaseWorkflowSynchronize.isDefinedJarsFiles(workflowConfig))
-                                throw new WFRuntimeException("No jars to load class:" + response.getMsg());
+                                throw new WFRuntimeException("No jars to load class:" + response.getMsg(), ResponseCode.JAR_FILE_NOT_FOUND.code());
 
                             //若使用RPC执行，最大重试次数为3
                             int retry = 3;
@@ -154,15 +158,15 @@ public class FlowActionsExecutor extends BaseFlowActionsExecutor{
                                     if (isImported)
                                         break;
                                     if (retry < 0)
-                                        throw new WFRuntimeException("Jar files import failed");
+                                        throw new WFRuntimeException("Jar files import failed", ResponseCode.JAR_FILE_NOT_FOUND.code());
                                 } catch (RpcException e) {
                                     log.error(String.format("The %s times to try rpc:", 6 - retry) + e.getMessage());
                                     if (retry == 0)
-                                        throw new WFRuntimeException("RPC invoke timeout[importJars]");
+                                        throw new WFRuntimeException("RPC invoke timeout[importJars]", ResponseCode.SOCKET_EXCEPTION.code());
                                 }
                             }
                         } else if (ResponseCode.CLASS_NOT_FOUND.code() <= code && code <= ResponseCode.JAR_FILE_NOT_FOUND.code())
-                            throw new WFRuntimeException("[" + code + "]" + response.getMsg());
+                            throw new WFRuntimeException(response.getMsg(), code);
 
                         //发生错误时，完成错误鉴别后回滚一步
                         workflowResolver.rollback();
@@ -177,15 +181,17 @@ public class FlowActionsExecutor extends BaseFlowActionsExecutor{
                 } catch (InterruptedException e1) {
                     log.error(e1);
                 }
+            } catch (RuntimeException runtimeException) {
+                log.error(runtimeException);
+                runtimeException.printStackTrace();
+                throw new WFRuntimeException(runtimeException.getMessage(),
+                        runtimeException, ResponseCode.UNKNOW.code());
             } catch (UnknowExceptionInRunning unknowExceptionInRunning) {
                 log.error(unknowExceptionInRunning);
                 unknowExceptionInRunning.printStackTrace();
-                throw new WFRuntimeException(unknowExceptionInRunning.getMessage(), unknowExceptionInRunning);
-            } catch (RuntimeException e) {
-                e.printStackTrace();
-                log.error(e);
-            }
-            finally {
+                throw new WFRuntimeException(unknowExceptionInRunning.getMessage(),
+                        unknowExceptionInRunning, ResponseCode.UNKNOW.code());
+            } finally {
                 if (!loopDo) {
                     String stepSign = workflowResolver.getCurrentStep().getSign();
                     workflowResolver.getWorkflowInstance().getStepStatusesMap().get(stepSign).setEnd(new Date());
@@ -253,7 +259,7 @@ public class FlowActionsExecutor extends BaseFlowActionsExecutor{
 
         isContinue = isContinue && checkWorkflowStatus(workflowResolver);
         if (!isContinue)
-            throw new WFRuntimeException(WFRuntimeException.WORKFLOW_EXPIRED);
+            throw new WFRuntimeException(WFRuntimeException.WORKFLOW_EXPIRED, ResponseCode.HTTP_FORBIDDEN.code());
 
     }
 
@@ -262,7 +268,7 @@ public class FlowActionsExecutor extends BaseFlowActionsExecutor{
                 workflowResolver.getWorkflowInstance()
                         .getWorkflowId());
         if (status == null)
-            throw new WFRuntimeException(WFRuntimeException.NO_SUCH_WORKFLOW_STATUS);
+            throw new WFRuntimeException(WFRuntimeException.NO_SUCH_WORKFLOW_STATUS, ResponseCode.HTTP_NOT_FOUND.code());
         // TODO 还没有验证工作流是否停止
         boolean isStart = WorkflowExecuteStatus.START.equals(status);
         if (!isStart)
