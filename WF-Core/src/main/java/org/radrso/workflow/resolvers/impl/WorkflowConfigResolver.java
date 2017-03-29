@@ -50,7 +50,7 @@ public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Seria
         if (workflowConfig.getSteps() != null)
             workflowConfig.getSteps().forEach(step -> {
 
-                StepStatus stepStatus = new StepStatus(step.getSign());
+                StepStatus stepStatus = new StepStatus(step.getSign(), step.getName());
                 stepStatus.setStatus(Step.WAIT);
                 workflowInstance.getStepStatusesMap().put(step.getSign(), stepStatus);
 
@@ -214,7 +214,7 @@ public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Seria
 
     @Override
     public Transfer getCurrentTransfer() {
-        if (getCurrentStep() == null)
+        if (this.currentStep == null)
             return null;
         else {
             return currentStep.getTransfer();

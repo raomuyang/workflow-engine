@@ -110,6 +110,11 @@ public class StepAction implements BaseStepAction {
             try {
                 workflowResolver.next();
                 Step step = workflowResolver.getCurrentStep();
+                if (step != null) {
+                    StepStatus stepStatus = workflowResolver.getWorkflowInstance().getStepStatusesMap().get(step.getSign());
+                    if (stepStatus.getBegin() == null)
+                        stepStatus.setBegin(new Date());
+                }
 
                 execBranchs(workflowResolver);
 

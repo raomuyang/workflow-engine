@@ -22,6 +22,7 @@ import java.util.Date;
 @ToString
 public class StepStatus implements Serializable{
     private String sign;
+    private String name;
     private String status;
     private Date begin;
     private Date end;
@@ -29,7 +30,8 @@ public class StepStatus implements Serializable{
     private String[] paramNames;
     private WFResponse wfResponse;
 
-    public StepStatus(String sign) {
+    public StepStatus(String sign, String name) {
         this.sign = sign;
+        this.name = name;
     }
 }
