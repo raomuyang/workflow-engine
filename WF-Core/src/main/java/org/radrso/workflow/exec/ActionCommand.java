@@ -6,7 +6,7 @@ import org.radrso.plugins.FileUtils;
 import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.response.WFResponse;
-import org.radrso.workflow.resolvers.BaseStepExecuteResolver;
+import org.radrso.workflow.resolvers.BaseStepActionResolver;
 import org.radrso.workflow.resolvers.ResolverChain;
 
 import java.io.File;
@@ -17,7 +17,7 @@ import java.io.IOException;
  * Created by rao-mengnan on 2017/3/14.
  */
 @Log4j
-public class StepCommander {
+public class ActionCommand {
     public static final String RESPONSE = "success";
 
     /**
@@ -64,7 +64,7 @@ public class StepCommander {
      * @return 返回WFResponse，封装对象的response属性才是执行结果
      */
     public static WFResponse execute(Step step, Object[] params, String[] paramNames) {
-        BaseStepExecuteResolver resolver = ResolverChain.getWorkflowExecuteResolver(step, params, paramNames);
+        BaseStepActionResolver resolver = ResolverChain.getStepActionResolver(step, params, paramNames);
         if (step.getCall() == null || step.getCall().indexOf(":") < 0) {
             return new WFResponse(ResponseCode.HTTP_BAD_REQUEST.code(), "Error Protocol:" + step.getCall(), null);
         }

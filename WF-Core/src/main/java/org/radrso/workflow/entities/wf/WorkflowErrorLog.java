@@ -18,6 +18,7 @@ import java.util.Date;
 @ToString
 public class WorkflowErrorLog implements Serializable{
     private String _id;
+    private int code;
     private String workflowId;
     private String instanceId;
     private String stepSign;

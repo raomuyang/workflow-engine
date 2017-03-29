@@ -1,6 +1,6 @@
 package org.radrso.workflow.provider;
 
-import org.radrso.workflow.exec.StepCommander;
+import org.radrso.workflow.exec.ActionCommand;
 import org.radrso.workflow.rmi.WorkflowExecutor;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.response.WFResponse;
@@ -17,7 +17,7 @@ public class WorkflowExecutorImpl implements WorkflowExecutor {
     @Override
     public WFResponse execute(Step step, Object[] params, String[] paramNames) {
 
-        return StepCommander.execute(step, params, paramNames);
+        return ActionCommand.execute(step, params, paramNames);
     }
 
 
