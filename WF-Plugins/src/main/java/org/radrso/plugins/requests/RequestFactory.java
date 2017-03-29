@@ -1,7 +1,5 @@
 package org.radrso.plugins.requests;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.apache.http.entity.ContentType;
 import org.radrso.plugins.requests.entity.MethodEnum;
 import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
@@ -13,16 +11,7 @@ import java.util.Map;
 /**
  * Created by raomengnan on 16-12-9.
  */
-@Data
-@AllArgsConstructor
 public class RequestFactory {
-
-    private String url;
-    private MethodEnum method = MethodEnum.GET;
-    private Map<String, String> headers;
-    private Object params;
-    private ContentType contentType;
-    private boolean usePool;
 
     public static BaseRequest createRequest(String url, MethodEnum method, Map<String, Object> headers,
                                             Object params, ContentType contentType, Boolean usePool) throws RequestException {

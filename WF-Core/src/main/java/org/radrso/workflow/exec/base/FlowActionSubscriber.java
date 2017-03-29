@@ -1,5 +1,6 @@
 package org.radrso.workflow.exec.base;
 
+import org.radrso.workflow.exec.BaseFlowActionsExecutor;
 import org.radrso.workflow.resolvers.BaseWorkflowConfigResolver;
 import rx.Subscriber;
 
@@ -7,29 +8,29 @@ import rx.Subscriber;
  * Created by raomengnan on 17-1-17.
  */
 
-public class StepSubscriber extends Subscriber<BaseWorkflowConfigResolver> {
+public class FlowActionSubscriber extends Subscriber<BaseWorkflowConfigResolver> {
 
     private BaseWorkflowConfigResolver workflowResolver;
-    private BaseStepAction stepAction;
+    private BaseFlowActionsExecutor actionExecutor;
 
-    public StepSubscriber(BaseStepAction action){
-        this.stepAction = action;
+    public FlowActionSubscriber(BaseFlowActionsExecutor actionExecutor){
+        this.actionExecutor = actionExecutor;
     }
 
     @Override
     public void onCompleted() {
-        stepAction.stepCompleted(workflowResolver);
+        actionExecutor.doOnStepComplated(workflowResolver);
     }
 
     @Override
     public void onError(Throwable throwable) {
-        stepAction.stepError(workflowResolver, throwable);
+        actionExecutor.doOnStepError(workflowResolver, throwable);
     }
 
     @Override
     public void onNext(BaseWorkflowConfigResolver workflowResolver) {
         this.workflowResolver = workflowResolver;
-        stepAction.stepNext(workflowResolver);
+        actionExecutor.doNextStep(workflowResolver);
     }
 
 
