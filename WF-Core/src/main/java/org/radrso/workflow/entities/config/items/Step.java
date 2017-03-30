@@ -22,7 +22,7 @@ public class Step implements Serializable{
     public static final String WAIT = "wait";
     public static final String RUNNING = "running";
     public static final String FINISHED = "finished";
-    public static final String STOPED = "stoped";
+    public static final String STOPPED = "stopped";
 
     private String sign;
     private String name;

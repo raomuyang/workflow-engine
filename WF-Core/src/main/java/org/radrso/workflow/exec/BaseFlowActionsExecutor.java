@@ -21,5 +21,7 @@ public abstract class BaseFlowActionsExecutor {
 
     public abstract void doNextStep(BaseWorkflowConfigResolver workflowResolver);
     public abstract void doOnStepError(BaseWorkflowConfigResolver workflowResolver, Throwable throwable);
-    public abstract void doOnStepComplated(BaseWorkflowConfigResolver workflowResolver);
+    public abstract void doOnStepCompleted(BaseWorkflowConfigResolver workflowResolver);
+    public abstract boolean interruptInstanceExec(String instanceId);
+    public abstract void restart(final BaseWorkflowConfigResolver workflowResolver);
 }

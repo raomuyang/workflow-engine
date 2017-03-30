@@ -25,7 +25,7 @@ import java.util.Map;
  * Created by raomengnan on 17-1-20.
  */
 @RestController
-@RequestMapping("/instance")
+@RequestMapping("/instances")
 @Log4j
 public class InstanceController {
 
@@ -67,12 +67,12 @@ public class InstanceController {
         return workflowInstanceService.getByWorkflowId(workflowId);
     }
 
-    @RequestMapping("/workflow/{workflowId}/count/")
+    @RequestMapping("/workflow/{workflowId}/count")
     public int count(@PathVariable("workflowId") String workflowId) {
         return workflowInstanceService.count(workflowId);
     }
 
-    @RequestMapping("/workflow/{workflowId}/count/finished/")
+    @RequestMapping("/workflow/{workflowId}/finished/count")
     public int countFinished(@PathVariable("workflowId") String workflowId) {
         return workflowInstanceService.countFinished(workflowId);
     }
@@ -90,7 +90,7 @@ public class InstanceController {
         return new ResponseEntity<ModelMap>(map, HttpStatus.OK);
     }
 
-    @RequestMapping("/{instanceId}/")
+    @RequestMapping("/{instanceId}")
     public WorkflowInstance getByInstanceId(@PathVariable("instanceId") String instanceId) {
         return workflowInstanceService.getByInstanceId(instanceId);
     }
@@ -106,7 +106,7 @@ public class InstanceController {
         return workflowInstanceService.getInstanceAllBranchesDetail(instanceId);
     }
 
-    @RequestMapping(value = "/{instanceId}/", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{instanceId}", method = RequestMethod.DELETE)
     public ResponseEntity<ModelMap> deleteByInstanceId(@PathVariable("instanceId") String instanceId) {
         boolean res = workflowInstanceService.delete(instanceId);
         ModelMap map = new ModelMap();
@@ -125,27 +125,28 @@ public class InstanceController {
      * @param instanceId
      * @return
      */
-    @RequestMapping(value = "/{instanceId}/start/", method = RequestMethod.PUT)
-    public ResponseEntity<ModelMap> startInstance(@PathVariable("instanceId") String instanceId) {
-        WorkflowInstance instance = workflowInstanceService.getByInstanceId(instanceId);
+    @RequestMapping(value = "/{instanceId}/run", method = RequestMethod.PUT)
+    public ResponseEntity<ModelMap> runInstance(@PathVariable("instanceId") String instanceId) {
+        return runInstance(instanceId, false);
+    }
+
+    @RequestMapping(value = "/{instanceId}/interrupt", method = RequestMethod.PUT)
+    public ResponseEntity<ModelMap> interrupt(@PathVariable("instanceId") String instanceId){
+        boolean res = instanceJobRunner.interrupt(instanceId);
         ModelMap map = new ModelMap();
-        if (instance == null) {
-            map.put("status", false);
-            map.put("msg", String.format("No such instance[%s]", instanceId));
-            return new ResponseEntity<ModelMap>(map, HttpStatus.BAD_REQUEST);
+        map.put("msg", "Already interrupted");
+        HttpStatus statusCode = HttpStatus.OK;
+        if (!res) {
+            String msg = String.format("Interrupt exception, instance %s not found", instanceId);
+            map.put("msg", msg);
+            statusCode = HttpStatus.NOT_FOUND;
         }
-        WorkflowConfig workflowConfig = workflowService.getByWorkflowId(instance.getWorkflowId());
+        return  new ResponseEntity<>(map, statusCode);
+    }
 
-        BaseWorkflowConfigResolver workflowResolver = ResolverChain.getWorkflowConfigResolver(workflowConfig, instance);
-        WFResponse response = instanceJobRunner.startExecute(workflowResolver);
-        boolean res = response.getCode() / 100 < 3 ? true : false;
-        map.put("status", res);
-        map.put("msg", response.getMsg());
-
-        if (res)
-            return new ResponseEntity<>(map, HttpStatus.OK);
-        else
-            return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    @RequestMapping(value = "/{instanceId}/restart", method = RequestMethod.PUT)
+    public ResponseEntity<ModelMap> rerunInstance(@PathVariable("instanceId") String instanceId) {
+        return runInstance(instanceId, true);
     }
 
     @RequestMapping("/{instanceId}/finished-steps/")
@@ -158,4 +159,24 @@ public class InstanceController {
         return workflowInstanceService.currentProcess(instanceId);
     }
 
+    private ResponseEntity<ModelMap> runInstance(String instanceId, boolean rerun){
+        WorkflowInstance instance = workflowInstanceService.getByInstanceId(instanceId);
+        ModelMap map = new ModelMap();
+        if (instance == null) {
+            map.put("status", false);
+            map.put("msg", String.format("No such instance[%s]", instanceId));
+            return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+        }
+        WorkflowConfig workflowConfig = workflowService.getByWorkflowId(instance.getWorkflowId());
+
+        BaseWorkflowConfigResolver workflowResolver = ResolverChain.getWorkflowConfigResolver(workflowConfig, instance);
+        WFResponse response = instanceJobRunner.startExecute(workflowResolver, rerun);
+        boolean res = response.getCode() / 100 < 3 ? true : false;
+        map.put("status", res);
+        map.put("msg", response.getMsg());
+        if (res)
+            return new ResponseEntity<>(map, HttpStatus.OK);
+        else
+            return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    }
 }
