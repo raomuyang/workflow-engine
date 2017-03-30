@@ -8,6 +8,7 @@ import org.radrso.workflow.entities.response.WFResponse;
  */
 public interface InstanceJobRunner {
 
-    WFResponse startExecute(BaseWorkflowConfigResolver workflowResolver);
+    WFResponse startExecute(BaseWorkflowConfigResolver workflowResolver, boolean rerun);
 
+    boolean interrupt(String instanceId);
 }

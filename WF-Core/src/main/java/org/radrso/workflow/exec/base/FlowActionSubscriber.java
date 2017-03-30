@@ -19,7 +19,7 @@ public class FlowActionSubscriber extends Subscriber<BaseWorkflowConfigResolver>
 
     @Override
     public void onCompleted() {
-        actionExecutor.doOnStepComplated(workflowResolver);
+        actionExecutor.doOnStepCompleted(workflowResolver);
     }
 
     @Override

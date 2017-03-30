@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,5 +30,5 @@ public class WorkflowConfig implements Serializable{
     private Date startTime;
     private Date stopTime;
     private List<Step> steps;
-    private List<String> jars;
+    private List<String> jars = new ArrayList<>();
 }

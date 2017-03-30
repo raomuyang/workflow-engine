@@ -26,6 +26,7 @@ public class WorkflowInstance implements Serializable{
     public static final String RUNNING = "running";
     public static final String COMPLETED = "completed";
     public static final String EXCEPTION = "exception";
+    public static final String INTERRUPTED = "interrupted";
 
     private String workflowId;
     @Id

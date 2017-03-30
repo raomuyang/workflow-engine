@@ -9,20 +9,20 @@ import java.util.Map;
  * Created by raomengnan on 17-1-16.
  */
 public interface WorkflowInstanceService {
-    public WorkflowInstance newInstance(String workflowId);
-    public boolean save(WorkflowInstance workflowInstance);
-    public WorkflowInstance getByInstanceId(String instanceId);
+    WorkflowInstance newInstance(String workflowId);
+    boolean save(WorkflowInstance workflowInstance);
+    WorkflowInstance getByInstanceId(String instanceId);
 
-    List<WorkflowInstance> getInstanceDetails(String instanceId);
+    List<WorkflowInstance> getInstanceAllBranchesDetail(String instanceId);
 
-    public List<WorkflowInstance> getByWorkflowId(String workflowId);
+    List<WorkflowInstance> getByWorkflowId(String workflowId);
 
     int count(String workflowId);
 
     int countFinished(String workflowId);
 
-    public Map<String, String> currentProcess(String instanceId);
-    public Map<String, List<String>> finishedStep(String instanceId);
-    public boolean delete(String instanceId);
-    public boolean deleteByWorkflowId(String workflowId);
+    Map<String, Map> currentProcess(String instanceId);
+    Map<String, List<String>> finishedStep(String instanceId);
+    boolean delete(String instanceId);
+    boolean deleteByWorkflowId(String workflowId);
 }

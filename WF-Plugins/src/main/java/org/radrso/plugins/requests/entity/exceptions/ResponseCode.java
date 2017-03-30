@@ -16,6 +16,7 @@ public enum ResponseCode implements Serializable {
     UNSUPPORTED_POTOCOL(5005, "UNSUPPORT REQUEST PORTOCOL"),
     UNSUPPORTED_REQUEST_METHOD(5006, "METHOD NOT SUPPORTED"),
     SOCKET_EXCEPTION(5007, "Exception happened when build socket connect"),
+    INTERRUPT_EXCEPTION(5008, "Interrupt exception"),
 
     NULL_PARAM_EXCEPTION(4031, "JSON object is null"),
     CONFIG_PARSE_ERROR(4032, "Can not resolved the params in config "),

@@ -57,10 +57,10 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService{
     }
 
     @Override
-    public List<WorkflowInstance> getInstanceDetails(String instanceId){
+    public List<WorkflowInstance> getInstanceAllBranchesDetail(String instanceId){
         WorkflowInstance instance = getByInstanceId(instanceId);
         if(instance == null)
-            return null;
+            return new ArrayList<>();
 
         Query query = new Query(MongoUtil.fuzzyCriteria("_id",instanceId));
         List<WorkflowInstance> instances = mongoTemplate.find(query ,WorkflowInstance.class);
@@ -116,28 +116,37 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService{
     }
 
 
+    /**
+     * 返回instance中各个分所有步骤的执行状态
+     * @param instanceId
+     * @return
+     */
     @Override
-    public Map<String, String> currentProcess(String instanceId) {
-        WorkflowInstance wi = getByInstanceId(instanceId);
-        if(wi != null)
-            return wi.getStepProcess();
-        return null;
+    public Map<String, Map> currentProcess(String instanceId) {
+        List<WorkflowInstance> instanceDetails = getInstanceAllBranchesDetail(instanceId);
+        Map<String, Map> map = new HashMap<>();
+        if (instanceDetails != null){
+            for (WorkflowInstance instance: instanceDetails) {
+                map.put(instance.getInstanceId(), instance.getStepProcess());
+            }
+        }
+        return map;
     }
 
+    /**
+     * 返回instance各个分支已完成的step列表
+     * @param instanceId
+     * @return
+     */
     @Override
     public Map<String, List<String>> finishedStep(String instanceId) {
-        WorkflowInstance instance = getByInstanceId(instanceId);
-        if(instance == null)
-            return null;
-        List<String> finisheds = instance.getFinishedSequence();
         Map<String, List<String>> map = new HashMap<>();
-        map.put(instanceId, finisheds);
 
-        List<WorkflowInstance> ch_instances = getInstanceDetails(instanceId);
-        if (ch_instances != null){
-            for (int i = 0; i < ch_instances.size(); i++)
-                map.put(ch_instances.get(i).getInstanceId(), ch_instances.get(i).getFinishedSequence());
-
+        List<WorkflowInstance> instanceDetails = getInstanceAllBranchesDetail(instanceId);
+        if (instanceDetails != null){
+            for (WorkflowInstance instance: instanceDetails) {
+                map.put(instance.getInstanceId(), instance.getFinishedSequence());
+            }
         }
         return map;
     }

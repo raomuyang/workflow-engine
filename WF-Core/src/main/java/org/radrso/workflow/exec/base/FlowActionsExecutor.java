@@ -20,11 +20,16 @@ import org.radrso.workflow.exec.FlowActonExecutorChain;
 import org.radrso.workflow.persistence.BaseWorkflowSynchronize;
 import org.radrso.workflow.resolvers.BaseWorkflowConfigResolver;
 import org.radrso.workflow.resolvers.ResolverChain;
+import rx.Observable;
+import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 import java.util.Date;
 import java.util.Map;
 
 /**
+ * 流程自动执行器
  * Created by rao-mengnan on 2017/3/29.
  */
 @Log4j
@@ -36,8 +41,48 @@ public class FlowActionsExecutor extends BaseFlowActionsExecutor{
     }
 
     @Override
-    public void doOnStepComplated(BaseWorkflowConfigResolver workflowResolver) {
-        log.info("[STEP-COMPLETED] " + workflowResolver.getWorkflowInstance().getInstanceId() + " " + workflowResolver.getCurrentStep().getName());
+    public boolean interruptInstanceExec(String instanceId) {
+        log.info("[INTERRUPT] " + instanceId);
+        if (instanceId.contains("-")) {
+            instanceId = instanceId.substring(0, instanceId.indexOf("-"));
+        }
+        WorkflowInstance instance = workflowSynchronize.getInstance(instanceId);
+        if (instance == null){
+            return false;
+        }
+
+        instance.setStatus(WorkflowInstance.INTERRUPTED);
+        return workflowSynchronize.updateInstance(instance);
+    }
+
+    @Override
+    public void restart(final BaseWorkflowConfigResolver workflowResolver) {
+        log.info("[RESTARTING] ---------- " + workflowResolver.getWorkflowInstance().getInstanceId());
+        InterruptAndCheckActon interruptAndCheckActon = new InterruptAndCheckActon();
+        ExecuteAction executeAction = new ExecuteAction(workflowResolver);
+        Observable.just(workflowResolver).doOnNext(interruptAndCheckActon).doOnCompleted(executeAction).subscribeOn(Schedulers.io()).subscribe();
+    }
+
+    @Override
+    public void doOnStepCompleted(BaseWorkflowConfigResolver workflowResolver) {
+        String instanceId = workflowResolver.getWorkflowInstance().getInstanceId();
+        String stepName = workflowResolver.getCurrentStep().getName();
+
+        log.info("[STEP-COMPLETED] " + instanceId + " " + stepName);
+
+        // 只有在instance没有被中断的情况下才能继续执行下一步
+        boolean stopped = checkIsInstanceInterrupted(workflowResolver.getWorkflowInstance().getInstanceId());
+        if (stopped){
+            log.info(String.format("[STEP-INTERRUPT] Instance %s is interrupted, (%s) status will discard", instanceId, stepName));
+            WorkflowInstance originInfo = workflowSynchronize.getInstance(instanceId);
+            if (originInfo == null){
+                log.warn(String.format("Check instance stopped: Can't find instance by [%s], maybe doesn't created", instanceId));
+                return;
+            }
+            originInfo.setStatus(WorkflowInstance.INTERRUPTED);
+            workflowSynchronize.updateInstance(originInfo);
+            return;
+        }
 
         String stepSign = workflowResolver.getCurrentStep().getSign();
         workflowResolver.getWorkflowInstance().getStepProcess().put(stepSign, Step.FINISHED);
@@ -48,15 +93,17 @@ public class FlowActionsExecutor extends BaseFlowActionsExecutor{
                 workflowResolver.getCurrentStep().getSign()
         );
 
-        boolean eof = false;
-        if (eof = workflowResolver.eof()) {
+        boolean eof = workflowResolver.eof();
+        if (eof) {
             workflowResolver.getWorkflowInstance().setStatus(WorkflowInstance.COMPLETED);
             workflowResolver.getWorkflowInstance().setSubmitTime(new Date());
         }
 
         workflowSynchronize.updateInstance(workflowResolver.getWorkflowInstance());
-        if (!eof)
+
+        if (!eof) {
             FlowActonExecutorChain.getFlowAction(workflowSynchronize).execute(workflowResolver);
+        }
     }
 
     @Override
@@ -74,9 +121,9 @@ public class FlowActionsExecutor extends BaseFlowActionsExecutor{
             Map<String, StepStatus> stepStatusMap = workflowResolver.getWorkflowInstance().getStepStatusesMap();
             StepStatus stepStatus = stepStatusMap.get(stepSign);
 
-            workflowResolver.getWorkflowInstance().getStepProcess().put(stepSign, Step.STOPED);
+            workflowResolver.getWorkflowInstance().getStepProcess().put(stepSign, Step.STOPPED);
             if (stepStatus != null)
-                stepStatus.setStatus(Step.STOPED);
+                stepStatus.setStatus(Step.STOPPED);
             else
                 log.error("StepStatus is null:" + stepSign);
         }
@@ -107,6 +154,11 @@ public class FlowActionsExecutor extends BaseFlowActionsExecutor{
         boolean isReloadJarFile = false;//判断是否已经重新加载jar文件
 
         while (loopDo) {
+            // 在执行之前判断Instance是否被中断
+            if (checkIsInstanceInterrupted(workflowResolver.getWorkflowInstance().getInstanceId())){
+                return;
+            }
+
             loopDo = false;
 
             verifyDate(workflowResolver);
@@ -119,7 +171,7 @@ public class FlowActionsExecutor extends BaseFlowActionsExecutor{
                         stepStatus.setBegin(new Date());
                 }
 
-                execBranchs(workflowResolver);
+                execBranches(workflowResolver);
 
                 log.info("[STEP-START] " + workflowResolver.getWorkflowInstance().getInstanceId() + " " + step.getName() + String.format(" Thread[%s]", Thread.currentThread().getId()));
                 Object[] params = workflowResolver.getCurrentStepParams();
@@ -165,8 +217,9 @@ public class FlowActionsExecutor extends BaseFlowActionsExecutor{
                                         throw new WFRuntimeException("RPC invoke timeout[importJars]", ResponseCode.SOCKET_EXCEPTION.code());
                                 }
                             }
-                        } else if (ResponseCode.CLASS_NOT_FOUND.code() <= code && code <= ResponseCode.JAR_FILE_NOT_FOUND.code())
+                        } else if (ResponseCode.CLASS_NOT_FOUND.code() <= code && code <= ResponseCode.JAR_FILE_NOT_FOUND.code()) {
                             throw new WFRuntimeException(response.getMsg(), code);
+                        }
 
                         //发生错误时，完成错误鉴别后回滚一步
                         workflowResolver.rollback();
@@ -183,6 +236,9 @@ public class FlowActionsExecutor extends BaseFlowActionsExecutor{
                 }
             } catch (RuntimeException runtimeException) {
                 log.error(runtimeException);
+                if (WFRuntimeException.class.isInstance(runtimeException))
+                    throw runtimeException;
+
                 runtimeException.printStackTrace();
                 throw new WFRuntimeException(runtimeException.getMessage(),
                         runtimeException, ResponseCode.UNKNOW.code());
@@ -200,7 +256,7 @@ public class FlowActionsExecutor extends BaseFlowActionsExecutor{
         }
     }
 
-    private void execBranchs(BaseWorkflowConfigResolver workflowResolver) {
+    private void execBranches(BaseWorkflowConfigResolver workflowResolver) {
         Step currentStep = workflowResolver.getCurrentStep();
         // 获取分支的转移函数
         Transfer scatterTransfer = workflowResolver.popBranchTransfer();
@@ -264,15 +320,108 @@ public class FlowActionsExecutor extends BaseFlowActionsExecutor{
     }
 
     private boolean checkWorkflowStatus(BaseWorkflowConfigResolver workflowResolver) {
-        String status = workflowSynchronize.getWorkflowStatus(
-                workflowResolver.getWorkflowInstance()
-                        .getWorkflowId());
+        String status = workflowSynchronize.getWorkflowStatus(workflowResolver.getWorkflowInstance().getWorkflowId());
         if (status == null)
             throw new WFRuntimeException(WFRuntimeException.NO_SUCH_WORKFLOW_STATUS, ResponseCode.HTTP_NOT_FOUND.code());
-        // TODO 还没有验证工作流是否停止
-        boolean isStart = WorkflowExecuteStatus.START.equals(status);
-        if (!isStart)
+
+        boolean available = WorkflowExecuteStatus.START.equals(status);
+        if (!available)
             return false;
         return true;
+    }
+
+    /**
+     * 同步instance状态，检查instance是否已经被中断
+     * @param instanceId
+     * @return
+     */
+    private boolean checkIsInstanceInterrupted(String instanceId){
+        String mainInstance = instanceId;
+        if (mainInstance.contains("-")){
+            mainInstance = mainInstance.substring(0, mainInstance.indexOf("-"));
+        }
+
+        WorkflowInstance instance = workflowSynchronize.getInstance(mainInstance);
+        if (instance == null){
+            String msg = String.format("Check instance stopped: Can't find instance by [%s]", instanceId);
+            log.error(msg);
+            throw new WFRuntimeException(msg, ResponseCode.HTTP_NOT_FOUND.code());
+        }
+
+        if (instance.getStatus().endsWith(WorkflowInstance.INTERRUPTED)){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 中断和检查中断的操作
+     */
+    private class InterruptAndCheckActon implements Action1<BaseWorkflowConfigResolver>{
+        @Override
+        public void call(BaseWorkflowConfigResolver resolver) {
+            String instanceId = resolver.getWorkflowInstance().getInstanceId();
+            interruptInstanceExec(instanceId);
+
+            boolean interrupted = false;
+            WorkflowInstance originInstanceInfo = workflowSynchronize.getInstance(instanceId);
+            int branches = originInstanceInfo.getBranches();
+            long brockTime = 1000 * 60 * 5; // 超时时间为五分钟
+            long beginTime = System.currentTimeMillis();
+
+            /*当轮询检查所有的分支，直到没有分支处于RUNNING状态才退出检查*/
+            while (!interrupted) {
+                if (brockTime < System.currentTimeMillis() - beginTime) {
+                    break;
+                }
+
+                if (originInstanceInfo.getStatus().equals(WorkflowInstance.RUNNING)){
+                    originInstanceInfo =  workflowSynchronize.getInstance(instanceId);
+                    continue;
+                }
+
+                interrupted = true;
+                for (int i = 1; i <= branches; i++){
+                    String id = instanceId + "-" + i;
+                    WorkflowInstance instanceBranch = workflowSynchronize.getInstance(id);
+                    if (instanceBranch.getStatus().equals(WorkflowInstance.RUNNING)) {
+                        interrupted = false;
+                        break;
+                    }
+                }
+            }
+            if (!interrupted){
+                WorkflowErrorLog errorLog = new WorkflowErrorLog(
+                        null,
+                        ResponseCode.INTERRUPT_EXCEPTION.code(),
+                        resolver.getWorkflowInstance().getWorkflowId(),
+                        instanceId,
+                        null,
+                        "Interrupt timeout error",
+                        new Date(),
+                        null
+                );
+                workflowSynchronize.logError(errorLog);
+                log.error(errorLog);
+            }
+            else {
+                log.info("Interrupted: " + instanceId);
+            }
+        }
+    }
+
+    private class ExecuteAction implements Action0{
+        public BaseWorkflowConfigResolver resolver;
+
+        ExecuteAction(BaseWorkflowConfigResolver resolver){
+            this.resolver = resolver;
+        }
+        @Override
+        public void call() {
+            WorkflowInstance instance = resolver.getWorkflowInstance();
+            instance.setStatus(WorkflowInstance.RUNNING);
+            workflowSynchronize.updateInstance(instance);
+            execute(resolver);
+        }
     }
 }

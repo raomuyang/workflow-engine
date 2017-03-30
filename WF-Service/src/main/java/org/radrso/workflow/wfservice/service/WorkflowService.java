@@ -22,7 +22,13 @@ public interface WorkflowService {
     boolean delete(String workflowId);
     boolean deleteByApplication(String application);
 
-    boolean transferJarFile(String application, MultipartFile originFile);
+    /**
+     * 以workflowId将文件保存到相应的路径
+     * @param workflowId
+     * @param originFile
+     * @return
+     */
+    boolean transferJarFile(String workflowId, MultipartFile originFile);
     void updateServiceStatus(WorkflowConfig workflowConfig);
 
 }

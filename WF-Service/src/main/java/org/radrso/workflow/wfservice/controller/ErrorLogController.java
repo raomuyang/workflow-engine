@@ -25,36 +25,36 @@ public class ErrorLogController {
     @Autowired
     private WorkflowLogService workflowLogService;
 
-    @RequestMapping("/workflow/{workflowId}")
+    @RequestMapping("/workflow/{workflowId}/")
     public List<WorkflowErrorLog> getByWorkflowId(@PathVariable("workflowId") String workflowId){
         return workflowLogService.getByWorkflowId(workflowId);
     }
 
-    @RequestMapping("/workflow/{workflowId}/pno/{pno}/psize/{psize}")
+    @RequestMapping("/workflow/{workflowId}/pno/{pno}/psize/{psize}/")
     public Page<WorkflowErrorLog> getByWorkflowId(@PathVariable("workflowId") String workflowId,
                                                   @PathVariable("pno") int pno,
                                                   @PathVariable("psize")int psize){
         return workflowLogService.getByWorkflowId(workflowId, pno, psize);
     }
 
-    @RequestMapping("/instance/{instanceId}")
+    @RequestMapping("/workflow/{workflowId}/count/")
+    public int count(@PathVariable("workflowId") String workflowId){
+        return workflowLogService.count(workflowId);
+    }
+
+    @RequestMapping("/instance/{instanceId}/")
     public List<WorkflowErrorLog> getByInstanceId(@PathVariable("instanceId") String instanceId){
         return workflowLogService.getByInstanceId(instanceId);
     }
 
-    @RequestMapping("/instance/{instanceId}/pno/{pno}/psize/{psize}")
+    @RequestMapping("/instance/{instanceId}/pno/{pno}/psize/{psize}/")
     public Page<WorkflowErrorLog> getByInstanceId(@PathVariable("instanceId") String instanceId,
                                                   @PathVariable("pno") int pno,
                                                   @PathVariable("psize")int psize){
         return workflowLogService.getByInstanceId(instanceId, pno, psize);
     }
 
-    @RequestMapping("/count/workflow/{workflowid}")
-   public int count(@PathVariable("workflowid") String workflowid){
-        return workflowLogService.count(workflowid);
-    }
-
-    @RequestMapping(value = "/delete/workflow/{workflowId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/workflow/{workflowId}/", method = RequestMethod.DELETE)
     public ResponseEntity<ModelMap> deleteByWorkflowId(@PathVariable("workflowId") String workflowId){
         boolean res = workflowLogService.deleteByWorkflowId(workflowId);
         ModelMap map = new ModelMap();
@@ -66,7 +66,7 @@ public class ErrorLogController {
         return new ResponseEntity<ModelMap>(map, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/delete/instance/{instanceId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/instance/{instanceId}/", method = RequestMethod.DELETE)
     public ResponseEntity<ModelMap> deleteByInstanceId(@PathVariable("instanceId") String instanceId){
         boolean res = workflowLogService.deleteByInstanceId(instanceId);
         ModelMap map = new ModelMap();
