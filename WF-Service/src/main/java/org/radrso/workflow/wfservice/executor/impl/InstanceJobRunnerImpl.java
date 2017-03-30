@@ -30,8 +30,10 @@ public class InstanceJobRunnerImpl implements InstanceJobRunner {
         //保证调用的幂等性
         WorkflowInstance instance = workflowResolver.getWorkflowInstance();
         if(instance != null && !rerun) {
-            if (instance.getStatus().equals(WorkflowInstance.COMPLETED)) {
-                return new WFResponse(ResponseCode.HTTP_OK.code(), "workflow instance already executed, please rerun it", null);
+            if (instance.getStatus().equals(WorkflowInstance.COMPLETED)
+                    || instance.getStatus().equals(WorkflowInstance.INTERRUPTED)) {
+                return new WFResponse(ResponseCode.HTTP_OK.code(),
+                        String.format("workflow instance is %s, please rerun it", instance.getStatus()), null);
             }
         }
 
