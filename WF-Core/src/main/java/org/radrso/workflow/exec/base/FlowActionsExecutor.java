@@ -76,7 +76,7 @@ public class FlowActionsExecutor extends BaseFlowActionsExecutor{
             log.info(String.format("[STEP-INTERRUPT] Instance %s is interrupted, (%s) status will discard", instanceId, stepName));
             WorkflowInstance originInfo = workflowSynchronize.getInstance(instanceId);
             if (originInfo == null){
-                log.error(String.format("Check instance stopped: Can't find instance by [%s]", instanceId));
+                log.warn(String.format("Check instance stopped: Can't find instance by [%s], maybe doesn't created", instanceId));
                 return;
             }
             originInfo.setStatus(WorkflowInstance.INTERRUPTED);
