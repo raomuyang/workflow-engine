@@ -40,26 +40,74 @@ public class WorkflowConfroller {
         return wfIds;
     }
 
-    @RequestMapping("/infos/pno/{pno}/psize/{psize}")
-    public Page<WorkflowConfig> getAllInfos(@PathVariable("pno") int pno, @PathVariable("psize")int psize){
-        return workflowService.getAll(pno, psize);
-    }
-
-    @RequestMapping(method = RequestMethod.PUT, value = "/create")
+    @RequestMapping(method = RequestMethod.POST, value = "/")
     public ResponseEntity<ModelMap> create(@RequestBody WorkflowConfig workflow){
         boolean res = workflowService.save(workflow);
         ModelMap map = new ModelMap();
         map.put("status", res);
         if(!res) {
             map.put("msg", "请检查后重试");
-            return new ResponseEntity<ModelMap>(map, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
         }else
             workflowService.updateServiceStatus(workflow);
 
-        return new ResponseEntity<ModelMap>(map, HttpStatus.OK);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/update")
+    @RequestMapping("/pno/{pno}/psize/{psize}/")
+    public Page<WorkflowConfig> getAllInfos(@PathVariable("pno") int pno, @PathVariable("psize")int psize){
+        return workflowService.getAll(pno, psize);
+    }
+
+    @RequestMapping("/{workflowId}")
+    public WorkflowConfig getWorkflowById(@PathVariable("workflowId") String id){
+        return workflowService.getByWorkflowId(id);
+    }
+
+    @RequestMapping(value = "/{workflowId}", method = RequestMethod.DELETE)
+    public ResponseEntity<ModelMap> delete(@PathVariable("workflowId") String workflowId){
+        boolean res = workflowService.delete(workflowId);
+        ModelMap map = new ModelMap();
+        map.put("status", res);
+        if(!res){
+            map.put("msg", String.format("Delete [%s] error", workflowId));
+            return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(map, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{workflowId}/jars/", method = RequestMethod.POST)
+    public ResponseEntity<ModelMap> uploadJar(@PathVariable("workflowId") String workflowId, MultipartFile file){
+        log.info(String.format("Upload jar file [%s] for [%s]", file.getOriginalFilename(), workflowId));
+        boolean res = workflowService.transferJarFile(workflowId, file);
+
+        ModelMap map = new ModelMap();
+        map.put("status", res);
+
+        if(!res){
+            map.put("msg", "Upload error, pleas check the applicationId");
+            return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(map, HttpStatus.OK);
+    }
+
+    @RequestMapping("/{workflowId}/status")
+    public WorkflowExecuteStatus getWorkflowStatus(@PathVariable("workflowId") String workflowId){
+        workflowService.updateServiceStatus(workflowService.getByWorkflowId(workflowId));
+        return statusService.get(workflowId);
+    }
+
+    @RequestMapping("/status/pno/{pno}/psize/{psize}/")
+    public Page<WorkflowExecuteStatus> getAllStatus(@PathVariable("pno") int pno, @PathVariable("psize")int psize){
+        return statusService.getAll(pno, psize);
+    }
+
+    /**
+     * 更新工作流配置，幂等操作
+     * @param workflow
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.PUT, value = "/update")
     public ResponseEntity<ModelMap> update(@RequestBody WorkflowConfig workflow){
 
         boolean res = false;
@@ -78,60 +126,18 @@ public class WorkflowConfroller {
         return new ResponseEntity<ModelMap>(map, HttpStatus.OK);
     }
 
-    @RequestMapping("/{id}")
-    public WorkflowConfig getWorkflowById(@PathVariable("id") String id){
-        return workflowService.getByWorkflowId(id);
-    }
-
-    @RequestMapping("/app/{application}")
+    @RequestMapping("/app/{application}/")
     public List<WorkflowConfig> getWorkflowByApplication(@PathVariable("application") String application){
         return workflowService.getByApplication(application);
     }
 
-    @RequestMapping(value = "/delete/{workflowid}", method = RequestMethod.DELETE)
-    public ResponseEntity<ModelMap> delete(@PathVariable("workflowid") String workflowid){
-        boolean res = workflowService.delete(workflowid);
-        ModelMap map = new ModelMap();
-        map.put("status", res);
-        if(!res){
-            map.put("msg", String.format("Delete [%s] error", workflowid));
-            return new ResponseEntity<ModelMap>(map, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<ModelMap>(map, HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/delete/app/{application}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/app/{application}/", method = RequestMethod.DELETE)
     public ResponseEntity<ModelMap> deleteByApplication(@PathVariable("application") String application){
         boolean res = workflowService.deleteByApplication(application);
         ModelMap map = new ModelMap();
         map.put("status", res);
         if(!res){
             map.put("msg", String.format("Delete by [%s] error", application));
-            return new ResponseEntity<ModelMap>(map, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<ModelMap>(map, HttpStatus.OK);
-    }
-
-    @RequestMapping("/status/{workflowid}")
-    public WorkflowExecuteStatus getWorkflowStatus(@PathVariable("workflowid") String workflowid){
-        workflowService.updateServiceStatus(workflowService.getByWorkflowId(workflowid));
-        return statusService.get(workflowid);
-    }
-
-    @RequestMapping("/status/pno/{pno}/psize/{psize}")
-    public Page<WorkflowExecuteStatus> getAllStatus(@PathVariable("pno") int pno, @PathVariable("psize")int psize){
-        return statusService.getAll(pno, psize);
-    }
-
-    @RequestMapping(value = "/upload/jar", method = RequestMethod.POST)
-    public ResponseEntity<ModelMap> uploadJar(String application, MultipartFile file){
-        log.info(String.format("Upload jar file [%s]", file));
-        boolean res = workflowService.transferJarFile(application, file);
-        ModelMap map = new ModelMap();
-        map.put("status", res);
-
-        if(!res){
-            map.put("msg", "Upload error");
             return new ResponseEntity<ModelMap>(map, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<ModelMap>(map, HttpStatus.OK);

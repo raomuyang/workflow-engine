@@ -81,11 +81,21 @@ public class WorkflowServiceImpl implements WorkflowService {
     }
 
     @Override
-    public boolean transferJarFile(String application, MultipartFile originFile) {
-        String jarRoots = ConfigConstant.SERVICE_JAR_HOME + application + File.separator;
+    public boolean transferJarFile(String workflowId, MultipartFile originFile) {
+        if (!originFile.getOriginalFilename().endsWith(".jar")){
+            return false;
+        }
+
+        WorkflowConfig workflowConfig = getByWorkflowId(workflowId);
+        String jarRoots = ConfigConstant.SERVICE_JAR_HOME + workflowId + File.separator;
         String originalFileName = originFile.getOriginalFilename();
         try {
-           return FileUtils.writeFile(jarRoots , originalFileName, originFile.getBytes());
+           boolean res = FileUtils.writeFile(jarRoots , originalFileName, originFile.getBytes());
+           if (res){
+               workflowConfig.getJars().add(originalFileName);
+               save(workflowConfig);
+           }
+           return res;
         } catch (IOException e) {
             log.error(e);
             return false;
