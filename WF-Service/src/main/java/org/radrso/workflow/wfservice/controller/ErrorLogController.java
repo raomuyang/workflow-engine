@@ -37,8 +37,8 @@ public class ErrorLogController {
         return workflowLogService.getByWorkflowId(workflowId, pno, psize);
     }
 
-    @RequestMapping("/workflow/{workflowId}/count/")
-    public int count(@PathVariable("workflowId") String workflowId){
+    @RequestMapping("/workflow/{workflowId}/count")
+    public int count(@PathVariable("workflowId")  String workflowId){
         return workflowLogService.count(workflowId);
     }
 
