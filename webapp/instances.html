@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="app">
+<head>
+    <meta charset="utf-8" />
+    <title>WorkflowEngine | Instances</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1"/>
+    <link rel="stylesheet" href="css/app.v2.css" type="text/css" />
+    <link rel="stylesheet" href="js/calendar/bootstrap_calendar.css"
+          type="text/css"cache="false" />
+    <!--[if lt IE 9]>
+    <script src="js/ie/html5shiv.js" cache="false"></script>
+    <script src="js/ie/respond.min.js" cache="false"></script>
+    <script src="js/ie/excanvas.js" cache="false"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <section class="vbox">
+        <header class="bg-dark dk header navbar navbar-fixed-top-xs">
+            <div class="navbar-header aside-md">
+                <a class="btn btn-link visible-xs" data-toggle="class:nav-off-screen"
+                   data-target="#nav">
+                    <i class="fa fa-bars"></i>
+                </a>
+                <a href="#" class="navbar-brand" data-toggle="fullscreen">
+                    <img src="images/logo.png" class="m-r-sm">WorkflowEngine</a>
+                <a class="btn btn-link visible-xs" data-toggle="dropdown"
+                   data-target=".nav-user">
+                    <i class="fa fa-cog"></i>
+                </a>
+            </div>
+        </header>
+
+        <section>
+            <section class="hbox stretch">
+                <!-- .aside -->
+                <aside class="bg-dark lter aside-md hidden-print" id="nav">
+                    <section class="vbox">
+                        <header class="header bg-primary lter text-center clearfix">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-dark btn-icon"
+                                        title="New workflow">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+
+                                <div class="btn-group hidden-nav-xs">
+                                    <button type="button" class="btn btn-sm btn-primary dropdown-toggle"
+                                            data-toggle="dropdown"> Switch Project
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu text-left" id="wf-list">
+                                    </ul>
+                                </div>
+                            </div>
+                        </header>
+
+                        <section class="w-f scrollable">
+                            <div class="slim-scroll" data-height="auto" data-disable-fade-out="true"
+                                 data-distance="0" data-size="5px" data-color="#333333">
+                                <!-- nav -->
+                                <nav class="nav-primary hidden-xs">
+                                    <ul class="nav">
+                                        <li >
+                                            <a id="wf-console" href="console.html" class="active">
+                                                <i class="fa fa-dashboard icon">
+                                                    <b class="bg-danger"></b>
+                                                </i> <span>Console</span> </a>
+                                        </li>
+
+                                        <li class="active">
+                                            <a id="wf-instances" href="#" >
+                                                <i class="fa fa-flask icon">
+                                                    <b class="bg-success"></b>
+                                                </i>
+                                                <span>Workflow Instances</span>
+                                            </a>
+                                        </li>
+
+                                        <li > <a id="wf-log" href="logs.html" >
+                                            <i class="fa fa-file-text icon">
+                                                <b class="bg-primary"></b>
+                                            </i>
+                                            <span>logs</span> </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                                <!-- / nav -->
+                            </div>
+                        </section>
+
+
+                        <footer class="footer lt hidden-xs b-t b-dark">
+                            <div id="chat" class="dropup">
+                                <section class="dropdown-menu on aside-md m-l-n">
+                                    <section class="panel bg-white">
+                                        <header class="panel-heading b-b b-light">Active chats</header>
+                                        <div class="panel-body animated fadeInRight">
+                                            <p class="text-sm">No active chats.</p>
+                                            <p><a href="#" class="btn btn-sm btn-default">Start a chat</a></p>
+                                        </div>
+                                    </section>
+                                </section>
+                            </div>
+                            <div id="invite" class="dropup">
+                                <section class="dropdown-menu on aside-md m-l-n">
+                                    <section class="panel bg-white">
+                                        <header class="panel-heading b-b b-light"> John <i class="fa fa-circle text-success"></i> </header>
+                                        <div class="panel-body animated fadeInRight">
+                                            <p class="text-sm">No contacts in your lists.</p>
+                                            <p><a href="#" class="btn btn-sm btn-facebook"><i class="fa fa-fw fa-facebook"></i> Invite from Facebook</a></p>
+                                        </div>
+                                    </section>
+                                </section>
+                            </div>
+                            <a href="#nav" data-toggle="class:nav-xs" class="pull-right btn btn-sm btn-dark btn-icon"> <i class="fa fa-angle-left text"></i> <i class="fa fa-angle-right text-active"></i> </a>
+                            <div class="btn-group hidden-nav-xs">
+                                <button type="button" title="Chats" class="btn btn-icon btn-sm btn-dark" data-toggle="dropdown" data-target="#chat"><i class="fa fa-comment-o"></i></button>
+                                <button type="button" title="Contacts" class="btn btn-icon btn-sm btn-dark" data-toggle="dropdown" data-target="#invite"><i class="fa fa-facebook"></i></button>
+                            </div>
+                        </footer>
+                    </section>
+                </aside>
+                <!-- /导航栏 -->
+
+
+                <section id="content">
+                    <section class="hbox stretch">
+                        <!-- .aside -->
+                        <aside>
+                            <section class="vbox">
+                                <header class="header bg-white b-b b-light"> <a href="#aside" data-toggle="class:show" class="btn btn-sm btn-default pull-right time_line">Create</a>
+                                    <p>Instances</p>
+                                </header>
+                                <section class="scrollable wrapper">
+                                    <div class="timeline">
+
+                                        <article class="timeline-item active">
+                                            <div class="timeline-caption">
+                                                <div class="panel bg-primary lter no-borders">
+                                                    <div class="panel-body">
+                                                        <span class="timeline-icon">
+                                                            <i class="fa fa-code time-icon bg-primary"></i>
+                                                        </span>
+                                                        <span class="timeline-date" id="app-id">application-test</span>
+
+                                                        <h5><span id="wf-id">WF-test</span> <font id="start-time">2016-11-12</font> </h5>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </article>
+
+                                    </div>
+                                </section>
+                            </section>
+                        </aside>
+                        <!-- /.aside -->
+
+                    </section>
+                    <a href="#" class="hide nav-off-screen-block" data-toggle="class:nav-off-screen" data-target="#nav"></a>
+                </section>
+
+            </section>
+        </section>
+    </section>
+    <script src="js/app.v2.js"></script>
+
+    <script src="js/axios.min.js"></script>
+    <script src="js/tools.js"></script>
+    <script src="js/apps/instances.js"></script>
+    <!-- Bootstrap -->
+    <!-- App -->
+</body>
+
+</html>
