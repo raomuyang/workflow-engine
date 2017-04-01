@@ -25,11 +25,6 @@ public class WFRuntimeException extends RuntimeException{
         return String.format("[%s] ", code) + super.toString();
     }
 
-    @Override
-    public String getMessage(){
-        return String.format("[%s] ", code) + super.getMessage();
-    }
-
     public int getCode() {
         return code;
     }
