@@ -4,6 +4,7 @@ import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,6 +22,8 @@ public interface WorkflowService {
     List<WorkflowConfig> getByApplication(String application);
     boolean delete(String workflowId);
     boolean deleteByApplication(String application);
+    void stopWorkflow(String workflow);
+    boolean restartWorkflow(String workflow, Date stopTime);
 
     /**
      * 以workflowId将文件保存到相应的路径

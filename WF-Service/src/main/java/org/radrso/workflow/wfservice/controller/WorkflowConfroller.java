@@ -1,6 +1,7 @@
 package org.radrso.workflow.wfservice.controller;
 
 import lombok.extern.log4j.Log4j;
+import org.radrso.plugins.DateTools;
 import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
 import org.radrso.workflow.wfservice.service.WorkflowExecuteStatusService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -95,6 +97,39 @@ public class WorkflowConfroller {
     public WorkflowExecuteStatus getWorkflowStatus(@PathVariable("workflowId") String workflowId){
         workflowService.updateServiceStatus(workflowService.getByWorkflowId(workflowId));
         return statusService.get(workflowId);
+    }
+
+    /**
+     * 幂等操作
+     */
+    @RequestMapping(value = "/{workflowId}/restart/stop-in/{deadline}", method = RequestMethod.PUT)
+    public ResponseEntity<ModelMap> restartWorkflow(@PathVariable("workflowId") String workflowId, @PathVariable("deadline") String deadline){
+        Date date = DateTools.string2Date(deadline);
+        boolean res = workflowService.restartWorkflow(workflowId, date);
+        ModelMap modelMap = new ModelMap();
+        modelMap.put("status", res);
+        String msg = String.format("Restart workflow %s successful, deadline is %s", workflowId, deadline);
+        HttpStatus statusCode = HttpStatus.OK;
+        if (!res) {
+            msg = String.format("Restart workflow %s successful, deadline is %s, please check it", workflowId, deadline);
+            statusCode = HttpStatus.BAD_REQUEST;
+        }
+        modelMap.put("msg", msg);
+        return new ResponseEntity<>(modelMap, statusCode);
+    }
+
+    /**
+     * 幂等操作
+     */
+    @RequestMapping(value = "/{workflowId}/stop", method = RequestMethod.PUT)
+    public ResponseEntity<ModelMap> stopWorkflow(@PathVariable("workflowId") String workflowId){
+        workflowService.stopWorkflow(workflowId);
+        ModelMap modelMap = new ModelMap();
+        modelMap.put("status", true);
+        String msg = String.format("Stop workflow %s successful", workflowId);
+        HttpStatus statusCode = HttpStatus.OK;
+        modelMap.put("msg", msg);
+        return new ResponseEntity<>(modelMap, statusCode);
     }
 
     @RequestMapping("/status/pno/{pno}/psize/{psize}/")

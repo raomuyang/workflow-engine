@@ -348,7 +348,7 @@ public class FlowActionsExecutor extends BaseFlowActionsExecutor{
             throw new WFRuntimeException(msg, ResponseCode.HTTP_NOT_FOUND.code());
         }
 
-        if (instance.getStatus().endsWith(WorkflowInstance.INTERRUPTED)){
+        if (instance.getStatus().equals(WorkflowInstance.INTERRUPTED)){
             return true;
         }
         return false;
