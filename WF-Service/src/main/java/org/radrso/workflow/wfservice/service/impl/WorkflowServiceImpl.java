@@ -81,6 +81,44 @@ public class WorkflowServiceImpl implements WorkflowService {
     }
 
     @Override
+    public void stopWorkflow(String workflow) {
+        WorkflowConfig workflowConfig = getByWorkflowId(workflow);
+        if (workflowConfig == null) {
+            return;
+        }
+        workflowConfig.setStopTime(new Date());
+        workflowRepository.save(workflowConfig);
+
+        WorkflowExecuteStatus executeStatus = statusRepository.findOne(workflow);
+        String status = executeStatus.getStatus();
+        if (status.equals(WorkflowExecuteStatus.STOP)){
+            return;
+        }
+        executeStatus.setStatus(WorkflowExecuteStatus.STOP);
+        statusRepository.save(executeStatus);
+    }
+
+    @Override
+    public boolean restartWorkflow(String workflow, Date stopTime) {
+        WorkflowConfig workflowConfig = getByWorkflowId(workflow);
+        if (workflowConfig == null || workflowConfig.getStartTime().after(stopTime)) {
+            return false;
+        }
+        workflowConfig.setStartTime(new Date());
+        workflowConfig.setStopTime(stopTime);
+        workflowRepository.save(workflowConfig);
+
+        WorkflowExecuteStatus executeStatus = statusRepository.findOne(workflow);
+        String status = executeStatus.getStatus();
+        if (status.equals(WorkflowExecuteStatus.START)) {
+            return true;
+        }
+        executeStatus.setStatus(WorkflowExecuteStatus.START);
+        statusRepository.save(executeStatus);
+        return true;
+    }
+
+    @Override
     public boolean transferJarFile(String workflowId, MultipartFile originFile) {
         if (!originFile.getOriginalFilename().endsWith(".jar")){
             return false;
@@ -112,17 +150,22 @@ public class WorkflowServiceImpl implements WorkflowService {
             Date start = workflowConfig.getStartTime();
             Date stop = workflowConfig.getStopTime();
 
-            WorkflowExecuteStatus status = statusRepository.findOne(workflowConfig.getId());
-            if (status == null)
-                status = new WorkflowExecuteStatus(workflowConfig.getId(), workflowConfig.getApplication(), WorkflowExecuteStatus.CREATED, null);
+            WorkflowExecuteStatus executeStatus = statusRepository.findOne(workflowConfig.getId());
+            String status = executeStatus.getStatus();
+            if (executeStatus == null)
+                executeStatus = new WorkflowExecuteStatus(workflowConfig.getId(), workflowConfig.getApplication(), WorkflowExecuteStatus.CREATED, null);
 
+            // 针对不同的状态进行修正
             Date current = new Date();
-            if (current.after(start) && current.before(stop))
-                status.setStatus(WorkflowExecuteStatus.START);
-            else if (current.after(stop))
-                status.setStatus(WorkflowExecuteStatus.STOP);
-
-            statusRepository.save(status);
+            if (current.after(start) && current.before(stop) && status.equals(WorkflowExecuteStatus.CREATED)) {
+                executeStatus.setStatus(WorkflowExecuteStatus.START);
+            }
+            else if (current.after(stop) && status.equals(WorkflowExecuteStatus.START)) {
+                executeStatus.setStatus(WorkflowExecuteStatus.STOP);
+            }
+            if (!executeStatus.getStatus().equals(status)) {
+                statusRepository.save(executeStatus);
+            }
         }catch (Throwable e){
             log.error(e);
         }

@@ -45,7 +45,7 @@ public class InstanceJobRunnerImpl implements InstanceJobRunner {
         }
         else {
             flowActionsExecutor.execute(workflowResolver);
-            msg = String.format("Workflow instance[%s] is running", instance.getInstanceId());
+            msg = String.format("Workflow instance[%s] is requested to run", instance.getInstanceId());
         }
 
         String instanceStatus = workflowResolver.getWorkflowInstance().getStatus();
