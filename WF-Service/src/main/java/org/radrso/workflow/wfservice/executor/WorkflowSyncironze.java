@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.FileUtils;
 import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
 import org.radrso.workflow.ConfigConstant;
+import org.radrso.workflow.entities.config.JarFile;
 import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;
@@ -21,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,28 +56,47 @@ public class WorkflowSyncironze implements BaseWorkflowSynchronize{
     @Override
     public boolean importJars(String workflowId) {
         WorkflowConfig workflowConfig = workflowService.getByWorkflowId(workflowId);
-        String app = workflowConfig.getId();
-        String jarsRoot = ROOT + app + File.separator ;
+        String app = workflowConfig.getApplication();
+        String jarsRoot = ROOT + app + File.separator;
         List<String> jars = workflowConfig.getJars();
         if(jars == null)
             return false;
 
-        jars.forEach(j->{
-            File jarFile = new File(jarsRoot + j);
+        List<JarFile> jarFileEntities = workflowService.listApplicationJarFiles(app);
+        List<String> remoteFiles = new ArrayList<>();
+        if (jarFileEntities != null) {
+            jarFileEntities.forEach(jFiles -> {
+                remoteFiles.add(jFiles.getName());
+            });
+        }
+        jars.forEach(name->{
+            File jarFile = new File(jarsRoot + name);
             if(!jarFile.exists()) {
-                String msg = WFRuntimeException.JAR_FILE_NO_FOUND + String.format("[%s]", jarsRoot + j);
+                String msg = WFRuntimeException.JAR_FILE_NO_FOUND + String.format("[%s]", jarsRoot + name);
                 throw new WFRuntimeException(msg, ResponseCode.JAR_FILE_NOT_FOUND.code());
             }
 
-            WFResponse response = workflowFilesSync.checkAndImportJar(app, j);
-            if(response.getCode() == ResponseCode.JAR_FILE_NOT_FOUND.code()) {
-                log.info(String.format("UPLOAD Local JAR[%s]", app + "/" + j));
-                response = workflowFilesSync.importJar(app, j, FileUtils.getByte(jarFile));
-            }else
-                log.info(String.format("NEEDN'T UPLOAD FILE[%s]", app + "/" + j));
+            // 若数据库中不存在
+            if (!remoteFiles.contains(name)) {
+                log.warn(String.format("Remote didn't exists [%s | %s]", app, name));
+                try {
+                    workflowService.saveJarFile(app, name, FileUtils.getByte(jarFile));
+                } catch (IOException e) {
+                    log.error(e);
+                    throw new WFRuntimeException("Jar file save failed: " + e.getMessage(), ResponseCode.UNKNOW.code());
+                }
+            }
 
-            if(response.getCode() / 100 != 2)
+            WFResponse response = workflowFilesSync.checkAndImportJar(app, name);
+            if(response.getCode() == ResponseCode.JAR_FILE_NOT_FOUND.code()) {
+                log.info(String.format("UPLOAD Local JAR[%s]", app + "/" + name));
+                response = workflowFilesSync.checkAndImportJar(app, name);
+            } else
+                log.info(String.format("NEEDN'T UPLOAD FILE[%s]", app + "/" + name));
+
+            if(response.getCode() / 100 != 2) {
                 throw new WFRuntimeException("Jar file upload failed:" + response.getMsg(), ResponseCode.SOCKET_EXCEPTION.code());
+            }
         });
         return true;
     }

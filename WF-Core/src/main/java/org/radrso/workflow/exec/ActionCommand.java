@@ -50,9 +50,15 @@ public class ActionCommand {
         File file = new File(path);
         if (file.exists()) {
             log.info(String.format("[Import] add local existed jar_file[%s]", path));
-            return importJar(dir, jarName, FileUtils.getByte(file));
-        } else
+            try {
+                return importJar(dir, jarName, FileUtils.getByte(file));
+            } catch (IOException e) {
+                log.error(e);
+                return new WFResponse(ResponseCode.UNKNOW.code(), ResponseCode.UNKNOW.info(), null);
+            }
+        } else {
             return new WFResponse(ResponseCode.JAR_FILE_NOT_FOUND.code(), ResponseCode.JAR_FILE_NOT_FOUND.info(), null);
+        }
     }
 
     /**

@@ -9,7 +9,7 @@ import java.util.List;
  * Created by raomengnan on 17-1-18.
  */
 public interface WorkflowRepository extends MongoRepository<WorkflowConfig, String>{
-    public List<WorkflowConfig> findByApplication(String application);
-    public List<WorkflowConfig> findByOwner(String owner);
-    public void deleteByApplication(String application);
+    List<WorkflowConfig> findByApplication(String application);
+    List<WorkflowConfig> findByOwner(String owner);
+    void deleteByApplication(String application);
 }

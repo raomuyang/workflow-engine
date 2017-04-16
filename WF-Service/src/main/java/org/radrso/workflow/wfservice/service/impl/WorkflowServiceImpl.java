@@ -3,8 +3,10 @@ package org.radrso.workflow.wfservice.service.impl;
 import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.FileUtils;
 import org.radrso.workflow.ConfigConstant;
+import org.radrso.workflow.entities.config.JarFile;
 import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
+import org.radrso.workflow.wfservice.repositories.JarFileRepository;
 import org.radrso.workflow.wfservice.repositories.WorkflowRepository;
 import org.radrso.workflow.wfservice.repositories.WorkflowStatusRepository;
 import org.radrso.workflow.wfservice.service.WorkflowService;
@@ -30,6 +32,8 @@ public class WorkflowServiceImpl implements WorkflowService {
     private WorkflowRepository workflowRepository;
     @Autowired
     private WorkflowStatusRepository statusRepository;
+    @Autowired
+    private JarFileRepository jarFileRepository;
 
     @Override
     public boolean save(WorkflowConfig workflowConfig) {
@@ -119,25 +123,35 @@ public class WorkflowServiceImpl implements WorkflowService {
     }
 
     @Override
-    public boolean transferJarFile(String workflowId, MultipartFile originFile) {
+    public boolean transferJarFile(String application, MultipartFile originFile) {
         if (!originFile.getOriginalFilename().endsWith(".jar")){
             return false;
         }
 
-        WorkflowConfig workflowConfig = getByWorkflowId(workflowId);
-        String jarRoots = ConfigConstant.SERVICE_JAR_HOME + workflowId + File.separator;
+        String jarRoots = ConfigConstant.SERVICE_JAR_HOME + application + File.separator;
         String originalFileName = originFile.getOriginalFilename();
         try {
            boolean res = FileUtils.writeFile(jarRoots , originalFileName, originFile.getBytes());
            if (res){
-               workflowConfig.getJars().add(originalFileName);
-               save(workflowConfig);
+               return saveJarFile(application, originalFileName, originFile.getBytes());
            }
            return res;
         } catch (IOException e) {
             log.error(e);
             return false;
         }
+    }
+
+    @Override
+    public boolean saveJarFile(String application, String jarName, byte[] bytes) {
+        JarFile jarFile = new JarFile(null, application, jarName, bytes);
+        jarFileRepository.save(jarFile);
+        return  !(jarFile.getId() == null);
+    }
+
+    @Override
+    public List<JarFile> listApplicationJarFiles(String application) {
+        return jarFileRepository.findByApplication(application);
     }
 
     @Override

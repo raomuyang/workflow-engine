@@ -2,6 +2,7 @@ package org.radrso.workflow.wfservice.controller;
 
 import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.DateTools;
+import org.radrso.workflow.entities.config.JarFile;
 import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
 import org.radrso.workflow.wfservice.service.WorkflowExecuteStatusService;
@@ -78,10 +79,10 @@ public class WorkflowConfroller {
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{workflowId}/jars/", method = RequestMethod.POST)
-    public ResponseEntity<ModelMap> uploadJar(@PathVariable("workflowId") String workflowId, MultipartFile file){
-        log.info(String.format("Upload jar file [%s] for [%s]", file.getOriginalFilename(), workflowId));
-        boolean res = workflowService.transferJarFile(workflowId, file);
+    @RequestMapping(value = "/{application}/jars/", method = RequestMethod.POST)
+    public ResponseEntity<ModelMap> uploadJar(@PathVariable("application") String application, MultipartFile file){
+        log.info(String.format("Upload jar file [%s] for [%s]", file.getOriginalFilename(), application));
+        boolean res = workflowService.transferJarFile(application, file);
 
         ModelMap map = new ModelMap();
         map.put("status", res);
@@ -91,6 +92,12 @@ public class WorkflowConfroller {
             return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(map, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{application}/jars/", method = RequestMethod.GET)
+    public List<JarFile> listApplicationJar(@PathVariable("application") String application){
+        log.info(String.format("List jar files of [%s]", application));
+        return workflowService.listApplicationJarFiles(application);
     }
 
     @RequestMapping("/{workflowId}/status")

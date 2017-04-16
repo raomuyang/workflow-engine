@@ -2,9 +2,11 @@ package org.radrso.workflow.provider;
 
 import lombok.extern.log4j.Log4j;
 import org.radrso.workflow.ConfigConstant;
+import org.radrso.workflow.entities.config.JarFile;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.exec.ActionCommand;
 import org.radrso.workflow.rmi.WorkflowFilesSync;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -17,24 +19,23 @@ import java.io.File;
 @Service
 public class WorkflowFilesSyncImpl implements WorkflowFilesSync {
     public static final String ROOT = ConfigConstant.PROVIDER_JAR_HOME;
+    @Autowired
+    private JarFileRepository jarFileRepository;
 
     /**
      *
      * @param application
      * @param jarName
-     * @param stream
-     * @return sunccess Code=200 | unsuccess Code=5003
+     * @return sunccess Code=200 | unsuccess Code=4046, 5003
      */
     @Override
-    public WFResponse importJar(String application, String jarName, byte[] stream) {
-        log.info(String.format("Import jar[%s]", application + "/" + jarName));
-        String path = ROOT + application + File.separator;
-        return ActionCommand.importJar(path, jarName, stream);
-    }
-
-    @Override
     public WFResponse checkAndImportJar(String application, String jarName) {
-        String fp = ROOT + application + File.separator + jarName;
+        String fp = ROOT + application + File.separator;
+        File file = new File(fp + jarName);
+        if (!file.exists()) {
+            JarFile jarFile = jarFileRepository.findByApplicationAndName(application, jarName);
+            return ActionCommand.importJar(fp, jarName, jarFile.getFile());
+        }
         return ActionCommand.checkAndImportJar(fp, jarName);
     }
 }
