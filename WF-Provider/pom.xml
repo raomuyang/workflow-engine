@@ -14,6 +14,20 @@
 
     <dependencies>
 
+        <!-- MongoDB驱动/ -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>3.3.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-mongodb -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+            <version>1.4.3.RELEASE</version>
+        </dependency>
+
         <dependency>
             <groupId>org.radrso.workflow</groupId>
             <artifactId>org.radrso.workflow.core</artifactId>

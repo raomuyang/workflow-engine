@@ -77,7 +77,7 @@ public class StepActionResolver implements BaseStepActionResolver {
             return response;
 
         } catch (ClassNotFoundException e) {
-            log.error(e);
+            log.warn(e);
             return new WFResponse(ResponseCode.CLASS_NOT_FOUND.code(),
                     e.getMessage(), e.getMessage());
 

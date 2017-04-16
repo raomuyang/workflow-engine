@@ -39,7 +39,7 @@ public class FileUtils {
 
     }
 
-    public static byte[] getByte(File file) {
+    public static byte[] getByte(File file) throws IOException {
         if (file == null || !file.exists())
             return null;
         FileInputStream is = null;
@@ -53,10 +53,6 @@ public class FileUtils {
             while ((len = is.read(buf)) != -1)
                 bos.write(buf, 0, len);
             buffer = bos.toByteArray();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         } finally {
             try {
                 is.close();
@@ -68,7 +64,7 @@ public class FileUtils {
         return buffer;
     }
 
-    public byte[] getByte(String filePath) {
+    public byte[] getByte(String filePath) throws IOException {
         return getByte(new File(filePath));
     }
 
