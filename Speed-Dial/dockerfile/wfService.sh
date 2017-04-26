@@ -3,6 +3,12 @@
 WFP='Workflow-Engine-Provider'
 WFS='Workflow-Engine-Service'
 
+NAME=`hostname`
+CHECK=`cat /etc/hosts | grep ${NAME}`
+if [ x == x$CHECK ]; then
+    echo "127.0.0.1 \t"${NAME}
+fi
+
 root=$(pwd)
 cd $WF_ENGINE_HOME
 if [ x = x$WF_ENGINE_HOME ];then
