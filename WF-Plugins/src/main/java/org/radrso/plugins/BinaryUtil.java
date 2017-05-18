@@ -1,13 +1,42 @@
 package org.radrso.plugins;
 
 import java.io.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by raomengnan on 16-12-10.
  */
-public class StreamUtils {
+public class BinaryUtil {
 
-    private StreamUtils() {
+    private BinaryUtil() {
+    }
+
+    private static final char[] hexDict = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+
+    public static String string2MD5(String str) {
+        return calculateMD5(str.getBytes());
+    }
+
+    public static String calculateMD5(byte[] bytes) {
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+            byte[] md5 = messageDigest.digest(bytes);
+            char[] strMd5 = new char[md5.length * 2];
+            int k = 0;
+            for (byte b : md5) {
+                //Integer中也有转换16进制的方法
+                //(b & 0xff >> 4) == (b & (0xff >> 4)) == (b & 0xf)
+                //4bit表示一个16进制数
+                strMd5[k++] = hexDict[(b >> 4) & 0xf];// b >> 4 :高四位的为16进制的第一个数
+                strMd5[k++] = hexDict[b & 0xf]; //低四位的为16进制第二个数字
+            }
+            return new String(strMd5);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
     public static String readFromStream(InputStream stream) throws IOException {
