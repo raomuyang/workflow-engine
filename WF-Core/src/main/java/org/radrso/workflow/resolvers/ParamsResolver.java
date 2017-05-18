@@ -2,7 +2,7 @@ package org.radrso.workflow.resolvers;
 
 import org.radrso.workflow.entities.config.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
-import org.radrso.workflow.entities.exceptions.UnknowExceptionInRunning;
+import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 
 /**
  * Created by rao-mengnan on 2017/3/16.
@@ -13,14 +13,14 @@ public interface ParamsResolver {
      * @param transfer 状态转移函数
      * @return 返回的是参数集合
      */
-    Object[] resolverTransferParams(Transfer transfer) throws ConfigReadException, UnknowExceptionInRunning;
+    Object[] resolverTransferParams(Transfer transfer) throws ConfigReadException, UnknownExceptionInRunning;
 
     /**
      * 将配置文件中的表达式语句转为有效值，但不是最终的类型
      * @param paramStr 如{output}[x-step-sign][xxx][xxx]
      * @return  返回转义之后的值
      */
-    Object resolverStringToParams(String paramStr) throws UnknowExceptionInRunning, ConfigReadException;
+    Object resolverStringToParams(String paramStr) throws UnknownExceptionInRunning, ConfigReadException;
 
     /**
      * 将对象转换为目标类型

@@ -7,7 +7,7 @@ import org.radrso.workflow.entities.config.items.Judge;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.config.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
-import org.radrso.workflow.entities.exceptions.UnknowExceptionInRunning;
+import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.entities.wf.StepStatus;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
@@ -67,7 +67,7 @@ public class FlowResolverImpl implements FlowResolver, Serializable {
      * @throws ConfigReadException
      */
     @Override
-    public FlowResolverImpl next() throws ConfigReadException, UnknowExceptionInRunning {
+    public FlowResolverImpl next() throws ConfigReadException, UnknownExceptionInRunning {
         Transfer currentTransfer = getCurrentTransfer();
         if (currentTransfer == null)
             return null;
@@ -134,7 +134,7 @@ public class FlowResolverImpl implements FlowResolver, Serializable {
      * @throws ConfigReadException
      */
     @Override
-    public Step transferToNextStep(Transfer transfer) throws ConfigReadException, UnknowExceptionInRunning {
+    public Step transferToNextStep(Transfer transfer) throws ConfigReadException, UnknownExceptionInRunning {
         if (transfer == null)
             return null;
 
@@ -157,7 +157,7 @@ public class FlowResolverImpl implements FlowResolver, Serializable {
      * @throws ConfigReadException
      */
     @Override
-    public Transfer judgeNextTransfer(Judge judge) throws ConfigReadException, UnknowExceptionInRunning {
+    public Transfer judgeNextTransfer(Judge judge) throws ConfigReadException, UnknownExceptionInRunning {
         log.debug(judge);
         String type = judge.getType();
 

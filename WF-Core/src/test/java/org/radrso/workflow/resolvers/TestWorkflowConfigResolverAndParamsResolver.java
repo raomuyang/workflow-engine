@@ -9,7 +9,7 @@ import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.config.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
-import org.radrso.workflow.entities.exceptions.UnknowExceptionInRunning;
+import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.entities.wf.StepStatus;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
@@ -40,7 +40,7 @@ public class TestWorkflowConfigResolverAndParamsResolver {
     }
 
     @Test
-    public void testGetParam() throws UnknowExceptionInRunning, ConfigReadException {
+    public void testGetParam() throws UnknownExceptionInRunning, ConfigReadException {
 
         Transfer transfer = workflowConfig.getSteps().get(0).getTransfer();
         paramsResolver.resolverTransferParams(transfer);
@@ -62,7 +62,7 @@ public class TestWorkflowConfigResolverAndParamsResolver {
     }
 
     @Test(expected = ConfigReadException.class)
-    public void testResolveResponseParam() throws UnknowExceptionInRunning, ConfigReadException {
+    public void testResolveResponseParam() throws UnknownExceptionInRunning, ConfigReadException {
         Transfer transfer = workflowConfig.getSteps().get(0).getTransfer();
         paramsResolver.resolverTransferParams(transfer);
 

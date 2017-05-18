@@ -10,7 +10,7 @@ import org.radrso.workflow.constant.ConfigConstant;
 import org.radrso.workflow.entities.config.items.InputItem;
 import org.radrso.workflow.entities.config.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
-import org.radrso.workflow.entities.exceptions.UnknowExceptionInRunning;
+import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 import org.radrso.workflow.entities.wf.StepStatus;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
 import org.radrso.workflow.resolvers.ParamsResolver;
@@ -51,7 +51,7 @@ public class ParamsResolverImpl implements ParamsResolver {
     }
 
     @Override
-    public Object[] resolverTransferParams(Transfer transfer) throws ConfigReadException, UnknowExceptionInRunning {
+    public Object[] resolverTransferParams(Transfer transfer) throws ConfigReadException, UnknownExceptionInRunning {
         List<InputItem> inputs = transfer.getInput();
         if (inputs == null || inputs.size() == 0)
             return new Object[]{};
@@ -74,7 +74,7 @@ public class ParamsResolverImpl implements ParamsResolver {
     }
 
     @Override
-    public Object resolverStringToParams(String paramStr) throws UnknowExceptionInRunning, ConfigReadException {
+    public Object resolverStringToParams(String paramStr) throws UnknownExceptionInRunning, ConfigReadException {
         String errorMsg = null;
 
         if (paramStr.toLowerCase().equals(ConfigConstant.CONF_INSTANCE_ID_VALUE))
@@ -121,7 +121,7 @@ public class ParamsResolverImpl implements ParamsResolver {
                 errorMsg = "No such value: " + paramStr + "/" + sp[parseStrIndex];
             } catch (Throwable e3) {
                 log.debug(e3);
-                throw new UnknowExceptionInRunning("Exception in resolve param [%s]".format(paramStr) + "/case:" + e3, e3);
+                throw new UnknownExceptionInRunning("Exception in resolve param [%s]".format(paramStr) + "/case:" + e3, e3);
             }
 
             if (errorMsg != null)

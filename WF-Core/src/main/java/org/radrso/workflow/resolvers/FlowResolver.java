@@ -4,7 +4,7 @@ import org.radrso.workflow.entities.config.items.Judge;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.config.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
-import org.radrso.workflow.entities.exceptions.UnknowExceptionInRunning;
+import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
 
@@ -22,7 +22,7 @@ public interface FlowResolver {
      * @return
      * @throws ConfigReadException
      */
-    FlowResolver next() throws ConfigReadException, UnknowExceptionInRunning;
+    FlowResolver next() throws ConfigReadException, UnknownExceptionInRunning;
 
     /**
      * 回滚到上一步
@@ -53,7 +53,7 @@ public interface FlowResolver {
      * @return
      * @throws ConfigReadException
      */
-    Step transferToNextStep(Transfer transfer) throws ConfigReadException, UnknowExceptionInRunning;
+    Step transferToNextStep(Transfer transfer) throws ConfigReadException, UnknownExceptionInRunning;
 
     /**
      * 通过判断函数获取下一个要转移的的状态
@@ -62,7 +62,7 @@ public interface FlowResolver {
      * @return
      * @throws ConfigReadException
      */
-    Transfer judgeNextTransfer(Judge judge) throws ConfigReadException, UnknowExceptionInRunning;
+    Transfer judgeNextTransfer(Judge judge) throws ConfigReadException, UnknownExceptionInRunning;
 
     /**
      * 更新workflowInstance中的response记录

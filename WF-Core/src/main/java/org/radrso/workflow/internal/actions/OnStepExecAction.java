@@ -11,7 +11,7 @@ import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.config.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
-import org.radrso.workflow.entities.exceptions.UnknowExceptionInRunning;
+import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.entities.wf.StepStatus;
@@ -127,11 +127,11 @@ public class OnStepExecAction extends AbstractAction implements Consumer<FlowRes
                 runtimeException.printStackTrace();
                 throw new WFRuntimeException(runtimeException.getMessage(),
                         runtimeException, ExceptionCode.UNKNOW.code());
-            } catch (UnknowExceptionInRunning unknowExceptionInRunning) {
-                log.error(unknowExceptionInRunning);
-                unknowExceptionInRunning.printStackTrace();
-                throw new WFRuntimeException(unknowExceptionInRunning.getMessage(),
-                        unknowExceptionInRunning, ExceptionCode.UNKNOW.code());
+            } catch (UnknownExceptionInRunning unknownExceptionInRunning) {
+                log.error(unknownExceptionInRunning);
+                unknownExceptionInRunning.printStackTrace();
+                throw new WFRuntimeException(unknownExceptionInRunning.getMessage(),
+                        unknownExceptionInRunning, ExceptionCode.UNKNOW.code());
             } finally {
                 if (!loopDo) {
                     String stepSign = workflowResolver.getCurrentStep().getSign();
@@ -190,7 +190,6 @@ public class OnStepExecAction extends AbstractAction implements Consumer<FlowRes
             WorkflowExecutors.getFlowAction(commander).start(newWFResolver);
         }
     }
-
 
     @Override
     public Action setResolver(FlowResolver resolver) {
