@@ -10,7 +10,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.radrso.plugins.requests.entity.MethodEnum;
 import org.radrso.plugins.requests.entity.Response;
-import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
+import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.plugins.requests.entity.exceptions.impl.RequestException;
 
 import java.io.IOException;
