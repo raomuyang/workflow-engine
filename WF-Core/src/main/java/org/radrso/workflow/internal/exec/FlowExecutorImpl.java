@@ -36,15 +36,7 @@ public class FlowExecutorImpl extends FlowExecutor {
     @Override
     public void restart(FlowResolver workflowResolver) {
         log.info("[RESTARTING] ---------- " + workflowResolver.getWorkflowInstance().getInstanceId());
-        Consumer<FlowResolver> interruptAndCheckAction
-                = (Consumer<FlowResolver>) Actions.getAction(ActionEnum.INTERRUPT_AND_CHECK, commander);
-        Action executeNextAction
-                = (Action) Actions.getAction(ActionEnum.ON_EXEC_NEXT, commander)
-                .setResolver(workflowResolver);
-        Observable.just(workflowResolver)
-                .doOnNext(interruptAndCheckAction)
-                .doOnComplete(executeNextAction)
-                .subscribeOn(Schedulers.io()).subscribe();
+        Actions.restartStream(workflowResolver, commander);
     }
 
 }

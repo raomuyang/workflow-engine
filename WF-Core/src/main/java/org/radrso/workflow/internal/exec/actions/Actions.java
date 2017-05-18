@@ -27,8 +27,12 @@ public class Actions {
         }
     }
 
-    public static void startStream(FlowResolver workflowConfigResolver, Commander workflowSynchronize) {
-        new FlowExecuteStream(workflowConfigResolver, workflowSynchronize).process();
+    public static void startStream(FlowResolver flowResolver, Commander commander) {
+        new FlowExecuteStream(flowResolver, commander).process();
+    }
+
+    public static void restartStream(FlowResolver resolver, Commander commander) {
+        new FlowExecuteStream(resolver, commander).restartProcess();
     }
 
 }

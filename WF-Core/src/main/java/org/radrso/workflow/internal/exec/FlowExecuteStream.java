@@ -15,28 +15,41 @@ import org.radrso.workflow.resolvers.FlowResolver;
  */
 public class FlowExecuteStream {
     private FlowResolver resolver;
-    private Commander workflowSynchronize;
+    private Commander commander;
 
-    public FlowExecuteStream(FlowResolver resolver, Commander workflowSynchronize) {
+    public FlowExecuteStream(FlowResolver resolver, Commander commander) {
         this.resolver = resolver;
-        this.workflowSynchronize = workflowSynchronize;
+        this.commander = commander;
     }
 
     public void process() {
         resolver.getWorkflowInstance().setStatus(WorkflowInstance.RUNNING);
 
         Consumer<FlowResolver> onStepExecAction
-                = (Consumer<FlowResolver>) Actions.getAction(ActionEnum.ON_STEP_EXEC, workflowSynchronize);
+                = (Consumer<FlowResolver>) Actions.getAction(ActionEnum.ON_STEP_EXEC, commander);
         Action onStepCompleted
-                = (Action) Actions.getAction(ActionEnum.ON_STEP_COMPLETED, workflowSynchronize).setResolver(resolver);
+                = (Action) Actions.getAction(ActionEnum.ON_STEP_COMPLETED, commander).setResolver(resolver);
         Consumer<Throwable> onStepError
-                = (Consumer<Throwable>) Actions.getAction(ActionEnum.ON_STEP_ERROR, workflowSynchronize).setResolver(resolver);
+                = (Consumer<Throwable>) Actions.getAction(ActionEnum.ON_STEP_ERROR, commander).setResolver(resolver);
 
         Observable.just(resolver)
                 .doOnNext(onStepExecAction)
                 .doOnComplete(onStepCompleted)
                 .doOnError(onStepError)
-                .observeOn(Schedulers.io())
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
+    public void restartProcess() {
+        Consumer<FlowResolver> interruptAndCheckAction
+                = (Consumer<FlowResolver>) Actions.getAction(ActionEnum.INTERRUPT_AND_CHECK, commander);
+        Action executeNextAction
+                = (Action) Actions.getAction(ActionEnum.ON_EXEC_NEXT, commander)
+                .setResolver(resolver);
+        Observable.just(resolver)
+                .doOnNext(interruptAndCheckAction)
+                .doOnComplete(executeNextAction)
+                .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
