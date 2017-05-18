@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.radrso.workflow.ConfigConstant;
+import org.radrso.workflow.constant.ConfigConstant;
 import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.config.items.Transfer;
@@ -13,8 +13,8 @@ import org.radrso.workflow.entities.exceptions.UnknowExceptionInRunning;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.entities.wf.StepStatus;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
-import org.radrso.workflow.resolvers.impl.ParamsResolver;
-import org.radrso.workflow.resolvers.impl.WorkflowConfigResolver;
+import org.radrso.workflow.internal.resolver.ParamsResolverImpl;
+import org.radrso.workflow.internal.resolver.FlowResolverImpl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,17 +25,17 @@ import java.util.List;
  */
 
 public class TestWorkflowConfigResolverAndParamsResolver {
-    WorkflowConfigResolver workflowResolver;
+    FlowResolverImpl workflowResolver;
     WorkflowInstance workflowInstance;
     WorkflowConfig workflowConfig;
-    ParamsResolver paramsResolver;
+    ParamsResolverImpl paramsResolver;
 
     @Before
     public void before() {
         workflowConfig = new Gson().fromJson(wf, WorkflowConfig.class);
         workflowInstance = new WorkflowInstance("workflow-test", "instance-test");
-        workflowResolver = new WorkflowConfigResolver(workflowConfig, workflowInstance);
-        paramsResolver = new ParamsResolver(workflowInstance);
+        workflowResolver = new FlowResolverImpl(workflowConfig, workflowInstance);
+        paramsResolver = new ParamsResolverImpl(workflowInstance);
 
     }
 

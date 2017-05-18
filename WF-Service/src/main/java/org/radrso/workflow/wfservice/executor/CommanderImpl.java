@@ -2,8 +2,10 @@ package org.radrso.workflow.wfservice.executor;
 
 import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.FileUtils;
-import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
-import org.radrso.workflow.ConfigConstant;
+import org.radrso.plugins.requests.entity.ResponseCode;
+import org.radrso.workflow.base.Operations;
+import org.radrso.workflow.constant.ConfigConstant;
+import org.radrso.workflow.constant.ExceptionCode;
 import org.radrso.workflow.entities.config.JarFile;
 import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.radrso.workflow.entities.config.items.Step;
@@ -11,9 +13,7 @@ import org.radrso.workflow.entities.exceptions.WFRuntimeException;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.entities.wf.WorkflowErrorLog;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
-import org.radrso.workflow.persistence.BaseWorkflowSynchronize;
-import org.radrso.workflow.rmi.WorkflowFilesSync;
-import org.radrso.workflow.rmi.WorkflowExecutor;
+import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.wfservice.service.WorkflowExecuteStatusService;
 import org.radrso.workflow.wfservice.service.WorkflowInstanceService;
 import org.radrso.workflow.wfservice.service.WorkflowLogService;
@@ -31,13 +31,11 @@ import java.util.List;
  */
 @Component
 @Log4j
-public class WorkflowSyncironze implements BaseWorkflowSynchronize{
+public class CommanderImpl implements Commander {
     public static final String ROOT = ConfigConstant.SERVICE_JAR_HOME;
 
     @Autowired
-    protected WorkflowExecutor workflowExecutor;
-    @Autowired
-    protected WorkflowFilesSync workflowFilesSync;
+    protected Operations operations;
 
     @Autowired
     protected WorkflowService workflowService;
@@ -54,7 +52,7 @@ public class WorkflowSyncironze implements BaseWorkflowSynchronize{
      * @return
      */
     @Override
-    public boolean importJars(String workflowId) {
+    public boolean jarFilesSync(String workflowId) {
         WorkflowConfig workflowConfig = workflowService.getByWorkflowId(workflowId);
         String app = workflowConfig.getApplication();
         String jarsRoot = ROOT + app + File.separator;
@@ -73,7 +71,7 @@ public class WorkflowSyncironze implements BaseWorkflowSynchronize{
             File jarFile = new File(jarsRoot + name);
             if(!jarFile.exists()) {
                 String msg = WFRuntimeException.JAR_FILE_NO_FOUND + String.format("[%s]", jarsRoot + name);
-                throw new WFRuntimeException(msg, ResponseCode.JAR_FILE_NOT_FOUND.code());
+                throw new WFRuntimeException(msg, ExceptionCode.JAR_FILE_NOT_FOUND.code());
             }
 
             // 若数据库中不存在
@@ -87,10 +85,10 @@ public class WorkflowSyncironze implements BaseWorkflowSynchronize{
                 }
             }
 
-            WFResponse response = workflowFilesSync.checkAndImportJar(app, name);
-            if(response.getCode() == ResponseCode.JAR_FILE_NOT_FOUND.code()) {
+            WFResponse response = operations.checkAndImportJar(app, name);
+            if(response.getCode() == ExceptionCode.JAR_FILE_NOT_FOUND.code()) {
                 log.info(String.format("UPLOAD Local JAR[%s]", app + "/" + name));
-                response = workflowFilesSync.checkAndImportJar(app, name);
+                response = operations.checkAndImportJar(app, name);
             } else
                 log.info(String.format("NEEDN'T UPLOAD FILE[%s]", app + "/" + name));
 
@@ -102,7 +100,7 @@ public class WorkflowSyncironze implements BaseWorkflowSynchronize{
     }
 
     @Override
-    public boolean logError(WorkflowErrorLog log) {
+    public boolean saveErrorLog(WorkflowErrorLog log) {
         return workflowLogService.save(log);
     }
 
@@ -112,7 +110,7 @@ public class WorkflowSyncironze implements BaseWorkflowSynchronize{
     }
 
     @Override
-    public WorkflowConfig getWorkflow(String instanceId) {
+    public WorkflowConfig getWorkflowConfig(String instanceId) {
         String id = instanceId;
         if (id.contains("-")) {
             id = id.substring(0, id.indexOf("-"));
@@ -139,8 +137,8 @@ public class WorkflowSyncironze implements BaseWorkflowSynchronize{
     }
 
     @Override
-    public WFResponse startStep(Step step, Object[] params, String[] paramNames) {
-        return workflowExecutor.execute(step, params, paramNames);
+    public WFResponse runStepAction(Step step, Object[] params, String[] paramNames) {
+        return operations.executeStepAction(step, params, paramNames);
     }
 
     @Override

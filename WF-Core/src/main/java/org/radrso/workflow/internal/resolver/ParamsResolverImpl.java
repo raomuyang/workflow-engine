@@ -1,4 +1,4 @@
-package org.radrso.workflow.resolvers.impl;
+package org.radrso.workflow.internal.resolver;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -6,14 +6,14 @@ import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.CustomClassLoader;
 import org.radrso.plugins.JsonUtils;
 import org.radrso.plugins.StringUtils;
-import org.radrso.workflow.ConfigConstant;
+import org.radrso.workflow.constant.ConfigConstant;
 import org.radrso.workflow.entities.config.items.InputItem;
 import org.radrso.workflow.entities.config.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
 import org.radrso.workflow.entities.exceptions.UnknowExceptionInRunning;
 import org.radrso.workflow.entities.wf.StepStatus;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
-import org.radrso.workflow.resolvers.BaseParamsResolver;
+import org.radrso.workflow.resolvers.ParamsResolver;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.Map;
  * Created by rao-mengnan on 2017/3/16.
  */
 @Log4j
-public class ParamsResolver implements BaseParamsResolver {
+public class ParamsResolverImpl implements ParamsResolver {
     private static final String UTILS_CLASS = "Data|List|Map";
     private static final Map<String, Class> classMap;
 
@@ -46,7 +46,7 @@ public class ParamsResolver implements BaseParamsResolver {
 
     private WorkflowInstance workflowInstance;
 
-    public ParamsResolver(WorkflowInstance workflowInstance) {
+    public ParamsResolverImpl(WorkflowInstance workflowInstance) {
         this.workflowInstance = workflowInstance;
     }
 

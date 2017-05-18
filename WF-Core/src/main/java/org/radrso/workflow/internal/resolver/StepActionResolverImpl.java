@@ -1,9 +1,11 @@
-package org.radrso.workflow.resolvers.impl;
+package org.radrso.workflow.internal.resolver;
 
 import lombok.extern.log4j.Log4j;
 import org.apache.http.entity.ContentType;
-import org.radrso.workflow.RequestMethodMapping;
-import org.radrso.workflow.ConfigConstant;
+import org.radrso.plugins.requests.entity.ResponseCode;
+import org.radrso.workflow.constant.RequestMethodMapping;
+import org.radrso.workflow.constant.ConfigConstant;
+import org.radrso.workflow.constant.ExceptionCode;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.plugins.CustomClassLoader;
@@ -13,9 +15,8 @@ import org.radrso.plugins.requests.BaseRequest;
 import org.radrso.plugins.requests.RequestFactory;
 import org.radrso.plugins.requests.entity.MethodEnum;
 import org.radrso.plugins.requests.entity.Response;
-import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
 import org.radrso.plugins.requests.entity.exceptions.impl.RequestException;
-import org.radrso.workflow.resolvers.BaseStepActionResolver;
+import org.radrso.workflow.resolvers.StepActionResolver;
 
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
@@ -28,12 +29,12 @@ import java.util.Map;
  * 解析步骤的执行，请求URL或者调用指定方法
  */
 @Log4j
-public class StepActionResolver implements BaseStepActionResolver {
+public class StepActionResolverImpl implements StepActionResolver {
     private Step step;
     private Object[] params;
     private String[] paramNames;
 
-    public StepActionResolver(Step step, Object[] params, String[] paramNames){
+    public StepActionResolverImpl(Step step, Object[] params, String[] paramNames){
         this.step = step;
         this.params = params;
         this.paramNames = paramNames;
@@ -61,9 +62,9 @@ public class StepActionResolver implements BaseStepActionResolver {
             className = classStr[1];
 
         if(className == null){
-            String errorMsg = ResponseCode.UNKNOW.info() + String.format("[%s, %s]", "ClassName split error", step.getCall());
+            String errorMsg = ExceptionCode.UNKNOW.info() + String.format("[%s, %s]", "ClassName split error", step.getCall());
             log.error(errorMsg);
-            return new WFResponse(ResponseCode.UNKNOW.code(), errorMsg, errorMsg);
+            return new WFResponse(ExceptionCode.UNKNOW.code(), errorMsg, errorMsg);
         }
 
         String methodName = step.getMethod();
@@ -78,28 +79,28 @@ public class StepActionResolver implements BaseStepActionResolver {
 
         } catch (ClassNotFoundException e) {
             log.warn(e);
-            return new WFResponse(ResponseCode.CLASS_NOT_FOUND.code(),
+            return new WFResponse(ExceptionCode.CLASS_NOT_FOUND.code(),
                     e.getMessage(), e.getMessage());
 
         } catch (NoSuchMethodException e) {
             log.error(e);
-            return new WFResponse(ResponseCode.METHOD_NOT_FOUND.code(),
+            return new WFResponse(ExceptionCode.METHOD_NOT_FOUND.code(),
                     e.getMessage(), e.getMessage());
         } catch (IllegalAccessException e) {
             log.error(e);
-            return new WFResponse(ResponseCode.METHOD_ACCESS_ERROR.code(),
+            return new WFResponse(ExceptionCode.METHOD_ACCESS_ERROR.code(),
                     e.getMessage(), e.getMessage());
         } catch (InvocationTargetException e) {
             log.error(e);
-            return new WFResponse(ResponseCode.METHOD_INVOCATION_ERROR.code(),
+            return new WFResponse(ExceptionCode.METHOD_INVOCATION_ERROR.code(),
                     e.getMessage(), e.getMessage());
         } catch (InstantiationException e) {
             log.error(e);
-            return new WFResponse(ResponseCode.CLASS_INSTANCE_EXCEPTION.code(),
+            return new WFResponse(ExceptionCode.CLASS_INSTANCE_EXCEPTION.code(),
                     e.getMessage(), e.getMessage());
         } catch (IllegalArgumentException e){
             log.error(e);
-            return new WFResponse(ResponseCode.ILLEGAL_ARGMENT_EXCEPTION.code(),
+            return new WFResponse(ExceptionCode.ILLEGAL_ARGMENT_EXCEPTION.code(),
                     e.getMessage(), e.getMessage());
         }
 
@@ -120,7 +121,7 @@ public class StepActionResolver implements BaseStepActionResolver {
             method = RequestMethodMapping.getMethod(step.getMethod());
         } catch (RequestException e) {
             log.error(e);
-            return new WFResponse(ResponseCode.UNSUPPORTED_REQUEST_METHOD.code(),
+            return new WFResponse(ExceptionCode.UNSUPPORTED_REQUEST_METHOD.code(),
                     e.getMessage(), null);
         }
 

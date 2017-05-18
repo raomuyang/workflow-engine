@@ -1,6 +1,6 @@
 import org.junit.Assert;
 import org.junit.Test;
-import org.radrso.workflow.ConfigConstant;
+import org.radrso.workflow.constant.ConfigConstant;
 
 import java.util.ArrayList;
 import java.util.List;

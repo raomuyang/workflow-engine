@@ -1,4 +1,4 @@
-package org.radrso.workflow.persistence;
+package org.radrso.workflow.base;
 
 import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.radrso.workflow.entities.config.items.Step;
@@ -11,19 +11,19 @@ import java.util.List;
 /**
  * Created by raomengnan on 17-1-19.
  */
-public interface BaseWorkflowSynchronize {
+public interface Commander {
 
-    boolean importJars(String workflowId);
+    boolean jarFilesSync(String workflowId);
 
-    boolean logError(WorkflowErrorLog log);
+    boolean saveErrorLog(WorkflowErrorLog log);
 
     boolean updateInstance(WorkflowInstance instance);
 
-    WorkflowConfig getWorkflow(String instanceId);
+    WorkflowConfig getWorkflowConfig(String instanceId);
 
     String getWorkflowStatus(String workflowId);
 
-    WFResponse startStep(Step step, Object[] params, String[] paramNames);
+    WFResponse runStepAction(Step step, Object[] params, String[] paramNames);
 
     WorkflowInstance getInstance(String instanceId);
 

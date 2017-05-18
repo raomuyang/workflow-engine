@@ -1,4 +1,4 @@
-package org.radrso.workflow;
+package org.radrso.workflow.constant;
 
 import org.radrso.plugins.FileUtils;
 

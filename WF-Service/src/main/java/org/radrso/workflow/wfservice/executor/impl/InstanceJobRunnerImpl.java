@@ -1,14 +1,12 @@
 package org.radrso.workflow.wfservice.executor.impl;
 
-import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
-import org.radrso.workflow.entities.config.WorkflowConfig;
+import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
-import org.radrso.workflow.exec.BaseFlowActionsExecutor;
-import org.radrso.workflow.exec.FlowActonExecutorChain;
-import org.radrso.workflow.persistence.BaseWorkflowSynchronize;
-import org.radrso.workflow.resolvers.BaseWorkflowConfigResolver;
+import org.radrso.workflow.exec.FlowExecutor;
+import org.radrso.workflow.exec.WorkflowExecutors;
+import org.radrso.workflow.base.Commander;
+import org.radrso.workflow.resolvers.FlowResolver;
 import org.radrso.workflow.entities.response.WFResponse;
-import org.radrso.workflow.resolvers.ResolverChain;
 import org.radrso.workflow.wfservice.executor.InstanceJobRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,10 +20,10 @@ import org.springframework.stereotype.Component;
 public class InstanceJobRunnerImpl implements InstanceJobRunner {
 
     @Autowired
-    private BaseWorkflowSynchronize workflowSynchronize;
+    private Commander workflowSynchronize;
 
     @Override
-    public WFResponse startExecute(BaseWorkflowConfigResolver workflowResolver, boolean rerun) {
+    public WFResponse startExecute(FlowResolver workflowResolver, boolean rerun) {
 
         //保证调用的幂等性
         WorkflowInstance instance = workflowResolver.getWorkflowInstance();
@@ -37,14 +35,14 @@ public class InstanceJobRunnerImpl implements InstanceJobRunner {
             }
         }
 
-        BaseFlowActionsExecutor flowActionsExecutor = FlowActonExecutorChain.getFlowAction(workflowSynchronize);
+        FlowExecutor flowActionsExecutor = WorkflowExecutors.getFlowAction(workflowSynchronize);
         String msg;
         if (rerun){
             flowActionsExecutor.restart(workflowResolver);
             msg = String.format("Workflow instance[%s] is restarting", instance.getInstanceId());
         }
         else {
-            flowActionsExecutor.execute(workflowResolver);
+            flowActionsExecutor.start(workflowResolver);
             msg = String.format("Workflow instance[%s] is requested to run", instance.getInstanceId());
         }
 
@@ -54,8 +52,8 @@ public class InstanceJobRunnerImpl implements InstanceJobRunner {
 
     @Override
     public boolean interrupt(String instanceId) {
-        BaseFlowActionsExecutor executor = FlowActonExecutorChain.getFlowAction(workflowSynchronize);
-        return executor.interruptInstanceExec(instanceId);
+        FlowExecutor executor = WorkflowExecutors.getFlowAction(workflowSynchronize);
+        return executor.interrupt(instanceId);
     }
 
 

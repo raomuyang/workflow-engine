@@ -1,7 +1,7 @@
-package org.radrso.workflow.resolvers.impl;
+package org.radrso.workflow.internal.resolver;
 
 import lombok.extern.log4j.Log4j;
-import org.radrso.workflow.ConfigConstant;
+import org.radrso.workflow.constant.ConfigConstant;
 import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.radrso.workflow.entities.config.items.Judge;
 import org.radrso.workflow.entities.config.items.Step;
@@ -11,9 +11,9 @@ import org.radrso.workflow.entities.exceptions.UnknowExceptionInRunning;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.entities.wf.StepStatus;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
-import org.radrso.workflow.resolvers.BaseParamsResolver;
-import org.radrso.workflow.resolvers.BaseWorkflowConfigResolver;
-import org.radrso.workflow.resolvers.ResolverChain;
+import org.radrso.workflow.resolvers.ParamsResolver;
+import org.radrso.workflow.resolvers.FlowResolver;
+import org.radrso.workflow.resolvers.Resolvers;
 
 import java.io.Serializable;
 import java.util.*;
@@ -23,10 +23,10 @@ import java.util.*;
  * Created by raomengnan on 17-1-14.
  */
 @Log4j
-public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Serializable {
+public class FlowResolverImpl implements FlowResolver, Serializable {
 
     private WorkflowInstance workflowInstance;
-    private BaseParamsResolver paramsResolver;
+    private ParamsResolver paramsResolver;
 
     private Step lastStep;
     private Transfer lastTransfer;
@@ -37,14 +37,14 @@ public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Seria
     // 用于准确统计分支次数
     private Set<String> branchesPool;
 
-    private WorkflowConfigResolver() {
+    private FlowResolverImpl() {
         this.stepMap = new HashMap<>();
     }
 
-    public WorkflowConfigResolver(WorkflowConfig workflowConfig, WorkflowInstance workflowInstance) {
+    public FlowResolverImpl(WorkflowConfig workflowConfig, WorkflowInstance workflowInstance) {
         this();
         this.workflowInstance = workflowInstance;
-        this.paramsResolver = ResolverChain.getParamsResolver(workflowInstance);
+        this.paramsResolver = Resolvers.getParamsResolver(workflowInstance);
         this.branchesPool = new HashSet<>();
 
         if (workflowConfig.getSteps() != null)
@@ -67,7 +67,7 @@ public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Seria
      * @throws ConfigReadException
      */
     @Override
-    public WorkflowConfigResolver next() throws ConfigReadException, UnknowExceptionInRunning {
+    public FlowResolverImpl next() throws ConfigReadException, UnknowExceptionInRunning {
         Transfer currentTransfer = getCurrentTransfer();
         if (currentTransfer == null)
             return null;
@@ -92,7 +92,7 @@ public class WorkflowConfigResolver implements BaseWorkflowConfigResolver, Seria
      * @return
      */
     @Override
-    public WorkflowConfigResolver rollback() {
+    public FlowResolverImpl rollback() {
         currentStep = lastStep;
         return this;
     }

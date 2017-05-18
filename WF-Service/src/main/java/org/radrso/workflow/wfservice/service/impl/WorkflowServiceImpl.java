@@ -2,7 +2,7 @@ package org.radrso.workflow.wfservice.service.impl;
 
 import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.FileUtils;
-import org.radrso.workflow.ConfigConstant;
+import org.radrso.workflow.constant.ConfigConstant;
 import org.radrso.workflow.entities.config.JarFile;
 import org.radrso.workflow.entities.config.WorkflowConfig;
 import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;

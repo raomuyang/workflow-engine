@@ -1,7 +1,7 @@
-package org.radrso.workflow;
+package org.radrso.workflow.constant;
 
 import org.radrso.plugins.requests.entity.MethodEnum;
-import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
+import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.plugins.requests.entity.exceptions.impl.RequestException;
 
 /**

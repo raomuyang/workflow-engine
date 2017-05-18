@@ -5,7 +5,7 @@ import org.radrso.workflow.entities.response.WFResponse;
 /**
  * Created by rao-mengnan on 2017/3/16.
  */
-public interface BaseStepActionResolver {
+public interface StepActionResolver {
 
     /**
      * 调用配置中预设的类方法

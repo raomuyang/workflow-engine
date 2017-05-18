@@ -3,11 +3,12 @@ package org.radrso.workflow.exec;
 import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.CustomClassLoader;
 import org.radrso.plugins.FileUtils;
-import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
+import org.radrso.plugins.requests.entity.ResponseCode;
+import org.radrso.workflow.constant.ExceptionCode;
 import org.radrso.workflow.entities.config.items.Step;
 import org.radrso.workflow.entities.response.WFResponse;
-import org.radrso.workflow.resolvers.BaseStepActionResolver;
-import org.radrso.workflow.resolvers.ResolverChain;
+import org.radrso.workflow.resolvers.StepActionResolver;
+import org.radrso.workflow.resolvers.Resolvers;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +18,7 @@ import java.io.IOException;
  * Created by rao-mengnan on 2017/3/14.
  */
 @Log4j
-public class ActionCommand {
+public final class BaseOperations {
     public static final String RESPONSE = "success";
 
     /**
@@ -39,7 +40,7 @@ public class ActionCommand {
             log.info(String.format("[Import] Success:Write and import jar_file[%s]", path));
         } catch (IOException e) {
             log.error("[Import] Failed:" + e);
-            return new WFResponse(ResponseCode.UNKNOW_HOST_EXCEPTION.code(), e.getMessage(), e);
+            return new WFResponse(ExceptionCode.UNKNOW.code(), e.getMessage(), e);
         }
 
         return new WFResponse(ResponseCode.HTTP_OK.code(), null, RESPONSE);
@@ -54,10 +55,10 @@ public class ActionCommand {
                 return importJar(dir, jarName, FileUtils.getByte(file));
             } catch (IOException e) {
                 log.error(e);
-                return new WFResponse(ResponseCode.UNKNOW.code(), ResponseCode.UNKNOW.info(), null);
+                return new WFResponse(ExceptionCode.UNKNOW.code(), ExceptionCode.UNKNOW.info(), null);
             }
         } else {
-            return new WFResponse(ResponseCode.JAR_FILE_NOT_FOUND.code(), ResponseCode.JAR_FILE_NOT_FOUND.info(), null);
+            return new WFResponse(ExceptionCode.JAR_FILE_NOT_FOUND.code(), ExceptionCode.JAR_FILE_NOT_FOUND.info(), null);
         }
     }
 
@@ -70,7 +71,7 @@ public class ActionCommand {
      * @return 返回WFResponse，封装对象的response属性才是执行结果
      */
     public static WFResponse execute(Step step, Object[] params, String[] paramNames) {
-        BaseStepActionResolver resolver = ResolverChain.getStepActionResolver(step, params, paramNames);
+        StepActionResolver resolver = Resolvers.getStepActionResolver(step, params, paramNames);
         if (step.getCall() == null || step.getCall().indexOf(":") < 0) {
             return new WFResponse(ResponseCode.HTTP_BAD_REQUEST.code(), "Error Protocol:" + step.getCall(), null);
         }

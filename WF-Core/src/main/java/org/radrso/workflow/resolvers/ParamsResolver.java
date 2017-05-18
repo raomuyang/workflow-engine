@@ -7,7 +7,7 @@ import org.radrso.workflow.entities.exceptions.UnknowExceptionInRunning;
 /**
  * Created by rao-mengnan on 2017/3/16.
  */
-public interface BaseParamsResolver {
+public interface ParamsResolver {
     /**
      * 从状态转移函数中解析参数，参数会自动put到StepStatusMap的StepStatus中
      * @param transfer 状态转移函数
