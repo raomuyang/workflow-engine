@@ -1,7 +1,6 @@
 package org.radrso.workflow.internal.exec.actions;
 
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Action;
 import lombok.extern.log4j.Log4j;
 import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.entities.config.items.Step;
@@ -16,20 +15,23 @@ import java.util.Map;
  * Created by rao-mengnan on 2017/5/18.
  */
 @Log4j
-public class OnStepCompletedAction extends AbstractAction implements Consumer<FlowResolver>{
+public class OnStepCompletedAction extends AbstractAction implements Action{
+    private FlowResolver flowResolver;
+
     public OnStepCompletedAction(Commander workflowSynchronize) {
         super(workflowSynchronize);
     }
 
+
     @Override
-    public void accept(@NonNull FlowResolver workflowResolver) throws Exception {
-        String instanceId = workflowResolver.getWorkflowInstance().getInstanceId();
-        String stepName = workflowResolver.getCurrentStep().getName();
+    public void run() throws Exception {
+        String instanceId = flowResolver.getWorkflowInstance().getInstanceId();
+        String stepName = flowResolver.getCurrentStep().getName();
 
         log.info("[STEP-COMPLETED] " + instanceId + " " + stepName);
 
         // 只有在instance没有被中断的情况下才能继续执行下一步
-        boolean stopped = operations.checkIsInstanceInterrupted(workflowResolver.getWorkflowInstance().getInstanceId());
+        boolean stopped = operations.checkIsInstanceInterrupted(flowResolver.getWorkflowInstance().getInstanceId());
         if (stopped){
             log.info(String.format("[STEP-INTERRUPT] Instance %s is interrupted, (%s) status will discard", instanceId, stepName));
             WorkflowInstance originInfo = commander.getInstance(instanceId);
@@ -42,30 +44,32 @@ public class OnStepCompletedAction extends AbstractAction implements Consumer<Fl
             return;
         }
 
-        String stepSign = workflowResolver.getCurrentStep().getSign();
-        workflowResolver.getWorkflowInstance().getStepProcess().put(stepSign, Step.FINISHED);
+        String stepSign = flowResolver.getCurrentStep().getSign();
+        flowResolver.getWorkflowInstance().getStepProcess().put(stepSign, Step.FINISHED);
 
-        Map<String, StepStatus> stepStatusMap = workflowResolver.getWorkflowInstance().getStepStatusesMap();
+        Map<String, StepStatus> stepStatusMap = flowResolver.getWorkflowInstance().getStepStatusesMap();
         stepStatusMap.get(stepSign).setStatus(Step.FINISHED);
-        workflowResolver.getWorkflowInstance().getFinishedSequence().add(
-                workflowResolver.getCurrentStep().getSign()
+        flowResolver.getWorkflowInstance().getFinishedSequence().add(
+                flowResolver.getCurrentStep().getSign()
         );
 
-        boolean eof = workflowResolver.eof();
+        boolean eof = flowResolver.eof();
         if (eof) {
-            workflowResolver.getWorkflowInstance().setStatus(WorkflowInstance.COMPLETED);
-            workflowResolver.getWorkflowInstance().setSubmitTime(new Date());
+            flowResolver.getWorkflowInstance().setStatus(WorkflowInstance.COMPLETED);
+            flowResolver.getWorkflowInstance().setSubmitTime(new Date());
         }
 
-        commander.updateInstance(workflowResolver.getWorkflowInstance());
+        commander.updateInstance(flowResolver.getWorkflowInstance());
 
         if (!eof) {
-            Actions.startStream(workflowResolver, commander);
+            Actions.startStream(flowResolver, commander);
         }
     }
 
     @Override
-    public Action setResolver(FlowResolver resolver) {
+    public AbstractAction setResolver(FlowResolver resolver) {
+        this.flowResolver = resolver;
         return this;
     }
+
 }

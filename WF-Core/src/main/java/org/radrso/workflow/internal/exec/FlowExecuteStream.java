@@ -28,9 +28,9 @@ public class FlowExecuteStream {
         Consumer<FlowResolver> onStepExecAction
                 = (Consumer<FlowResolver>) Actions.getAction(ActionEnum.ON_STEP_EXEC, workflowSynchronize);
         Action onStepCompleted
-                = (Action) Actions.getAction(ActionEnum.ON_STEP_COMPLETED, workflowSynchronize);
+                = (Action) Actions.getAction(ActionEnum.ON_STEP_COMPLETED, workflowSynchronize).setResolver(resolver);
         Consumer<Throwable> onStepError
-                = (Consumer<Throwable>) Actions.getAction(ActionEnum.ON_STEP_EXEC, workflowSynchronize).setResolver(resolver);
+                = (Consumer<Throwable>) Actions.getAction(ActionEnum.ON_STEP_ERROR, workflowSynchronize).setResolver(resolver);
 
         Observable.just(resolver)
                 .doOnNext(onStepExecAction)

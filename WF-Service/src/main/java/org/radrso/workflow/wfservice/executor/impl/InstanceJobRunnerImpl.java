@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 public class InstanceJobRunnerImpl implements InstanceJobRunner {
 
     @Autowired
-    private Commander workflowSynchronize;
+    private Commander commander;
 
     @Override
     public WFResponse startExecute(FlowResolver workflowResolver, boolean rerun) {
@@ -35,7 +35,7 @@ public class InstanceJobRunnerImpl implements InstanceJobRunner {
             }
         }
 
-        FlowExecutor flowActionsExecutor = WorkflowExecutors.getFlowAction(workflowSynchronize);
+        FlowExecutor flowActionsExecutor = WorkflowExecutors.getFlowAction(commander);
         String msg;
         if (rerun){
             flowActionsExecutor.restart(workflowResolver);
@@ -52,7 +52,7 @@ public class InstanceJobRunnerImpl implements InstanceJobRunner {
 
     @Override
     public boolean interrupt(String instanceId) {
-        FlowExecutor executor = WorkflowExecutors.getFlowAction(workflowSynchronize);
+        FlowExecutor executor = WorkflowExecutors.getFlowAction(commander);
         return executor.interrupt(instanceId);
     }
 

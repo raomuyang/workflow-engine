@@ -19,7 +19,7 @@ public class Actions {
             case ON_STEP_COMPLETED:
                 return new OnStepCompletedAction(workflowSynchronize);
             case ON_STEP_ERROR:
-                return new OnStepCompletedAction(workflowSynchronize);
+                return new OnStepErrorAction(workflowSynchronize, null);
             case ON_STEP_EXEC:
                 return new OnStepExecAction(workflowSynchronize);
             default:

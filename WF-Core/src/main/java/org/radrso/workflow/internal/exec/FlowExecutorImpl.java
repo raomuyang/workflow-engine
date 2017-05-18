@@ -38,12 +38,12 @@ public class FlowExecutorImpl extends FlowExecutor {
         log.info("[RESTARTING] ---------- " + workflowResolver.getWorkflowInstance().getInstanceId());
         Consumer<FlowResolver> interruptAndCheckAction
                 = (Consumer<FlowResolver>) Actions.getAction(ActionEnum.INTERRUPT_AND_CHECK, commander);
-        Action executeAction
-                = (Action) Actions.getAction(ActionEnum.ON_STEP_COMPLETED, commander)
+        Action executeNextAction
+                = (Action) Actions.getAction(ActionEnum.ON_EXEC_NEXT, commander)
                 .setResolver(workflowResolver);
         Observable.just(workflowResolver)
                 .doOnNext(interruptAndCheckAction)
-                .doOnComplete(executeAction)
+                .doOnComplete(executeNextAction)
                 .subscribeOn(Schedulers.io()).subscribe();
     }
 
