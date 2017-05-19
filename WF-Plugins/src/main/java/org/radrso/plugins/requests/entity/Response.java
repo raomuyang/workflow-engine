@@ -3,7 +3,7 @@ package org.radrso.plugins.requests.entity;
 import lombok.Data;
 import lombok.ToString;
 import org.apache.http.HttpResponse;
-import org.radrso.plugins.StreamUtils;
+import org.radrso.plugins.BinaryUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +31,6 @@ public class Response implements Serializable {
 
     private String getContent(HttpResponse response) throws IOException {
         InputStream stream = response.getEntity().getContent();
-        return StreamUtils.readFromStream(stream);
+        return BinaryUtil.readFromStream(stream);
     }
 }

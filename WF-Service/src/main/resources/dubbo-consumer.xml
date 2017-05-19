@@ -15,8 +15,7 @@
 
     <dubbo:protocol port="${dubbo.port}"/>
 
-    <dubbo:reference interface="org.radrso.workflow.rmi.WorkflowFilesSync" id="workflowFilesSync"></dubbo:reference>
-    <dubbo:reference interface="org.radrso.workflow.rmi.WorkflowExecutor" id="workflowExecutor"></dubbo:reference>
+    <dubbo:reference interface="org.radrso.workflow.base.Operations" id="operations"></dubbo:reference>
 
 
 </beans>

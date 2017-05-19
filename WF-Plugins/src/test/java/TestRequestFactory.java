@@ -5,7 +5,7 @@ import org.radrso.plugins.requests.BaseRequest;
 import org.radrso.plugins.requests.RequestFactory;
 import org.radrso.plugins.requests.entity.MethodEnum;
 import org.radrso.plugins.requests.entity.Response;
-import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
+import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.plugins.requests.entity.exceptions.impl.RequestException;
 
 import java.nio.charset.Charset;

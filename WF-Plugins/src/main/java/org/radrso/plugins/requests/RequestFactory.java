@@ -2,7 +2,7 @@ package org.radrso.plugins.requests;
 
 import org.apache.http.entity.ContentType;
 import org.radrso.plugins.requests.entity.MethodEnum;
-import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
+import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.plugins.requests.entity.exceptions.impl.RequestException;
 
 import java.lang.reflect.Constructor;

@@ -1,6 +1,8 @@
 package org.radrso.plugins.requests.entity.exceptions;
 
 
+import org.radrso.plugins.requests.entity.ResponseCode;
+
 /**
  * Created by raomengnan on 16-12-9.
  */

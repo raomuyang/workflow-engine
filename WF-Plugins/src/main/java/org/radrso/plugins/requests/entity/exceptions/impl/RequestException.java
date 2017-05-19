@@ -1,7 +1,7 @@
 package org.radrso.plugins.requests.entity.exceptions.impl;
 
+import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.plugins.requests.entity.exceptions.BaseException;
-import org.radrso.plugins.requests.entity.exceptions.ResponseCode;
 
 /**
  * Created by raomengnan on 16-12-9.
