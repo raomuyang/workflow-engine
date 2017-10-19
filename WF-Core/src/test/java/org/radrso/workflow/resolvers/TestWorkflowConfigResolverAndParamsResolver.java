@@ -5,9 +5,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.radrso.workflow.constant.ConfigConstant;
-import org.radrso.workflow.entities.config.WorkflowConfig;
-import org.radrso.workflow.entities.config.items.Step;
-import org.radrso.workflow.entities.config.items.Transfer;
+import org.radrso.workflow.entities.schema.WorkflowSchema;
+import org.radrso.workflow.entities.schema.items.Step;
+import org.radrso.workflow.entities.schema.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 import org.radrso.workflow.entities.response.WFResponse;
@@ -27,12 +27,12 @@ import java.util.List;
 public class TestWorkflowConfigResolverAndParamsResolver {
     FlowResolverImpl workflowResolver;
     WorkflowInstance workflowInstance;
-    WorkflowConfig workflowConfig;
+    WorkflowSchema workflowConfig;
     ParamsResolverImpl paramsResolver;
 
     @Before
     public void before() {
-        workflowConfig = new Gson().fromJson(wf, WorkflowConfig.class);
+        workflowConfig = new Gson().fromJson(wf, WorkflowSchema.class);
         workflowInstance = new WorkflowInstance("workflow-test", "instance-test");
         workflowResolver = new FlowResolverImpl(workflowConfig, workflowInstance);
         paramsResolver = new ParamsResolverImpl(workflowInstance);
@@ -158,15 +158,15 @@ public class TestWorkflowConfigResolverAndParamsResolver {
             "\n" +
             "        \"judge\":\n" +
             "        {\n" +
-            "          \"compute\": \"{output}[sign-2][test2]\",\n" +
-            "          \"computeWith\": 1000,\n" +
+            "          \"variable\": \"{output}[sign-2][test2]\",\n" +
+            "          \"compareTo\": 1000,\n" +
             "          \"type\": \"double\",\n" +
             "          \"expression\": \"<\",\n" +
-            "          \"passTransfer\":{\n" +
+            "          \"ifTransfer\":{\n" +
             "            \"input\":[],\n" +
             "            \"to\": \"sign-3\"\n" +
             "          },\n" +
-            "          \"nopassTransfer\":{\n" +
+            "          \"elseTransfer\":{\n" +
             "            \"input\":[],\n" +
             "            \"to\": \"start\"\n" +
             "          }\n" +

@@ -1,7 +1,7 @@
 package org.radrso.workflow.wfservice.controller;
 
 import lombok.extern.log4j.Log4j;
-import org.radrso.workflow.entities.config.WorkflowConfig;
+import org.radrso.workflow.entities.schema.WorkflowSchema;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
 import org.radrso.workflow.resolvers.FlowResolver;
@@ -167,7 +167,7 @@ public class InstanceController {
             map.put("msg", String.format("No such instance[%s]", instanceId));
             return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
         }
-        WorkflowConfig workflowConfig = workflowService.getByWorkflowId(instance.getWorkflowId());
+        WorkflowSchema workflowConfig = workflowService.getByWorkflowId(instance.getWorkflowId());
 
         FlowResolver workflowResolver = Resolvers.getFlowResolver(workflowConfig, instance);
         WFResponse response = instanceJobRunner.startExecute(workflowResolver, rerun);

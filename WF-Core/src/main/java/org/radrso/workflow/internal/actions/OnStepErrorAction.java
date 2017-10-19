@@ -6,7 +6,7 @@ import lombok.extern.log4j.Log4j;
 import org.bson.types.ObjectId;
 import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.constant.ExceptionCode;
-import org.radrso.workflow.entities.config.items.Step;
+import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;
 import org.radrso.workflow.entities.wf.StepStatus;
 import org.radrso.workflow.entities.wf.WorkflowErrorLog;

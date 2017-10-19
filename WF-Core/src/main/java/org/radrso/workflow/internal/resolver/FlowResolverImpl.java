@@ -2,10 +2,10 @@ package org.radrso.workflow.internal.resolver;
 
 import lombok.extern.log4j.Log4j;
 import org.radrso.workflow.constant.ConfigConstant;
-import org.radrso.workflow.entities.config.WorkflowConfig;
-import org.radrso.workflow.entities.config.items.Judge;
-import org.radrso.workflow.entities.config.items.Step;
-import org.radrso.workflow.entities.config.items.Transfer;
+import org.radrso.workflow.entities.schema.WorkflowSchema;
+import org.radrso.workflow.entities.schema.items.Switch;
+import org.radrso.workflow.entities.schema.items.Step;
+import org.radrso.workflow.entities.schema.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 import org.radrso.workflow.entities.response.WFResponse;
@@ -41,7 +41,7 @@ public class FlowResolverImpl implements FlowResolver, Serializable {
         this.stepMap = new HashMap<>();
     }
 
-    public FlowResolverImpl(WorkflowConfig workflowConfig, WorkflowInstance workflowInstance) {
+    public FlowResolverImpl(WorkflowSchema workflowConfig, WorkflowInstance workflowInstance) {
         this();
         this.workflowInstance = workflowInstance;
         this.paramsResolver = Resolvers.getParamsResolver(workflowInstance);
@@ -138,57 +138,57 @@ public class FlowResolverImpl implements FlowResolver, Serializable {
         if (transfer == null)
             return null;
 
-        if (transfer.getJudge() == null) {
+        if (transfer.getaSwitch() == null) {
             getScatterBranches(transfer);
             paramsResolver.resolverTransferParams(transfer);
             lastTransfer = transfer;
             return stepMap.get(transfer.getTo());
         }
 
-        Transfer nextTransfer = judgeNextTransfer(transfer.getJudge());
+        Transfer nextTransfer = judgeNextTransfer(transfer.getaSwitch());
         return transferToNextStep(nextTransfer);
     }
 
     /**
      * 通过判断函数获取下一个要转移的的状态
      *
-     * @param judge
+     * @param aSwitch
      * @return
      * @throws ConfigReadException
      */
     @Override
-    public Transfer judgeNextTransfer(Judge judge) throws ConfigReadException, UnknownExceptionInRunning {
-        log.debug(judge);
-        String type = judge.getType();
+    public Transfer judgeNextTransfer(Switch aSwitch) throws ConfigReadException, UnknownExceptionInRunning {
+        log.debug(aSwitch);
+        String type = aSwitch.getType();
 
-        Object computeA = judge.getCompute();
+        Object computeA = aSwitch.getVariable();
         Object computeAParse = paramsResolver.resolverStringToParams(computeA.toString());
         computeA = paramsResolver.parseValue(type, computeAParse);
 
-        Object computeB = judge.getComputeWith();
+        Object computeB = aSwitch.getCompareTo();
         Object computeBParse = paramsResolver.resolverStringToParams(computeB.toString());
         computeB = paramsResolver.parseValue(type, computeBParse);
 
         Comparable a = (Comparable) computeA;
         Comparable b = (Comparable) computeB;
 
-        String condition = judge.getExpression();
+        String condition = aSwitch.getExpression();
         switch (condition) {
             case ">":
-                return (a.compareTo(b) > 0) ? judge.getPassTransfer() : judge.getNopassTransfer();
+                return (a.compareTo(b) > 0) ? aSwitch.getIfTransfer() : aSwitch.getElseTransfer();
             case "=":
             case "==":
-                return (a.compareTo(b) == 0) ? judge.getPassTransfer() : judge.getNopassTransfer();
+                return (a.compareTo(b) == 0) ? aSwitch.getIfTransfer() : aSwitch.getElseTransfer();
             case "<":
-                return (a.compareTo(b) < 0) ? judge.getPassTransfer() : judge.getNopassTransfer();
+                return (a.compareTo(b) < 0) ? aSwitch.getIfTransfer() : aSwitch.getElseTransfer();
             case ">=":
-                return (a.compareTo(b) >= 0) ? judge.getPassTransfer() : judge.getNopassTransfer();
+                return (a.compareTo(b) >= 0) ? aSwitch.getIfTransfer() : aSwitch.getElseTransfer();
             case "<=":
-                return (a.compareTo(b) <= 0) ? judge.getPassTransfer() : judge.getNopassTransfer();
+                return (a.compareTo(b) <= 0) ? aSwitch.getIfTransfer() : aSwitch.getElseTransfer();
             case "&&":
-                return ((Boolean) computeA && (Boolean) computeB) ? judge.getPassTransfer() : judge.getNopassTransfer();
+                return ((Boolean) computeA && (Boolean) computeB) ? aSwitch.getIfTransfer() : aSwitch.getElseTransfer();
             case "||":
-                return ((Boolean) computeA || (Boolean) computeB) ? judge.getPassTransfer() : judge.getNopassTransfer();
+                return ((Boolean) computeA || (Boolean) computeB) ? aSwitch.getIfTransfer() : aSwitch.getElseTransfer();
             default:
                 throw new ConfigReadException("Unknow expression: " + condition);
         }

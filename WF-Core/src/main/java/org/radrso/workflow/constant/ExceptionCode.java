@@ -15,7 +15,7 @@ public enum ExceptionCode implements Serializable {
     INTERRUPT_EXCEPTION(5008, "Interrupt exception"),
 
     NULL_PARAM_EXCEPTION(4031, "JSON object is null"),
-    CONFIG_PARSE_ERROR(4032, "Can not resolved the params in config "),
+    CONFIG_PARSE_ERROR(4032, "Can not resolved the params in schema "),
 
     CLASS_NOT_FOUND(4041, "Class not found"),
     CLASS_INSTANCE_EXCEPTION(4042, "Class instance exception"),

@@ -1,7 +1,7 @@
 package org.radrso.workflow.base;
 
-import org.radrso.workflow.entities.config.WorkflowConfig;
-import org.radrso.workflow.entities.config.items.Step;
+import org.radrso.workflow.entities.schema.WorkflowSchema;
+import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.entities.wf.WorkflowErrorLog;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
@@ -19,7 +19,7 @@ public interface Commander {
 
     boolean updateInstance(WorkflowInstance instance);
 
-    WorkflowConfig getWorkflowConfig(String instanceId);
+    WorkflowSchema getWorkflowConfig(String instanceId);
 
     String getWorkflowStatus(String workflowId);
 
@@ -27,7 +27,7 @@ public interface Commander {
 
     WorkflowInstance getInstance(String instanceId);
 
-    static boolean isDefinedJarsFiles(WorkflowConfig workflowConfig) {
+    static boolean isDefinedJarsFiles(WorkflowSchema workflowConfig) {
         if (workflowConfig == null)
             return false;
         List<String> jars = workflowConfig.getJars();

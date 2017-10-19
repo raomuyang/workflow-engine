@@ -1,8 +1,8 @@
 package org.radrso.workflow.resolvers;
 
-import org.radrso.workflow.entities.config.items.Judge;
-import org.radrso.workflow.entities.config.items.Step;
-import org.radrso.workflow.entities.config.items.Transfer;
+import org.radrso.workflow.entities.schema.items.Switch;
+import org.radrso.workflow.entities.schema.items.Step;
+import org.radrso.workflow.entities.schema.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 import org.radrso.workflow.entities.response.WFResponse;
@@ -58,11 +58,11 @@ public interface FlowResolver {
     /**
      * 通过判断函数获取下一个要转移的的状态
      *
-     * @param judge
+     * @param aSwitch
      * @return
      * @throws ConfigReadException
      */
-    Transfer judgeNextTransfer(Judge judge) throws ConfigReadException, UnknownExceptionInRunning;
+    Transfer judgeNextTransfer(Switch aSwitch) throws ConfigReadException, UnknownExceptionInRunning;
 
     /**
      * 更新workflowInstance中的response记录

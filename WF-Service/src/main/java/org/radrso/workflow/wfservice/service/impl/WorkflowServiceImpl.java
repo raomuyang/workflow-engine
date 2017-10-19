@@ -3,8 +3,8 @@ package org.radrso.workflow.wfservice.service.impl;
 import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.FileUtils;
 import org.radrso.workflow.constant.ConfigConstant;
-import org.radrso.workflow.entities.config.JarFile;
-import org.radrso.workflow.entities.config.WorkflowConfig;
+import org.radrso.workflow.entities.schema.JarFile;
+import org.radrso.workflow.entities.schema.WorkflowSchema;
 import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
 import org.radrso.workflow.wfservice.repositories.JarFileRepository;
 import org.radrso.workflow.wfservice.repositories.WorkflowRepository;
@@ -36,7 +36,7 @@ public class WorkflowServiceImpl implements WorkflowService {
     private JarFileRepository jarFileRepository;
 
     @Override
-    public boolean save(WorkflowConfig workflowConfig) {
+    public boolean save(WorkflowSchema workflowConfig) {
         if(workflowConfig == null || workflowConfig.getApplication() == null || workflowConfig.getId() == null)
             return false;
         workflowRepository.save(workflowConfig);
@@ -44,24 +44,24 @@ public class WorkflowServiceImpl implements WorkflowService {
     }
 
     @Override
-    public List<WorkflowConfig> getAll(){
+    public List<WorkflowSchema> getAll(){
         return workflowRepository.findAll();
     }
 
     @Override
-    public Page<WorkflowConfig> getAll(int pno, int psize){
+    public Page<WorkflowSchema> getAll(int pno, int psize){
         return workflowRepository.findAll(new PageRequest(pno, psize));
     }
 
     @Override
-    public WorkflowConfig getByWorkflowId(String workflowId) {
+    public WorkflowSchema getByWorkflowId(String workflowId) {
         if(workflowId == null)
             return null;
         return workflowRepository.findOne(workflowId);
     }
 
     @Override
-    public List<WorkflowConfig> getByApplication(String application) {
+    public List<WorkflowSchema> getByApplication(String application) {
         if(application == null)
             return new ArrayList<>();
         return workflowRepository.findByApplication(application);
@@ -86,7 +86,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 
     @Override
     public void stopWorkflow(String workflow) {
-        WorkflowConfig workflowConfig = getByWorkflowId(workflow);
+        WorkflowSchema workflowConfig = getByWorkflowId(workflow);
         if (workflowConfig == null) {
             return;
         }
@@ -104,7 +104,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 
     @Override
     public boolean restartWorkflow(String workflow, Date stopTime) {
-        WorkflowConfig workflowConfig = getByWorkflowId(workflow);
+        WorkflowSchema workflowConfig = getByWorkflowId(workflow);
         if (workflowConfig == null || workflowConfig.getStartTime().after(stopTime)) {
             return false;
         }
@@ -155,7 +155,7 @@ public class WorkflowServiceImpl implements WorkflowService {
     }
 
     @Override
-    public void updateServiceStatus(WorkflowConfig workflowConfig){
+    public void updateServiceStatus(WorkflowSchema workflowConfig){
         if(workflowConfig == null)
             return;
 

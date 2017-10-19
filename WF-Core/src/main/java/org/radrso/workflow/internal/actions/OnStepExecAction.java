@@ -7,9 +7,9 @@ import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.constant.ExceptionCode;
-import org.radrso.workflow.entities.config.WorkflowConfig;
-import org.radrso.workflow.entities.config.items.Step;
-import org.radrso.workflow.entities.config.items.Transfer;
+import org.radrso.workflow.entities.schema.WorkflowSchema;
+import org.radrso.workflow.entities.schema.items.Step;
+import org.radrso.workflow.entities.schema.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;
@@ -78,7 +78,7 @@ public class OnStepExecAction extends AbstractAction implements Consumer<FlowRes
                             isReloadJarFile = true;
                             String wfId = workflowResolver.getWorkflowInstance().getWorkflowId();
                             String instanceId = workflowResolver.getWorkflowInstance().getInstanceId();
-                            WorkflowConfig workflowConfig = commander.getWorkflowConfig(instanceId);
+                            WorkflowSchema workflowConfig = commander.getWorkflowConfig(instanceId);
 
                             if (workflowConfig == null) {
                                 throw new WFRuntimeException("No such instance: " + instanceId, ExceptionCode.ILLEGAL_ARGMENT_EXCEPTION.code());
@@ -166,7 +166,7 @@ public class OnStepExecAction extends AbstractAction implements Consumer<FlowRes
 
             // 克隆workflowConfig对象
             String instanceId = workflowResolver.getWorkflowInstance().getInstanceId();
-            WorkflowConfig workflowConfig = commander.getWorkflowConfig(instanceId);
+            WorkflowSchema workflowConfig = commander.getWorkflowConfig(instanceId);
 
             if (workflowConfig == null) {
                 WorkflowErrorLog log = new WorkflowErrorLog();

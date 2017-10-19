@@ -1,7 +1,7 @@
 package org.radrso.workflow.resolvers;
 
-import org.radrso.workflow.entities.config.WorkflowConfig;
-import org.radrso.workflow.entities.config.items.Step;
+import org.radrso.workflow.entities.schema.WorkflowSchema;
+import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
 import org.radrso.workflow.internal.resolver.ParamsResolverImpl;
 import org.radrso.workflow.internal.resolver.StepActionResolverImpl;
@@ -16,7 +16,7 @@ public final class Resolvers {
         return new ParamsResolverImpl(instance);
     }
 
-    public static FlowResolver getFlowResolver(WorkflowConfig workflowConfig, WorkflowInstance workflowInstance){
+    public static FlowResolver getFlowResolver(WorkflowSchema workflowConfig, WorkflowInstance workflowInstance){
         return new FlowResolverImpl(workflowConfig, workflowInstance);
     }
 

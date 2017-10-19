@@ -2,7 +2,7 @@ package org.radrso.workflow.resolvers;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.radrso.workflow.entities.config.items.Step;
+import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.internal.resolver.StepActionResolverImpl;
 

@@ -6,7 +6,7 @@ import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.workflow.constant.RequestMethodMapping;
 import org.radrso.workflow.constant.ConfigConstant;
 import org.radrso.workflow.constant.ExceptionCode;
-import org.radrso.workflow.entities.config.items.Step;
+import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.plugins.CustomClassLoader;
 import org.radrso.plugins.JsonUtils;

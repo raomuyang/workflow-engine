@@ -3,7 +3,7 @@ package org.radrso.workflow.resolvers;
 import com.google.gson.Gson;
 import org.junit.Before;
 import org.junit.Test;
-import org.radrso.workflow.entities.config.WorkflowConfig;
+import org.radrso.workflow.entities.schema.WorkflowSchema;
 import org.radrso.workflow.entities.wf.WorkflowInstance;
 import org.radrso.workflow.internal.resolver.ParamsResolverImpl;
 import org.radrso.workflow.internal.resolver.FlowResolverImpl;
@@ -14,12 +14,12 @@ import org.radrso.workflow.internal.resolver.FlowResolverImpl;
 public class TestDemo {
     FlowResolverImpl workflowResolver;
     WorkflowInstance workflowInstance;
-    WorkflowConfig workflowConfig;
+    WorkflowSchema workflowConfig;
     ParamsResolverImpl paramsResolver;
 
     @Before
     public void before(){
-        workflowConfig = new Gson().fromJson(demo, WorkflowConfig.class);
+        workflowConfig = new Gson().fromJson(demo, WorkflowSchema.class);
         workflowInstance = new WorkflowInstance("workflow-test", "instance-test");
         workflowResolver = new FlowResolverImpl(workflowConfig, workflowInstance);
         paramsResolver = new ParamsResolverImpl(workflowInstance);
@@ -89,19 +89,19 @@ public class TestDemo {
                     "      \"method\": \"Get\",\n" +
                     "      \"transfer\": {\n" +
                     "        \"judge\": {\n" +
-                    "          \"compute\": \"{output}[id-search-weather]\",\n" +
-                    "          \"computeWith\": \"晴天\",\n" +
+                    "          \"variable\": \"{output}[id-search-weather]\",\n" +
+                    "          \"compareTo\": \"晴天\",\n" +
                     "          \"type\": \"String\",\n" +
                     "          \"expression\": \"=\",\n" +
                     "\n" +
-                    "          \"passTransfer\":{\n" +
+                    "          \"ifTransfer\":{\n" +
                     "            \"input\": [\n" +
                     "              {\"name\": \"info\", \"value\": \"北京周边哪里好玩\"},\n" +
                     "              {\"name\": \"key\", \"value\": \"\"}\n" +
                     "            ],\n" +
                     "            \"to\": \"id-outing\"\n" +
                     "          },\n" +
-                    "          \"nopassTransfer\":{\n" +
+                    "          \"elseTransfer\":{\n" +
                     "            \"input\": [\n" +
                     "              {\"name\": \"info\", \"value\": \"红烧肉怎么做\"},\n" +
                     "              {\"name\": \"key\", \"value\": \"\"}\n" +

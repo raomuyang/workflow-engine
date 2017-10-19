@@ -1,4 +1,4 @@
-package org.radrso.workflow.entities.config.items;
+package org.radrso.workflow.entities.schema.items;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,7 +24,7 @@ import java.util.List;
 @ToString
 public class Transfer implements Serializable{
     private List<InputItem> input;
-    private Judge judge;
+    private Switch aSwitch;
     private Date deadline;
     private String to;
     private List<Transfer> scatters;

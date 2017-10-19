@@ -1,10 +1,10 @@
-package org.radrso.workflow.entities.config;
+package org.radrso.workflow.entities.schema;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.radrso.workflow.entities.config.items.Step;
+import org.radrso.workflow.entities.schema.items.Step;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -22,7 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 @Document(collection = "workflow")
-public class WorkflowConfig implements Serializable{
+public class WorkflowSchema implements Serializable{
     private String application;
     @Id
     private String id;

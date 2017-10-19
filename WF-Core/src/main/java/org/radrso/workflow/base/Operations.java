@@ -1,6 +1,6 @@
 package org.radrso.workflow.base;
 
-import org.radrso.workflow.entities.config.items.Step;
+import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.response.WFResponse;
 
 import java.io.Serializable;

@@ -5,7 +5,7 @@ import org.radrso.plugins.CustomClassLoader;
 import org.radrso.plugins.FileUtils;
 import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.workflow.constant.ExceptionCode;
-import org.radrso.workflow.entities.config.items.Step;
+import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.resolvers.StepActionResolver;
 import org.radrso.workflow.resolvers.Resolvers;

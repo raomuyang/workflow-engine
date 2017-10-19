@@ -1,6 +1,6 @@
 package org.radrso.workflow.resolvers;
 
-import org.radrso.workflow.entities.config.items.Transfer;
+import org.radrso.workflow.entities.schema.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 

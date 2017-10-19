@@ -6,9 +6,9 @@ import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.workflow.base.Operations;
 import org.radrso.workflow.constant.ConfigConstant;
 import org.radrso.workflow.constant.ExceptionCode;
-import org.radrso.workflow.entities.config.JarFile;
-import org.radrso.workflow.entities.config.WorkflowConfig;
-import org.radrso.workflow.entities.config.items.Step;
+import org.radrso.workflow.entities.schema.JarFile;
+import org.radrso.workflow.entities.schema.WorkflowSchema;
+import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.entities.wf.WorkflowErrorLog;
@@ -53,7 +53,7 @@ public class CommanderImpl implements Commander {
      */
     @Override
     public boolean jarFilesSync(String workflowId) {
-        WorkflowConfig workflowConfig = workflowService.getByWorkflowId(workflowId);
+        WorkflowSchema workflowConfig = workflowService.getByWorkflowId(workflowId);
         String app = workflowConfig.getApplication();
         String jarsRoot = ROOT + app + File.separator;
         List<String> jars = workflowConfig.getJars();
@@ -110,7 +110,7 @@ public class CommanderImpl implements Commander {
     }
 
     @Override
-    public WorkflowConfig getWorkflowConfig(String instanceId) {
+    public WorkflowSchema getWorkflowConfig(String instanceId) {
         String id = instanceId;
         if (id.contains("-")) {
             id = id.substring(0, id.indexOf("-"));
@@ -129,7 +129,7 @@ public class CommanderImpl implements Commander {
      */
     @Override
     public String getWorkflowStatus(String workflowId) {
-        WorkflowConfig workflowConfig = workflowService.getByWorkflowId(workflowId);
+        WorkflowSchema workflowConfig = workflowService.getByWorkflowId(workflowId);
         if(workflowConfig == null)
             return null;
         workflowService.updateServiceStatus(workflowConfig);

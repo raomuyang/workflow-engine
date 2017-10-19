@@ -2,8 +2,8 @@ package org.radrso.workflow.provider;
 
 import org.radrso.workflow.base.Operations;
 import org.radrso.workflow.constant.ConfigConstant;
-import org.radrso.workflow.entities.config.JarFile;
-import org.radrso.workflow.entities.config.items.Step;
+import org.radrso.workflow.entities.schema.JarFile;
+import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.response.WFResponse;
 import org.radrso.workflow.exec.BaseOperations;
 import org.springframework.beans.factory.annotation.Autowired;
