@@ -1,7 +1,7 @@
 package org.radrso.workflow.base;
 
 import org.radrso.workflow.entities.schema.items.Step;
-import org.radrso.workflow.entities.response.WFResponse;
+import org.radrso.workflow.entities.info.WorkflowResult;
 
 import java.io.Serializable;
 
@@ -10,8 +10,8 @@ import java.io.Serializable;
  */
 public interface Operations extends Serializable {
 
-    WFResponse executeStepAction(Step step, Object[] params, String[] paramNames);
+    WorkflowResult executeStepAction(Step step, Object[] params, String[] paramNames);
 
-    WFResponse checkAndImportJar(String application, String jarName);
+    WorkflowResult checkAndImportJar(String application, String jarName);
 
 }

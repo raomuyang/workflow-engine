@@ -4,8 +4,8 @@ import io.reactivex.functions.Action;
 import lombok.extern.log4j.Log4j;
 import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.entities.schema.items.Step;
-import org.radrso.workflow.entities.wf.StepStatus;
-import org.radrso.workflow.entities.wf.WorkflowInstance;
+import org.radrso.workflow.entities.info.StepStatus;
+import org.radrso.workflow.entities.info.WorkflowInstance;
 import org.radrso.workflow.resolvers.FlowResolver;
 
 import java.util.Date;

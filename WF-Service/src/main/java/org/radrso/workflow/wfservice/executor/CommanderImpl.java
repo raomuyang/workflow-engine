@@ -10,9 +10,9 @@ import org.radrso.workflow.entities.schema.JarFile;
 import org.radrso.workflow.entities.schema.WorkflowSchema;
 import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;
-import org.radrso.workflow.entities.response.WFResponse;
-import org.radrso.workflow.entities.wf.WorkflowErrorLog;
-import org.radrso.workflow.entities.wf.WorkflowInstance;
+import org.radrso.workflow.entities.info.WorkflowResult;
+import org.radrso.workflow.entities.info.WorkflowErrorLog;
+import org.radrso.workflow.entities.info.WorkflowInstance;
 import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.wfservice.service.WorkflowExecuteStatusService;
 import org.radrso.workflow.wfservice.service.WorkflowInstanceService;
@@ -85,7 +85,7 @@ public class CommanderImpl implements Commander {
                 }
             }
 
-            WFResponse response = operations.checkAndImportJar(app, name);
+            WorkflowResult response = operations.checkAndImportJar(app, name);
             if(response.getCode() == ExceptionCode.JAR_FILE_NOT_FOUND.code()) {
                 log.info(String.format("UPLOAD Local JAR[%s]", app + "/" + name));
                 response = operations.checkAndImportJar(app, name);
@@ -137,7 +137,7 @@ public class CommanderImpl implements Commander {
     }
 
     @Override
-    public WFResponse runStepAction(Step step, Object[] params, String[] paramNames) {
+    public WorkflowResult runStepAction(Step step, Object[] params, String[] paramNames) {
         return operations.executeStepAction(step, params, paramNames);
     }
 

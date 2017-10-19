@@ -4,7 +4,7 @@ import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.DateTools;
 import org.radrso.workflow.entities.schema.JarFile;
 import org.radrso.workflow.entities.schema.WorkflowSchema;
-import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
+import org.radrso.workflow.entities.info.WorkflowExecuteStatus;
 import org.radrso.workflow.wfservice.service.WorkflowExecuteStatusService;
 import org.radrso.workflow.wfservice.service.WorkflowService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,9 +2,9 @@ package org.radrso.workflow.base;
 
 import org.radrso.workflow.entities.schema.WorkflowSchema;
 import org.radrso.workflow.entities.schema.items.Step;
-import org.radrso.workflow.entities.response.WFResponse;
-import org.radrso.workflow.entities.wf.WorkflowErrorLog;
-import org.radrso.workflow.entities.wf.WorkflowInstance;
+import org.radrso.workflow.entities.info.WorkflowResult;
+import org.radrso.workflow.entities.info.WorkflowErrorLog;
+import org.radrso.workflow.entities.info.WorkflowInstance;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public interface Commander {
 
     String getWorkflowStatus(String workflowId);
 
-    WFResponse runStepAction(Step step, Object[] params, String[] paramNames);
+    WorkflowResult runStepAction(Step step, Object[] params, String[] paramNames);
 
     WorkflowInstance getInstance(String instanceId);
 

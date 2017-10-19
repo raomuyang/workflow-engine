@@ -5,7 +5,7 @@ import org.radrso.plugins.FileUtils;
 import org.radrso.workflow.constant.ConfigConstant;
 import org.radrso.workflow.entities.schema.JarFile;
 import org.radrso.workflow.entities.schema.WorkflowSchema;
-import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
+import org.radrso.workflow.entities.info.WorkflowExecuteStatus;
 import org.radrso.workflow.wfservice.repositories.JarFileRepository;
 import org.radrso.workflow.wfservice.repositories.WorkflowRepository;
 import org.radrso.workflow.wfservice.repositories.WorkflowStatusRepository;

@@ -1,6 +1,6 @@
 package org.radrso.workflow.wfservice.service;
 
-import org.radrso.workflow.entities.wf.WorkflowErrorLog;
+import org.radrso.workflow.entities.info.WorkflowErrorLog;
 import org.springframework.data.domain.Page;
 
 import java.util.List;

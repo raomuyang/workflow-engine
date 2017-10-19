@@ -5,8 +5,8 @@ import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.schema.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
-import org.radrso.workflow.entities.response.WFResponse;
-import org.radrso.workflow.entities.wf.WorkflowInstance;
+import org.radrso.workflow.entities.info.WorkflowResult;
+import org.radrso.workflow.entities.info.WorkflowInstance;
 
 import java.util.List;
 
@@ -70,7 +70,7 @@ public interface FlowResolver {
      * @param sign
      * @param response
      */
-    void updateResponse(String sign, WFResponse response);
+    void updateResponse(String sign, WorkflowResult response);
 
     WorkflowInstance getWorkflowInstance();
 

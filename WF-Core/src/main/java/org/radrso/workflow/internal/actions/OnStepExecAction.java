@@ -13,10 +13,10 @@ import org.radrso.workflow.entities.schema.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;
-import org.radrso.workflow.entities.response.WFResponse;
-import org.radrso.workflow.entities.wf.StepStatus;
-import org.radrso.workflow.entities.wf.WorkflowErrorLog;
-import org.radrso.workflow.entities.wf.WorkflowInstance;
+import org.radrso.workflow.entities.info.WorkflowResult;
+import org.radrso.workflow.entities.info.StepStatus;
+import org.radrso.workflow.entities.info.WorkflowErrorLog;
+import org.radrso.workflow.entities.info.WorkflowInstance;
 import org.radrso.workflow.exec.WorkflowExecutors;
 import org.radrso.workflow.resolvers.Resolvers;
 import org.radrso.workflow.resolvers.FlowResolver;
@@ -62,7 +62,7 @@ public class OnStepExecAction extends AbstractAction implements Consumer<FlowRes
                 Object[] params = workflowResolver.getCurrentStepParams();
                 String[] paramNames = workflowResolver.getCurrentStepParamNames();
 
-                WFResponse response = null;
+                WorkflowResult response = null;
                 if (step.getCall() != null)
                     response = commander.runStepAction(step, params, paramNames);
 

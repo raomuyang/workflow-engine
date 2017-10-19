@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import org.junit.Before;
 import org.junit.Test;
 import org.radrso.workflow.entities.schema.WorkflowSchema;
-import org.radrso.workflow.entities.wf.WorkflowInstance;
+import org.radrso.workflow.entities.info.WorkflowInstance;
 import org.radrso.workflow.internal.resolver.ParamsResolverImpl;
 import org.radrso.workflow.internal.resolver.FlowResolverImpl;
 

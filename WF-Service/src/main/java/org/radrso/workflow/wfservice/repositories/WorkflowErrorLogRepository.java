@@ -1,6 +1,6 @@
 package org.radrso.workflow.wfservice.repositories;
 
-import org.radrso.workflow.entities.wf.WorkflowErrorLog;
+import org.radrso.workflow.entities.info.WorkflowErrorLog;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;

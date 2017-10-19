@@ -6,7 +6,7 @@ import org.radrso.plugins.FileUtils;
 import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.workflow.constant.ExceptionCode;
 import org.radrso.workflow.entities.schema.items.Step;
-import org.radrso.workflow.entities.response.WFResponse;
+import org.radrso.workflow.entities.info.WorkflowResult;
 import org.radrso.workflow.resolvers.StepActionResolver;
 import org.radrso.workflow.resolvers.Resolvers;
 
@@ -29,7 +29,7 @@ public final class BaseOperations {
      * @param stream  jar文件的字节数组
      * @return WFResponse中包含操作的结果及信息
      */
-    public static WFResponse importJar(String dir, String jarName, byte[] stream) {
+    public static WorkflowResult importJar(String dir, String jarName, byte[] stream) {
         String path = dir + File.separator + jarName;
         boolean added;
         try {
@@ -40,13 +40,13 @@ public final class BaseOperations {
             log.info(String.format("[Import] Success:Write and import jar_file[%s]", path));
         } catch (IOException e) {
             log.error("[Import] Failed:" + e);
-            return new WFResponse(ExceptionCode.UNKNOW.code(), e.getMessage(), e);
+            return new WorkflowResult(ExceptionCode.UNKNOW.code(), e.getMessage(), e);
         }
 
-        return new WFResponse(ResponseCode.HTTP_OK.code(), null, RESPONSE);
+        return new WorkflowResult(ResponseCode.HTTP_OK.code(), null, RESPONSE);
     }
 
-    public static WFResponse checkAndImportJar(String dir, String jarName) {
+    public static WorkflowResult checkAndImportJar(String dir, String jarName) {
         String path = dir + File.separator + jarName;
         File file = new File(path);
         if (file.exists()) {
@@ -55,10 +55,10 @@ public final class BaseOperations {
                 return importJar(dir, jarName, FileUtils.getByte(file));
             } catch (IOException e) {
                 log.error(e);
-                return new WFResponse(ExceptionCode.UNKNOW.code(), ExceptionCode.UNKNOW.info(), null);
+                return new WorkflowResult(ExceptionCode.UNKNOW.code(), ExceptionCode.UNKNOW.info(), null);
             }
         } else {
-            return new WFResponse(ExceptionCode.JAR_FILE_NOT_FOUND.code(), ExceptionCode.JAR_FILE_NOT_FOUND.info(), null);
+            return new WorkflowResult(ExceptionCode.JAR_FILE_NOT_FOUND.code(), ExceptionCode.JAR_FILE_NOT_FOUND.info(), null);
         }
     }
 
@@ -70,14 +70,14 @@ public final class BaseOperations {
      * @param paramNames 启动这个步骤的参数名，与参数顺序相同
      * @return 返回WFResponse，封装对象的response属性才是执行结果
      */
-    public static WFResponse execute(Step step, Object[] params, String[] paramNames) {
+    public static WorkflowResult execute(Step step, Object[] params, String[] paramNames) {
         StepActionResolver resolver = Resolvers.getStepActionResolver(step, params, paramNames);
         if (step.getCall() == null || step.getCall().indexOf(":") < 0) {
-            return new WFResponse(ResponseCode.HTTP_BAD_REQUEST.code(), "Error Protocol:" + step.getCall(), null);
+            return new WorkflowResult(ResponseCode.HTTP_BAD_REQUEST.code(), "Error Protocol:" + step.getCall(), null);
         }
         String protocol = step.getCall().substring(0, step.getCall().indexOf(":"));
 
-        WFResponse response = null;
+        WorkflowResult response = null;
         if (protocol.toLowerCase().indexOf("http") >= 0)
             response = resolver.netRequest();
         else

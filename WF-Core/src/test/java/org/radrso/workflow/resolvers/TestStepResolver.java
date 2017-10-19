@@ -3,7 +3,7 @@ package org.radrso.workflow.resolvers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.radrso.workflow.entities.schema.items.Step;
-import org.radrso.workflow.entities.response.WFResponse;
+import org.radrso.workflow.entities.info.WorkflowResult;
 import org.radrso.workflow.internal.resolver.StepActionResolverImpl;
 
 /**
@@ -33,7 +33,7 @@ public class TestStepResolver {
         String[] paramNames = new String[]{"default", "default", "default", "default", "default"};
         Integer[] params = new Integer[]{1, 2, 3, 4, 5};
         StepActionResolverImpl resolver = new StepActionResolverImpl(step, new Object[]{"test:", params}, paramNames);
-        WFResponse response = resolver.classRequest();
+        WorkflowResult response = resolver.classRequest();
         System.out.println("Result:" + response);
 
         step.setMethod("sum_2");
@@ -50,7 +50,7 @@ public class TestStepResolver {
         String[] params = new String[]{"asdf", "你好", "12345678", "api", "asdfasf"};
 
         StepActionResolverImpl resolver = new StepActionResolverImpl(step, params, paramNames);
-        WFResponse response = resolver.netRequest();
+        WorkflowResult response = resolver.netRequest();
         System.out.println(response.getBody());
         System.out.println(response.getBody().getClass());
         Assert.assertEquals(step.getCall(), "http://www.tuling123.com/openapi/api");

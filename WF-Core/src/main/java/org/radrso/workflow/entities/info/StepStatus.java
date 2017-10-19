@@ -1,10 +1,8 @@
-package org.radrso.workflow.entities.wf;
+package org.radrso.workflow.entities.info;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.radrso.workflow.entities.response.WFResponse;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -28,7 +26,7 @@ public class StepStatus implements Serializable{
     private Date end;
     private Object[] params;
     private String[] paramNames;
-    private WFResponse wfResponse;
+    private WorkflowResult wfResponse;
 
     public StepStatus(String sign, String name) {
         this.sign = sign;

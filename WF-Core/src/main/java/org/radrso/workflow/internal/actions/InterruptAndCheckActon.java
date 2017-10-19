@@ -9,8 +9,8 @@ import io.reactivex.functions.Consumer;
 import lombok.extern.log4j.Log4j;
 import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.constant.ExceptionCode;
-import org.radrso.workflow.entities.wf.WorkflowErrorLog;
-import org.radrso.workflow.entities.wf.WorkflowInstance;
+import org.radrso.workflow.entities.info.WorkflowErrorLog;
+import org.radrso.workflow.entities.info.WorkflowInstance;
 import org.radrso.workflow.resolvers.FlowResolver;
 
 import java.util.Date;

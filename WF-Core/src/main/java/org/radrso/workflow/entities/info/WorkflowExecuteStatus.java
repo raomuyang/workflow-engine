@@ -1,4 +1,4 @@
-package org.radrso.workflow.entities.wf;
+package org.radrso.workflow.entities.info;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

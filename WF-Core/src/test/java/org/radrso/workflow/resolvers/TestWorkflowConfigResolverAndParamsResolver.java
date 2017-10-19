@@ -10,9 +10,9 @@ import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.schema.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
-import org.radrso.workflow.entities.response.WFResponse;
-import org.radrso.workflow.entities.wf.StepStatus;
-import org.radrso.workflow.entities.wf.WorkflowInstance;
+import org.radrso.workflow.entities.info.WorkflowResult;
+import org.radrso.workflow.entities.info.StepStatus;
+import org.radrso.workflow.entities.info.WorkflowInstance;
 import org.radrso.workflow.internal.resolver.ParamsResolverImpl;
 import org.radrso.workflow.internal.resolver.FlowResolverImpl;
 
@@ -68,7 +68,7 @@ public class TestWorkflowConfigResolverAndParamsResolver {
 
         StepStatus stepStatus_1 = workflowResolver.getWorkflowInstance().getStepStatusesMap().get("sign-1");
 
-        WFResponse response_1 = new WFResponse();
+        WorkflowResult response_1 = new WorkflowResult();
         response_1.setCode(200);
         response_1.setMsg("OK");
         HashMap<String, String> body = new HashMap<>();
@@ -98,7 +98,7 @@ public class TestWorkflowConfigResolverAndParamsResolver {
 
     static String wf = "{\n" +
             "  \"application\": \"application-test\",\n" +
-            "  \"id\": \"wf-test\",\n" +
+            "  \"id\": \"info-test\",\n" +
             "  \"startTime\":\"2016-01-01\",\n" +
             "  \"stopTime\":\"2017-12-01\",\n" +
             "\n" +

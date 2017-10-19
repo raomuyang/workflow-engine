@@ -8,9 +8,9 @@ import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.constant.ExceptionCode;
 import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;
-import org.radrso.workflow.entities.wf.StepStatus;
-import org.radrso.workflow.entities.wf.WorkflowErrorLog;
-import org.radrso.workflow.entities.wf.WorkflowInstance;
+import org.radrso.workflow.entities.info.StepStatus;
+import org.radrso.workflow.entities.info.WorkflowErrorLog;
+import org.radrso.workflow.entities.info.WorkflowInstance;
 import org.radrso.workflow.resolvers.FlowResolver;
 
 import java.util.Map;

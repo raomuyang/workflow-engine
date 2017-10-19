@@ -8,9 +8,9 @@ import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.schema.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
-import org.radrso.workflow.entities.response.WFResponse;
-import org.radrso.workflow.entities.wf.StepStatus;
-import org.radrso.workflow.entities.wf.WorkflowInstance;
+import org.radrso.workflow.entities.info.WorkflowResult;
+import org.radrso.workflow.entities.info.StepStatus;
+import org.radrso.workflow.entities.info.WorkflowInstance;
 import org.radrso.workflow.resolvers.ParamsResolver;
 import org.radrso.workflow.resolvers.FlowResolver;
 import org.radrso.workflow.resolvers.Resolvers;
@@ -271,7 +271,7 @@ public class FlowResolverImpl implements FlowResolver, Serializable {
     }
 
     @Override
-    public void updateResponse(String sign, WFResponse response) {
+    public void updateResponse(String sign, WorkflowResult response) {
         workflowInstance.getStepStatusesMap().get(sign).setWfResponse(response);
     }
 

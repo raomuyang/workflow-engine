@@ -1,8 +1,6 @@
-package org.radrso.workflow.entities.wf;
+package org.radrso.workflow.entities.info;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 

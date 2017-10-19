@@ -7,7 +7,7 @@ import org.radrso.workflow.constant.RequestMethodMapping;
 import org.radrso.workflow.constant.ConfigConstant;
 import org.radrso.workflow.constant.ExceptionCode;
 import org.radrso.workflow.entities.schema.items.Step;
-import org.radrso.workflow.entities.response.WFResponse;
+import org.radrso.workflow.entities.info.WorkflowResult;
 import org.radrso.plugins.CustomClassLoader;
 import org.radrso.plugins.JsonUtils;
 import org.radrso.plugins.ReflectInvokeMethod;
@@ -54,7 +54,7 @@ public class StepActionResolverImpl implements StepActionResolver {
      * @return  WFResponse中的Response是执行结果的消息实体
      */
     @Override
-    public WFResponse classRequest(){
+    public WorkflowResult classRequest(){
 
         String className = null;
         String[] classStr  = step.getCall().split(":");
@@ -64,13 +64,13 @@ public class StepActionResolverImpl implements StepActionResolver {
         if(className == null){
             String errorMsg = ExceptionCode.UNKNOW.info() + String.format("[%s, %s]", "ClassName split error", step.getCall());
             log.error(errorMsg);
-            return new WFResponse(ExceptionCode.UNKNOW.code(), errorMsg, errorMsg);
+            return new WorkflowResult(ExceptionCode.UNKNOW.code(), errorMsg, errorMsg);
         }
 
         String methodName = step.getMethod();
         log.info("[Invoke] " + className + "-" + methodName);
         try {
-            WFResponse response = new WFResponse();
+            WorkflowResult response = new WorkflowResult();
             Class clazz = CustomClassLoader.getClassLoader().loadClass(className);
             Object ret = ReflectInvokeMethod.invoke(clazz, clazz.newInstance(), methodName, params);
             response.setCode(ResponseCode.HTTP_OK.code());
@@ -79,28 +79,28 @@ public class StepActionResolverImpl implements StepActionResolver {
 
         } catch (ClassNotFoundException e) {
             log.warn(e);
-            return new WFResponse(ExceptionCode.CLASS_NOT_FOUND.code(),
+            return new WorkflowResult(ExceptionCode.CLASS_NOT_FOUND.code(),
                     e.getMessage(), e.getMessage());
 
         } catch (NoSuchMethodException e) {
             log.error(e);
-            return new WFResponse(ExceptionCode.METHOD_NOT_FOUND.code(),
+            return new WorkflowResult(ExceptionCode.METHOD_NOT_FOUND.code(),
                     e.getMessage(), e.getMessage());
         } catch (IllegalAccessException e) {
             log.error(e);
-            return new WFResponse(ExceptionCode.METHOD_ACCESS_ERROR.code(),
+            return new WorkflowResult(ExceptionCode.METHOD_ACCESS_ERROR.code(),
                     e.getMessage(), e.getMessage());
         } catch (InvocationTargetException e) {
             log.error(e);
-            return new WFResponse(ExceptionCode.METHOD_INVOCATION_ERROR.code(),
+            return new WorkflowResult(ExceptionCode.METHOD_INVOCATION_ERROR.code(),
                     e.getMessage(), e.getMessage());
         } catch (InstantiationException e) {
             log.error(e);
-            return new WFResponse(ExceptionCode.CLASS_INSTANCE_EXCEPTION.code(),
+            return new WorkflowResult(ExceptionCode.CLASS_INSTANCE_EXCEPTION.code(),
                     e.getMessage(), e.getMessage());
         } catch (IllegalArgumentException e){
             log.error(e);
-            return new WFResponse(ExceptionCode.ILLEGAL_ARGMENT_EXCEPTION.code(),
+            return new WorkflowResult(ExceptionCode.ILLEGAL_ARGMENT_EXCEPTION.code(),
                     e.getMessage(), e.getMessage());
         }
 
@@ -112,7 +112,7 @@ public class StepActionResolverImpl implements StepActionResolver {
      * @return  WFResponse中的Response是执行结果的消息实体
      */
     @Override
-    public WFResponse netRequest() {
+    public WorkflowResult netRequest() {
 
         ContentType contentType = ContentType.APPLICATION_JSON;
         //获取请求方法 GET/PUT/POST/DELETE
@@ -121,7 +121,7 @@ public class StepActionResolverImpl implements StepActionResolver {
             method = RequestMethodMapping.getMethod(step.getMethod());
         } catch (RequestException e) {
             log.error(e);
-            return new WFResponse(ExceptionCode.UNSUPPORTED_REQUEST_METHOD.code(),
+            return new WorkflowResult(ExceptionCode.UNSUPPORTED_REQUEST_METHOD.code(),
                     e.getMessage(), null);
         }
 
@@ -177,7 +177,7 @@ public class StepActionResolverImpl implements StepActionResolver {
         return sendNetRequest(method, headers, paramMap, contentType);
     }
 
-    private WFResponse sendNetRequest(MethodEnum method, Map<String, Object> headers, Map paramMap, ContentType contentType){
+    private WorkflowResult sendNetRequest(MethodEnum method, Map<String, Object> headers, Map paramMap, ContentType contentType){
         // 通过请求工厂创建请求，发送请求
         BaseRequest request;
         Response response;
@@ -193,12 +193,12 @@ public class StepActionResolverImpl implements StepActionResolver {
             response = request.sendRequest();
         } catch (RequestException e) {
             log.error(e);
-            return new WFResponse(e.getCode().code(), e.getMessage(), null);
+            return new WorkflowResult(e.getCode().code(), e.getMessage(), null);
         }
 
 
         // 解析Http/Https请求返回的数据
-        WFResponse wfResponse = new WFResponse();
+        WorkflowResult wfResponse = new WorkflowResult();
         wfResponse.setCode(response.getStatusCode());
         if(!response.isSuccess())
             wfResponse.setMsg(response.getErrorMsg());

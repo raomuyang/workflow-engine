@@ -1,4 +1,4 @@
-package org.radrso.workflow.entities.response;
+package org.radrso.workflow.entities.info;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Data
 @ToString
-public class WFResponse implements Serializable{
+public class WorkflowResult implements Serializable{
     private int    code;
     private String msg;
     private Object body;

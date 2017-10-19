@@ -5,8 +5,8 @@ import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.entities.schema.items.Transfer;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;
-import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
-import org.radrso.workflow.entities.wf.WorkflowInstance;
+import org.radrso.workflow.entities.info.WorkflowExecuteStatus;
+import org.radrso.workflow.entities.info.WorkflowInstance;
 import org.radrso.workflow.resolvers.FlowResolver;
 
 import java.util.Date;

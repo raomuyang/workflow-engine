@@ -4,7 +4,7 @@ import org.radrso.workflow.base.Operations;
 import org.radrso.workflow.constant.ConfigConstant;
 import org.radrso.workflow.entities.schema.JarFile;
 import org.radrso.workflow.entities.schema.items.Step;
-import org.radrso.workflow.entities.response.WFResponse;
+import org.radrso.workflow.entities.info.WorkflowResult;
 import org.radrso.workflow.exec.BaseOperations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,12 +21,12 @@ public class OperationsImpl implements Operations {
     private JarFileRepository jarFileRepository;
 
     @Override
-    public WFResponse executeStepAction(Step step, Object[] params, String[] paramNames) {
+    public WorkflowResult executeStepAction(Step step, Object[] params, String[] paramNames) {
         return BaseOperations.execute(step, params, paramNames);
     }
 
     @Override
-    public WFResponse checkAndImportJar(String application, String jarName) {
+    public WorkflowResult checkAndImportJar(String application, String jarName) {
         String fp = ROOT + application + File.separator;
         File file = new File(fp + jarName);
         if (!file.exists()) {

@@ -2,7 +2,7 @@ package org.radrso.workflow.resolvers;
 
 import org.radrso.workflow.entities.schema.WorkflowSchema;
 import org.radrso.workflow.entities.schema.items.Step;
-import org.radrso.workflow.entities.wf.WorkflowInstance;
+import org.radrso.workflow.entities.info.WorkflowInstance;
 import org.radrso.workflow.internal.resolver.ParamsResolverImpl;
 import org.radrso.workflow.internal.resolver.StepActionResolverImpl;
 import org.radrso.workflow.internal.resolver.FlowResolverImpl;
