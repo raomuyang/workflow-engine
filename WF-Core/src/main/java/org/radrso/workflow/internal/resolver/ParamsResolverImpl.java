@@ -6,7 +6,7 @@ import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.CustomClassLoader;
 import org.radrso.plugins.JsonUtils;
 import org.radrso.plugins.StringUtils;
-import org.radrso.workflow.constant.ConfigConstant;
+import org.radrso.workflow.constant.EngineConstant;
 import org.radrso.workflow.entities.schema.items.InputItem;
 import org.radrso.workflow.entities.schema.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
@@ -77,10 +77,10 @@ public class ParamsResolverImpl implements ParamsResolver {
     public Object resolverStringToParams(String paramStr) throws UnknownExceptionInRunning, ConfigReadException {
         String errorMsg = null;
 
-        if (paramStr.toLowerCase().equals(ConfigConstant.CONF_INSTANCE_ID_VALUE))
+        if (paramStr.toLowerCase().equals(EngineConstant.SCHEMA_INSTANCE_ID_VALUE))
             return workflowInstance.getInstanceId();
 
-        if (paramStr.startsWith(ConfigConstant.OUTPUT_VALUE)) {
+        if (paramStr.startsWith(EngineConstant.OUTPUT_VALUE)) {
 
             int parseStrIndex = 2;
             String[] sp = null;

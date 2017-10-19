@@ -1,7 +1,7 @@
 package org.radrso.workflow.internal.resolver;
 
 import lombok.extern.log4j.Log4j;
-import org.radrso.workflow.constant.ConfigConstant;
+import org.radrso.workflow.constant.EngineConstant;
 import org.radrso.workflow.entities.schema.WorkflowSchema;
 import org.radrso.workflow.entities.schema.items.Switch;
 import org.radrso.workflow.entities.schema.items.Step;
@@ -105,7 +105,7 @@ public class FlowResolverImpl implements FlowResolver, Serializable {
         Step step = getCurrentStep();
         if (step == null)
             return true;
-        if (getCurrentStep().getSign().equals(ConfigConstant.CONF_FINISH_SIGN))
+        if (getCurrentStep().getSign().equals(EngineConstant.SCHEMA_FINISH_SIGN))
             return true;
         return false;
     }
@@ -138,14 +138,14 @@ public class FlowResolverImpl implements FlowResolver, Serializable {
         if (transfer == null)
             return null;
 
-        if (transfer.getaSwitch() == null) {
+        if (transfer.getRunSwitch() == null) {
             getScatterBranches(transfer);
             paramsResolver.resolverTransferParams(transfer);
             lastTransfer = transfer;
             return stepMap.get(transfer.getTo());
         }
 
-        Transfer nextTransfer = judgeNextTransfer(transfer.getaSwitch());
+        Transfer nextTransfer = judgeNextTransfer(transfer.getRunSwitch());
         return transferToNextStep(nextTransfer);
     }
 
@@ -203,10 +203,10 @@ public class FlowResolverImpl implements FlowResolver, Serializable {
     @Override
     public Step getCurrentStep() {
         if (currentStep == null && stepMap.size() > 0) {
-            Step s = this.stepMap.get(ConfigConstant.CONF_START_SIGN);
+            Step s = this.stepMap.get(EngineConstant.SCHEMA_START_SIGN);
             this.currentStep = s;
             if (currentStep != null)
-                workflowInstance.getStepProcess().put(ConfigConstant.CONF_START_SIGN, Step.RUNNING);
+                workflowInstance.getStepProcess().put(EngineConstant.SCHEMA_START_SIGN, Step.RUNNING);
         }
 
         return currentStep;

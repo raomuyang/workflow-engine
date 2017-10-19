@@ -4,7 +4,7 @@ import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.FileUtils;
 import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.workflow.base.Operations;
-import org.radrso.workflow.constant.ConfigConstant;
+import org.radrso.workflow.constant.EngineConstant;
 import org.radrso.workflow.constant.ExceptionCode;
 import org.radrso.workflow.entities.schema.JarFile;
 import org.radrso.workflow.entities.schema.WorkflowSchema;
@@ -32,7 +32,7 @@ import java.util.List;
 @Component
 @Log4j
 public class CommanderImpl implements Commander {
-    public static final String ROOT = ConfigConstant.SERVICE_JAR_HOME;
+    public static final String ROOT = EngineConstant.SERVICE_JAR_HOME;
 
     @Autowired
     protected Operations operations;

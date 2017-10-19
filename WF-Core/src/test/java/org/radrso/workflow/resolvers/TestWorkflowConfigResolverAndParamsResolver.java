@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.radrso.workflow.constant.ConfigConstant;
+import org.radrso.workflow.constant.EngineConstant;
 import org.radrso.workflow.entities.schema.WorkflowSchema;
 import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.schema.items.Transfer;
@@ -89,7 +89,7 @@ public class TestWorkflowConfigResolverAndParamsResolver {
     @Test
     public void testScatterTo() {
         Step currentStep = workflowResolver.getCurrentStep();
-        Assert.assertEquals(currentStep.getSign(), ConfigConstant.CONF_START_SIGN);
+        Assert.assertEquals(currentStep.getSign(), EngineConstant.SCHEMA_START_SIGN);
 
         Transfer transfer = workflowConfig.getSteps().get(0).getTransfer();
         List<Transfer> steps = workflowResolver.getScatterBranches(transfer);

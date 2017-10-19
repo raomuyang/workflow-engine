@@ -24,7 +24,7 @@ import java.util.List;
 @ToString
 public class Transfer implements Serializable{
     private List<InputItem> input;
-    private Switch aSwitch;
+    private Switch runSwitch;
     private Date deadline;
     private String to;
     private List<Transfer> scatters;

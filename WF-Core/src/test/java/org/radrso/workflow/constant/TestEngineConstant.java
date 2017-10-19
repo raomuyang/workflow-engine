@@ -1,6 +1,8 @@
+package org.radrso.workflow.constant;
+
 import org.junit.Assert;
 import org.junit.Test;
-import org.radrso.workflow.constant.ConfigConstant;
+import org.radrso.workflow.constant.EngineConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,15 +10,15 @@ import java.util.List;
 /**
  * Created by rao-mengnan on 2017/3/12.
  */
-public class TestConfigConstant {
+public class TestEngineConstant {
 
     @Test
     public void testMatcher() {
         String str = "{asdf}{ghjk}{lmnb}";
-        String[] matchers0 = ConfigConstant.matcherValuesEscape(str);
+        String[] matchers0 = EngineConstant.matcherValuesEscape(str);
         Assert.assertEquals(matchers0[1], "{ghjk}");
 
-        String[] matchers1 = ConfigConstant.matcherValuesEscape(str, 1);
+        String[] matchers1 = EngineConstant.matcherValuesEscape(str, 1);
         Assert.assertEquals(matchers1[2], "lmnb");
     }
     @Test

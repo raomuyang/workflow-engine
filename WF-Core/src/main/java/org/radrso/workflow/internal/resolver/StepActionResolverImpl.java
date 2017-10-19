@@ -4,7 +4,7 @@ import lombok.extern.log4j.Log4j;
 import org.apache.http.entity.ContentType;
 import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.workflow.constant.RequestMethodMapping;
-import org.radrso.workflow.constant.ConfigConstant;
+import org.radrso.workflow.constant.EngineConstant;
 import org.radrso.workflow.constant.ExceptionCode;
 import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.info.WorkflowResult;
@@ -154,8 +154,8 @@ public class StepActionResolverImpl implements StepActionResolver {
                 headers.put(paramNames[i].substring(1), params[i]);
             }
 
-            else if(paramNames[i].matches(ConfigConstant.VALUES_ESCAPE)){
-                String[] matchers = ConfigConstant.matcherValuesEscape(paramNames[i]);
+            else if(paramNames[i].matches(EngineConstant.VALUES_ESCAPE)){
+                String[] matchers = EngineConstant.matcherValuesEscape(paramNames[i]);
                 if(matchers.length > 1)
                     paramMap.put(paramNames[i], params[i]);
                 else {
@@ -168,7 +168,7 @@ public class StepActionResolverImpl implements StepActionResolver {
         }
 
         String url = step.getCall();
-        String[] replaces = ConfigConstant.matcherValuesEscape(url);
+        String[] replaces = EngineConstant.matcherValuesEscape(url);
         if (replaces.length > 0)
             for(String key: replaces)
                 url = url.replace(key, String.valueOf(urlParams.get(key)));

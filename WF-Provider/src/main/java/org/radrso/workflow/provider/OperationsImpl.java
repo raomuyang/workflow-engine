@@ -1,7 +1,7 @@
 package org.radrso.workflow.provider;
 
 import org.radrso.workflow.base.Operations;
-import org.radrso.workflow.constant.ConfigConstant;
+import org.radrso.workflow.constant.EngineConstant;
 import org.radrso.workflow.entities.schema.JarFile;
 import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.info.WorkflowResult;
@@ -16,7 +16,7 @@ import java.io.File;
  */
 @Service
 public class OperationsImpl implements Operations {
-    public static final String ROOT = ConfigConstant.PROVIDER_JAR_HOME;
+    public static final String ROOT = EngineConstant.PROVIDER_JAR_HOME;
     @Autowired
     private JarFileRepository jarFileRepository;
 
