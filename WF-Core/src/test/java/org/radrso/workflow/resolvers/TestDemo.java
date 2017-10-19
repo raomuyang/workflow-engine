@@ -5,24 +5,22 @@ import org.junit.Before;
 import org.junit.Test;
 import org.radrso.workflow.entities.schema.WorkflowSchema;
 import org.radrso.workflow.entities.info.WorkflowInstance;
-import org.radrso.workflow.internal.resolver.ParamsResolverImpl;
-import org.radrso.workflow.internal.resolver.FlowResolverImpl;
 
 /**
  * Created by rao-mengnan on 2017/3/17.
  */
 public class TestDemo {
-    FlowResolverImpl workflowResolver;
+    WorkflowResolverImpl workflowResolver;
     WorkflowInstance workflowInstance;
     WorkflowSchema workflowConfig;
-    ParamsResolverImpl paramsResolver;
+    SchemaResolverImpl paramsResolver;
 
     @Before
     public void before(){
         workflowConfig = new Gson().fromJson(demo, WorkflowSchema.class);
         workflowInstance = new WorkflowInstance("workflow-test", "instance-test");
-        workflowResolver = new FlowResolverImpl(workflowConfig, workflowInstance);
-        paramsResolver = new ParamsResolverImpl(workflowInstance);
+        workflowResolver = new WorkflowResolverImpl(workflowConfig, workflowInstance);
+        paramsResolver = new SchemaResolverImpl(workflowInstance);
     }
 
     @Test

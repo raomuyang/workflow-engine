@@ -13,8 +13,6 @@ import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 import org.radrso.workflow.entities.info.WorkflowResult;
 import org.radrso.workflow.entities.info.StepStatus;
 import org.radrso.workflow.entities.info.WorkflowInstance;
-import org.radrso.workflow.internal.resolver.ParamsResolverImpl;
-import org.radrso.workflow.internal.resolver.FlowResolverImpl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,17 +23,17 @@ import java.util.List;
  */
 
 public class TestWorkflowConfigResolverAndParamsResolver {
-    FlowResolverImpl workflowResolver;
+    WorkflowResolverImpl workflowResolver;
     WorkflowInstance workflowInstance;
     WorkflowSchema workflowConfig;
-    ParamsResolverImpl paramsResolver;
+    SchemaResolverImpl paramsResolver;
 
     @Before
     public void before() {
         workflowConfig = new Gson().fromJson(wf, WorkflowSchema.class);
         workflowInstance = new WorkflowInstance("workflow-test", "instance-test");
-        workflowResolver = new FlowResolverImpl(workflowConfig, workflowInstance);
-        paramsResolver = new ParamsResolverImpl(workflowInstance);
+        workflowResolver = new WorkflowResolverImpl(workflowConfig, workflowInstance);
+        paramsResolver = new SchemaResolverImpl(workflowInstance);
 
     }
 

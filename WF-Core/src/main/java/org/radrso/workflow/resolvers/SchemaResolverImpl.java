@@ -1,4 +1,4 @@
-package org.radrso.workflow.internal.resolver;
+package org.radrso.workflow.resolvers;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -23,7 +23,7 @@ import java.util.Map;
  * Created by rao-mengnan on 2017/3/16.
  */
 @Log4j
-public class ParamsResolverImpl implements SchemaResolver {
+public class SchemaResolverImpl implements SchemaResolver {
     private static final String UTILS_CLASS = "Data|List|Map";
     private static final Map<String, Class> classMap;
 
@@ -46,7 +46,7 @@ public class ParamsResolverImpl implements SchemaResolver {
 
     private WorkflowInstance workflowInstance;
 
-    public ParamsResolverImpl(WorkflowInstance workflowInstance) {
+    public SchemaResolverImpl(WorkflowInstance workflowInstance) {
         this.workflowInstance = workflowInstance;
     }
 

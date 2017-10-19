@@ -17,7 +17,7 @@ import org.radrso.workflow.entities.info.WorkflowResult;
 import org.radrso.workflow.entities.info.StepStatus;
 import org.radrso.workflow.entities.info.WorkflowErrorLog;
 import org.radrso.workflow.entities.info.WorkflowInstance;
-import org.radrso.workflow.handler.WorkflowLaunchers;
+import org.radrso.workflow.launcher.WorkflowLaunchers;
 import org.radrso.workflow.resolvers.Resolvers;
 import org.radrso.workflow.resolvers.WorkflowResolver;
 

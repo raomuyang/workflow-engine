@@ -5,7 +5,7 @@ import org.radrso.workflow.entities.info.WorkflowResult;
 /**
  * Created by rao-mengnan on 2017/3/16.
  */
-public interface StepActionResolver {
+public interface RequestResolver {
 
     /**
      * 调用配置中预设的类方法

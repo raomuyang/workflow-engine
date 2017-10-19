@@ -1,4 +1,4 @@
-package org.radrso.workflow.handler;
+package org.radrso.workflow.launcher;
 
 import org.radrso.workflow.resolvers.WorkflowResolver;
 

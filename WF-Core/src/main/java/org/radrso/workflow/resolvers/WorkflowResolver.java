@@ -62,7 +62,7 @@ public interface WorkflowResolver {
      * @return
      * @throws ConfigReadException
      */
-    Transfer judgeNextTransfer(Switch aSwitch) throws ConfigReadException, UnknownExceptionInRunning;
+    Transfer selectNextTransfer(Switch aSwitch) throws ConfigReadException, UnknownExceptionInRunning;
 
     /**
      * 更新workflowInstance中的response记录

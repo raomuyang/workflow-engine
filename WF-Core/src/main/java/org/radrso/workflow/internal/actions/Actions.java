@@ -3,7 +3,7 @@ package org.radrso.workflow.internal.actions;
 import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.constant.ExceptionCode;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;
-import org.radrso.workflow.internal.exec.FlowExecuteStream;
+import org.radrso.workflow.launcher.FlowExecuteStream;
 import org.radrso.workflow.resolvers.WorkflowResolver;
 
 /**

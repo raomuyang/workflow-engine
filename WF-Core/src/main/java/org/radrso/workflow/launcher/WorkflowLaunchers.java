@@ -1,6 +1,5 @@
-package org.radrso.workflow.handler;
+package org.radrso.workflow.launcher;
 
-import org.radrso.workflow.internal.exec.FlowExecutorImpl;
 import org.radrso.workflow.base.Commander;
 
 /**
@@ -9,6 +8,6 @@ import org.radrso.workflow.base.Commander;
  */
 public class WorkflowLaunchers {
     public static FlowLauncher getFlowAction(Commander commander){
-        return new FlowExecutorImpl(commander);
+        return new FlowLauncherImpl(commander);
     }
 }

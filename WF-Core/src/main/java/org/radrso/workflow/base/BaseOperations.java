@@ -7,7 +7,7 @@ import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.workflow.constant.ExceptionCode;
 import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.info.WorkflowResult;
-import org.radrso.workflow.resolvers.StepActionResolver;
+import org.radrso.workflow.resolvers.RequestResolver;
 import org.radrso.workflow.resolvers.Resolvers;
 
 import java.io.File;
@@ -71,7 +71,7 @@ public final class BaseOperations {
      * @return 返回WFResponse，封装对象的response属性才是执行结果
      */
     public static WorkflowResult execute(Step step, Object[] params, String[] paramNames) {
-        StepActionResolver resolver = Resolvers.getStepActionResolver(step, params, paramNames);
+        RequestResolver resolver = Resolvers.getStepActionResolver(step, params, paramNames);
         if (step.getCall() == null || step.getCall().indexOf(":") < 0) {
             return new WorkflowResult(ResponseCode.HTTP_BAD_REQUEST.code(), "Error Protocol:" + step.getCall(), null);
         }

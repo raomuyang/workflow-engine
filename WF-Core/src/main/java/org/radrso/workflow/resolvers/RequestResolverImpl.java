@@ -1,4 +1,4 @@
-package org.radrso.workflow.internal.resolver;
+package org.radrso.workflow.resolvers;
 
 import lombok.extern.log4j.Log4j;
 import org.apache.http.entity.ContentType;
@@ -16,7 +16,6 @@ import org.radrso.plugins.requests.RequestFactory;
 import org.radrso.plugins.requests.entity.MethodEnum;
 import org.radrso.plugins.requests.entity.Response;
 import org.radrso.plugins.requests.entity.exceptions.impl.RequestException;
-import org.radrso.workflow.resolvers.StepActionResolver;
 
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
@@ -29,12 +28,12 @@ import java.util.Map;
  * 解析步骤的执行，请求URL或者调用指定方法
  */
 @Log4j
-public class StepActionResolverImpl implements StepActionResolver {
+public class RequestResolverImpl implements RequestResolver {
     private Step step;
     private Object[] params;
     private String[] paramNames;
 
-    public StepActionResolverImpl(Step step, Object[] params, String[] paramNames){
+    public RequestResolverImpl(Step step, Object[] params, String[] paramNames){
         this.step = step;
         this.params = params;
         this.paramNames = paramNames;

@@ -1,4 +1,4 @@
-package org.radrso.workflow.internal.resolver;
+package org.radrso.workflow.resolvers;
 
 import lombok.extern.log4j.Log4j;
 import org.radrso.workflow.constant.EngineConstant;
@@ -11,9 +11,6 @@ import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 import org.radrso.workflow.entities.info.WorkflowResult;
 import org.radrso.workflow.entities.info.StepStatus;
 import org.radrso.workflow.entities.info.WorkflowInstance;
-import org.radrso.workflow.resolvers.SchemaResolver;
-import org.radrso.workflow.resolvers.WorkflowResolver;
-import org.radrso.workflow.resolvers.Resolvers;
 
 import java.io.Serializable;
 import java.util.*;
@@ -23,7 +20,7 @@ import java.util.*;
  * Created by raomengnan on 17-1-14.
  */
 @Log4j
-public class FlowResolverImpl implements WorkflowResolver, Serializable {
+public class WorkflowResolverImpl implements WorkflowResolver, Serializable {
 
     private WorkflowInstance workflowInstance;
     private SchemaResolver paramsResolver;
@@ -37,11 +34,11 @@ public class FlowResolverImpl implements WorkflowResolver, Serializable {
     // 用于准确统计分支次数
     private Set<String> branchesPool;
 
-    private FlowResolverImpl() {
+    private WorkflowResolverImpl() {
         this.stepMap = new HashMap<>();
     }
 
-    public FlowResolverImpl(WorkflowSchema workflowConfig, WorkflowInstance workflowInstance) {
+    public WorkflowResolverImpl(WorkflowSchema workflowConfig, WorkflowInstance workflowInstance) {
         this();
         this.workflowInstance = workflowInstance;
         this.paramsResolver = Resolvers.getParamsResolver(workflowInstance);
@@ -67,7 +64,7 @@ public class FlowResolverImpl implements WorkflowResolver, Serializable {
      * @throws ConfigReadException
      */
     @Override
-    public FlowResolverImpl next() throws ConfigReadException, UnknownExceptionInRunning {
+    public WorkflowResolverImpl next() throws ConfigReadException, UnknownExceptionInRunning {
         Transfer currentTransfer = getCurrentTransfer();
         if (currentTransfer == null)
             return null;
@@ -92,7 +89,7 @@ public class FlowResolverImpl implements WorkflowResolver, Serializable {
      * @return
      */
     @Override
-    public FlowResolverImpl rollback() {
+    public WorkflowResolverImpl rollback() {
         currentStep = lastStep;
         return this;
     }
@@ -145,7 +142,7 @@ public class FlowResolverImpl implements WorkflowResolver, Serializable {
             return stepMap.get(transfer.getTo());
         }
 
-        Transfer nextTransfer = judgeNextTransfer(transfer.getRunSwitch());
+        Transfer nextTransfer = selectNextTransfer(transfer.getRunSwitch());
         return transferToNextStep(nextTransfer);
     }
 
@@ -157,7 +154,7 @@ public class FlowResolverImpl implements WorkflowResolver, Serializable {
      * @throws ConfigReadException
      */
     @Override
-    public Transfer judgeNextTransfer(Switch aSwitch) throws ConfigReadException, UnknownExceptionInRunning {
+    public Transfer selectNextTransfer(Switch aSwitch) throws ConfigReadException, UnknownExceptionInRunning {
         log.debug(aSwitch);
         String type = aSwitch.getType();
 
