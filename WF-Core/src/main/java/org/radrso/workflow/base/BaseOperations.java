@@ -1,4 +1,4 @@
-package org.radrso.workflow.exec;
+package org.radrso.workflow.base;
 
 import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.CustomClassLoader;
@@ -77,8 +77,8 @@ public final class BaseOperations {
         }
         String protocol = step.getCall().substring(0, step.getCall().indexOf(":"));
 
-        WorkflowResult response = null;
-        if (protocol.toLowerCase().indexOf("http") >= 0)
+        WorkflowResult response;
+        if (protocol.toLowerCase().contains("http"))
             response = resolver.netRequest();
         else
             response = resolver.classRequest();

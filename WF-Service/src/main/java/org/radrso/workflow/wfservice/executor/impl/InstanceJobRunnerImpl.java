@@ -2,8 +2,8 @@ package org.radrso.workflow.wfservice.executor.impl;
 
 import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.workflow.entities.info.WorkflowInstance;
-import org.radrso.workflow.exec.FlowExecutor;
-import org.radrso.workflow.exec.WorkflowExecutors;
+import org.radrso.workflow.executor.FlowExecutor;
+import org.radrso.workflow.executor.WorkflowExecutors;
 import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.resolvers.FlowResolver;
 import org.radrso.workflow.entities.info.WorkflowResult;
