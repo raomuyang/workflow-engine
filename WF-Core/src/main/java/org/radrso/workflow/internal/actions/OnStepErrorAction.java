@@ -11,7 +11,7 @@ import org.radrso.workflow.entities.exceptions.WFRuntimeException;
 import org.radrso.workflow.entities.info.StepStatus;
 import org.radrso.workflow.entities.info.WorkflowErrorLog;
 import org.radrso.workflow.entities.info.WorkflowInstance;
-import org.radrso.workflow.resolvers.FlowResolver;
+import org.radrso.workflow.resolvers.WorkflowResolver;
 
 import java.util.Map;
 
@@ -20,9 +20,9 @@ import java.util.Map;
  */
 @Log4j
 public class OnStepErrorAction extends AbstractAction implements Consumer<Throwable>{
-    private FlowResolver workflowResolver;
+    private WorkflowResolver workflowResolver;
 
-    public OnStepErrorAction(Commander workflowSynchronize, FlowResolver workflowResolver) {
+    public OnStepErrorAction(Commander workflowSynchronize, WorkflowResolver workflowResolver) {
         super(workflowSynchronize);
         this.workflowResolver = workflowResolver;
     }
@@ -71,7 +71,7 @@ public class OnStepErrorAction extends AbstractAction implements Consumer<Throwa
     }
 
     @Override
-    public Action setResolver(FlowResolver resolver) {
+    public Action setResolver(WorkflowResolver resolver) {
         this.workflowResolver = resolver;
         return this;
     }

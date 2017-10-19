@@ -1,6 +1,6 @@
 package org.radrso.workflow.wfservice.executor;
 
-import org.radrso.workflow.resolvers.FlowResolver;
+import org.radrso.workflow.resolvers.WorkflowResolver;
 import org.radrso.workflow.entities.info.WorkflowResult;
 
 /**
@@ -8,7 +8,7 @@ import org.radrso.workflow.entities.info.WorkflowResult;
  */
 public interface InstanceJobRunner {
 
-    WorkflowResult startExecute(FlowResolver workflowResolver, boolean rerun);
+    WorkflowResult startExecute(WorkflowResolver workflowResolver, boolean rerun);
 
     boolean interrupt(String instanceId);
 }

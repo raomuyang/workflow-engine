@@ -3,15 +3,15 @@ package org.radrso.workflow.internal.actions;
 import io.reactivex.functions.Action;
 import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.entities.info.WorkflowInstance;
-import org.radrso.workflow.resolvers.FlowResolver;
+import org.radrso.workflow.resolvers.WorkflowResolver;
 
 /**
  * Created by rao-mengnan on 2017/5/18.
  */
 public class OnExecuteNextAction extends AbstractAction implements Action {
-    public FlowResolver resolver;
+    public WorkflowResolver resolver;
 
-    public OnExecuteNextAction(FlowResolver resolver, Commander workflowSynchronize) {
+    public OnExecuteNextAction(WorkflowResolver resolver, Commander workflowSynchronize) {
         super(workflowSynchronize);
         this.resolver = resolver;
     }
@@ -26,7 +26,7 @@ public class OnExecuteNextAction extends AbstractAction implements Action {
     }
 
     @Override
-    public AbstractAction setResolver(FlowResolver resolver) {
+    public AbstractAction setResolver(WorkflowResolver resolver) {
         this.resolver = resolver;
         return this;
     }

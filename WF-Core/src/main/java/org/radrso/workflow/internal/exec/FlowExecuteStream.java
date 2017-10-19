@@ -8,16 +8,16 @@ import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.entities.info.WorkflowInstance;
 import org.radrso.workflow.internal.actions.ActionEnum;
 import org.radrso.workflow.internal.actions.Actions;
-import org.radrso.workflow.resolvers.FlowResolver;
+import org.radrso.workflow.resolvers.WorkflowResolver;
 
 /**
  * Created by rao-mengnan on 2017/5/18.
  */
 public class FlowExecuteStream {
-    private FlowResolver resolver;
+    private WorkflowResolver resolver;
     private Commander commander;
 
-    public FlowExecuteStream(FlowResolver resolver, Commander commander) {
+    public FlowExecuteStream(WorkflowResolver resolver, Commander commander) {
         this.resolver = resolver;
         this.commander = commander;
     }
@@ -25,8 +25,8 @@ public class FlowExecuteStream {
     public void process() {
         resolver.getWorkflowInstance().setStatus(WorkflowInstance.RUNNING);
 
-        Consumer<FlowResolver> onStepExecAction
-                = (Consumer<FlowResolver>) Actions.getAction(ActionEnum.ON_STEP_EXEC, commander);
+        Consumer<WorkflowResolver> onStepExecAction
+                = (Consumer<WorkflowResolver>) Actions.getAction(ActionEnum.ON_STEP_EXEC, commander);
         Action onStepCompleted
                 = (Action) Actions.getAction(ActionEnum.ON_STEP_COMPLETED, commander).setResolver(resolver);
         Consumer<Throwable> onStepError
@@ -41,8 +41,8 @@ public class FlowExecuteStream {
     }
 
     public void restartProcess() {
-        Consumer<FlowResolver> interruptAndCheckAction
-                = (Consumer<FlowResolver>) Actions.getAction(ActionEnum.INTERRUPT_AND_CHECK, commander);
+        Consumer<WorkflowResolver> interruptAndCheckAction
+                = (Consumer<WorkflowResolver>) Actions.getAction(ActionEnum.INTERRUPT_AND_CHECK, commander);
         Action executeNextAction
                 = (Action) Actions.getAction(ActionEnum.ON_EXEC_NEXT, commander)
                 .setResolver(resolver);

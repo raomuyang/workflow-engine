@@ -6,7 +6,7 @@ import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.info.StepStatus;
 import org.radrso.workflow.entities.info.WorkflowInstance;
-import org.radrso.workflow.resolvers.FlowResolver;
+import org.radrso.workflow.resolvers.WorkflowResolver;
 
 import java.util.Date;
 import java.util.Map;
@@ -16,7 +16,7 @@ import java.util.Map;
  */
 @Log4j
 public class OnStepCompletedAction extends AbstractAction implements Action{
-    private FlowResolver flowResolver;
+    private WorkflowResolver flowResolver;
 
     public OnStepCompletedAction(Commander workflowSynchronize) {
         super(workflowSynchronize);
@@ -67,7 +67,7 @@ public class OnStepCompletedAction extends AbstractAction implements Action{
     }
 
     @Override
-    public AbstractAction setResolver(FlowResolver resolver) {
+    public AbstractAction setResolver(WorkflowResolver resolver) {
         this.flowResolver = resolver;
         return this;
     }

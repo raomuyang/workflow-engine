@@ -13,7 +13,7 @@ import org.radrso.workflow.entities.exceptions.ConfigReadException;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 import org.radrso.workflow.entities.info.StepStatus;
 import org.radrso.workflow.entities.info.WorkflowInstance;
-import org.radrso.workflow.resolvers.ParamsResolver;
+import org.radrso.workflow.resolvers.SchemaResolver;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.Map;
  * Created by rao-mengnan on 2017/3/16.
  */
 @Log4j
-public class ParamsResolverImpl implements ParamsResolver {
+public class ParamsResolverImpl implements SchemaResolver {
     private static final String UTILS_CLASS = "Data|List|Map";
     private static final Map<String, Class> classMap;
 

@@ -7,7 +7,7 @@ import org.radrso.workflow.entities.schema.items.Transfer;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;
 import org.radrso.workflow.entities.info.WorkflowExecuteStatus;
 import org.radrso.workflow.entities.info.WorkflowInstance;
-import org.radrso.workflow.resolvers.FlowResolver;
+import org.radrso.workflow.resolvers.WorkflowResolver;
 
 import java.util.Date;
 
@@ -24,7 +24,7 @@ public class Operations {
     }
 
 
-    public void verifyDate(FlowResolver workflowResolver) {
+    public void verifyDate(WorkflowResolver workflowResolver) {
         Transfer lastTransfer = workflowResolver.getCurrentTransfer();
         Date diedline = null;
         boolean isContinue = true;
@@ -38,7 +38,7 @@ public class Operations {
     }
 
 
-    public boolean checkWorkflowStatus(FlowResolver workflowResolver) {
+    public boolean checkWorkflowStatus(WorkflowResolver workflowResolver) {
         String status = commander.getWorkflowStatus(workflowResolver.getWorkflowInstance().getWorkflowId());
         if (status == null)
             throw new WFRuntimeException(WFRuntimeException.NO_SUCH_WORKFLOW_STATUS, ResponseCode.HTTP_NOT_FOUND.code());

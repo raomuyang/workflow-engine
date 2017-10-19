@@ -1,17 +1,17 @@
 package org.radrso.workflow.internal.exec;
 
 import lombok.extern.log4j.Log4j;
-import org.radrso.workflow.executor.FlowExecutor;
+import org.radrso.workflow.handler.FlowLauncher;
 import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.internal.actions.*;
-import org.radrso.workflow.resolvers.FlowResolver;
+import org.radrso.workflow.resolvers.WorkflowResolver;
 
 /**
  * 流程自动执行器
  * Created by rao-mengnan on 2017/3/29.
  */
 @Log4j
-public class FlowExecutorImpl extends FlowExecutor {
+public class FlowExecutorImpl extends FlowLauncher {
     private Commander commander;
 
     public FlowExecutorImpl(Commander commander) {
@@ -19,7 +19,7 @@ public class FlowExecutorImpl extends FlowExecutor {
     }
 
     @Override
-    public void start(FlowResolver flowResolver) {
+    public void start(WorkflowResolver flowResolver) {
         Actions.startStream(flowResolver, commander);
     }
 
@@ -30,7 +30,7 @@ public class FlowExecutorImpl extends FlowExecutor {
     }
 
     @Override
-    public void restart(FlowResolver workflowResolver) {
+    public void restart(WorkflowResolver workflowResolver) {
         log.info("[RESTARTING] ---------- " + workflowResolver.getWorkflowInstance().getInstanceId());
         Actions.restartStream(workflowResolver, commander);
     }

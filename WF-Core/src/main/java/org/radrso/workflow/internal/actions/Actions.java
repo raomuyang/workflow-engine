@@ -4,7 +4,7 @@ import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.constant.ExceptionCode;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;
 import org.radrso.workflow.internal.exec.FlowExecuteStream;
-import org.radrso.workflow.resolvers.FlowResolver;
+import org.radrso.workflow.resolvers.WorkflowResolver;
 
 /**
  * Created by rao-mengnan on 2017/5/18.
@@ -27,11 +27,11 @@ public class Actions {
         }
     }
 
-    public static void startStream(FlowResolver flowResolver, Commander commander) {
+    public static void startStream(WorkflowResolver flowResolver, Commander commander) {
         new FlowExecuteStream(flowResolver, commander).process();
     }
 
-    public static void restartStream(FlowResolver resolver, Commander commander) {
+    public static void restartStream(WorkflowResolver resolver, Commander commander) {
         new FlowExecuteStream(resolver, commander).restartProcess();
     }
 

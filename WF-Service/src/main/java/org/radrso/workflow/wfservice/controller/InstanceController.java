@@ -4,7 +4,7 @@ import lombok.extern.log4j.Log4j;
 import org.radrso.workflow.entities.schema.WorkflowSchema;
 import org.radrso.workflow.entities.info.WorkflowResult;
 import org.radrso.workflow.entities.info.WorkflowInstance;
-import org.radrso.workflow.resolvers.FlowResolver;
+import org.radrso.workflow.resolvers.WorkflowResolver;
 import org.radrso.workflow.resolvers.Resolvers;
 import org.radrso.workflow.wfservice.executor.InstanceJobRunner;
 import org.radrso.workflow.wfservice.service.WorkflowInstanceService;
@@ -169,7 +169,7 @@ public class InstanceController {
         }
         WorkflowSchema workflowConfig = workflowService.getByWorkflowId(instance.getWorkflowId());
 
-        FlowResolver workflowResolver = Resolvers.getFlowResolver(workflowConfig, instance);
+        WorkflowResolver workflowResolver = Resolvers.getFlowResolver(workflowConfig, instance);
         WorkflowResult response = instanceJobRunner.startExecute(workflowResolver, rerun);
         boolean res = response.getCode() / 100 < 3 ? true : false;
         map.put("status", res);

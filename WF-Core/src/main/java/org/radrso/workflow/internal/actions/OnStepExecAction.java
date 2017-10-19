@@ -17,9 +17,9 @@ import org.radrso.workflow.entities.info.WorkflowResult;
 import org.radrso.workflow.entities.info.StepStatus;
 import org.radrso.workflow.entities.info.WorkflowErrorLog;
 import org.radrso.workflow.entities.info.WorkflowInstance;
-import org.radrso.workflow.executor.WorkflowExecutors;
+import org.radrso.workflow.handler.WorkflowLaunchers;
 import org.radrso.workflow.resolvers.Resolvers;
-import org.radrso.workflow.resolvers.FlowResolver;
+import org.radrso.workflow.resolvers.WorkflowResolver;
 
 import java.util.Date;
 
@@ -27,14 +27,14 @@ import java.util.Date;
  * Created by rao-mengnan on 2017/5/18.
  */
 @Log4j
-public class OnStepExecAction extends AbstractAction implements Consumer<FlowResolver> {
+public class OnStepExecAction extends AbstractAction implements Consumer<WorkflowResolver> {
     public OnStepExecAction(Commander workflowSynchronize) {
         super(workflowSynchronize);
     }
 
 
     @Override
-    public void accept(@NonNull FlowResolver workflowResolver) throws Exception {
+    public void accept(@NonNull WorkflowResolver workflowResolver) throws Exception {
         boolean loopDo = true;
         boolean isReloadJarFile = false;//判断是否已经重新加载jar文件
 
@@ -141,7 +141,7 @@ public class OnStepExecAction extends AbstractAction implements Consumer<FlowRes
         }
     }
 
-    private void execBranches(FlowResolver workflowResolver) {
+    private void execBranches(WorkflowResolver workflowResolver) {
         Step currentStep = workflowResolver.getCurrentStep();
         // 获取分支的转移函数
         Transfer scatterTransfer = workflowResolver.popBranchTransfer();
@@ -179,7 +179,7 @@ public class OnStepExecAction extends AbstractAction implements Consumer<FlowRes
             }
 
             WorkflowInstance branchInstance = new WorkflowInstance(workflowConfig.getId(), branchId);
-            FlowResolver newWFResolver = Resolvers.getFlowResolver(workflowConfig, branchInstance);
+            WorkflowResolver newWFResolver = Resolvers.getFlowResolver(workflowConfig, branchInstance);
 
             Step tmpLastStep = new Step();
             tmpLastStep.setTransfer(scatterTransfer);
@@ -187,12 +187,12 @@ public class OnStepExecAction extends AbstractAction implements Consumer<FlowRes
 
             scatterTransfer = workflowResolver.popBranchTransfer();
             newWFResolver.setCurrentStep(tmpLastStep);
-            WorkflowExecutors.getFlowAction(commander).start(newWFResolver);
+            WorkflowLaunchers.getFlowAction(commander).start(newWFResolver);
         }
     }
 
     @Override
-    public Action setResolver(FlowResolver resolver) {
+    public Action setResolver(WorkflowResolver resolver) {
         return this;
     }
 }

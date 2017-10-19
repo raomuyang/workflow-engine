@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by rao-mengnan on 2017/3/16.
  */
-public interface FlowResolver {
+public interface WorkflowResolver {
 
     /**
      * 工作流程向下个状态转移一次:
@@ -22,14 +22,14 @@ public interface FlowResolver {
      * @return
      * @throws ConfigReadException
      */
-    FlowResolver next() throws ConfigReadException, UnknownExceptionInRunning;
+    WorkflowResolver next() throws ConfigReadException, UnknownExceptionInRunning;
 
     /**
      * 回滚到上一步
      *
      * @return
      */
-    FlowResolver rollback();
+    WorkflowResolver rollback();
 
     /**
      * @return 当前是否为最后一步

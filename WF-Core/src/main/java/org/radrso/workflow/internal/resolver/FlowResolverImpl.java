@@ -11,8 +11,8 @@ import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 import org.radrso.workflow.entities.info.WorkflowResult;
 import org.radrso.workflow.entities.info.StepStatus;
 import org.radrso.workflow.entities.info.WorkflowInstance;
-import org.radrso.workflow.resolvers.ParamsResolver;
-import org.radrso.workflow.resolvers.FlowResolver;
+import org.radrso.workflow.resolvers.SchemaResolver;
+import org.radrso.workflow.resolvers.WorkflowResolver;
 import org.radrso.workflow.resolvers.Resolvers;
 
 import java.io.Serializable;
@@ -23,10 +23,10 @@ import java.util.*;
  * Created by raomengnan on 17-1-14.
  */
 @Log4j
-public class FlowResolverImpl implements FlowResolver, Serializable {
+public class FlowResolverImpl implements WorkflowResolver, Serializable {
 
     private WorkflowInstance workflowInstance;
-    private ParamsResolver paramsResolver;
+    private SchemaResolver paramsResolver;
 
     private Step lastStep;
     private Transfer lastTransfer;

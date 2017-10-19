@@ -2,10 +2,10 @@ package org.radrso.workflow.wfservice.executor.impl;
 
 import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.workflow.entities.info.WorkflowInstance;
-import org.radrso.workflow.executor.FlowExecutor;
-import org.radrso.workflow.executor.WorkflowExecutors;
+import org.radrso.workflow.handler.FlowLauncher;
+import org.radrso.workflow.handler.WorkflowLaunchers;
 import org.radrso.workflow.base.Commander;
-import org.radrso.workflow.resolvers.FlowResolver;
+import org.radrso.workflow.resolvers.WorkflowResolver;
 import org.radrso.workflow.entities.info.WorkflowResult;
 import org.radrso.workflow.wfservice.executor.InstanceJobRunner;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class InstanceJobRunnerImpl implements InstanceJobRunner {
     private Commander commander;
 
     @Override
-    public WorkflowResult startExecute(FlowResolver workflowResolver, boolean rerun) {
+    public WorkflowResult startExecute(WorkflowResolver workflowResolver, boolean rerun) {
 
         //保证调用的幂等性
         WorkflowInstance instance = workflowResolver.getWorkflowInstance();
@@ -35,7 +35,7 @@ public class InstanceJobRunnerImpl implements InstanceJobRunner {
             }
         }
 
-        FlowExecutor flowActionsExecutor = WorkflowExecutors.getFlowAction(commander);
+        FlowLauncher flowActionsExecutor = WorkflowLaunchers.getFlowAction(commander);
         String msg;
         if (rerun){
             flowActionsExecutor.restart(workflowResolver);
@@ -52,7 +52,7 @@ public class InstanceJobRunnerImpl implements InstanceJobRunner {
 
     @Override
     public boolean interrupt(String instanceId) {
-        FlowExecutor executor = WorkflowExecutors.getFlowAction(commander);
+        FlowLauncher executor = WorkflowLaunchers.getFlowAction(commander);
         return executor.interrupt(instanceId);
     }
 

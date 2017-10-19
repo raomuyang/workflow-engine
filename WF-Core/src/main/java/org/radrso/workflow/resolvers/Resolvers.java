@@ -12,11 +12,11 @@ import org.radrso.workflow.internal.resolver.FlowResolverImpl;
  */
 public final class Resolvers {
 
-    public static ParamsResolver getParamsResolver(WorkflowInstance instance){
+    public static SchemaResolver getParamsResolver(WorkflowInstance instance){
         return new ParamsResolverImpl(instance);
     }
 
-    public static FlowResolver getFlowResolver(WorkflowSchema workflowConfig, WorkflowInstance workflowInstance){
+    public static WorkflowResolver getFlowResolver(WorkflowSchema workflowConfig, WorkflowInstance workflowInstance){
         return new FlowResolverImpl(workflowConfig, workflowInstance);
     }
 

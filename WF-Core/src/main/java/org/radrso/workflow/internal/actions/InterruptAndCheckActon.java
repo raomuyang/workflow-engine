@@ -11,7 +11,7 @@ import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.constant.ExceptionCode;
 import org.radrso.workflow.entities.info.WorkflowErrorLog;
 import org.radrso.workflow.entities.info.WorkflowInstance;
-import org.radrso.workflow.resolvers.FlowResolver;
+import org.radrso.workflow.resolvers.WorkflowResolver;
 
 import java.util.Date;
 
@@ -19,14 +19,14 @@ import java.util.Date;
  * 中断和检查中断的动作
  */
 @Log4j
-public class InterruptAndCheckActon extends AbstractAction implements Consumer<FlowResolver> {
+public class InterruptAndCheckActon extends AbstractAction implements Consumer<WorkflowResolver> {
 
     public InterruptAndCheckActon(Commander workflowSynchronize) {
         super(workflowSynchronize);
     }
 
     @Override
-    public void accept(@NonNull FlowResolver resolver) throws Exception {
+    public void accept(@NonNull WorkflowResolver resolver) throws Exception {
         String instanceId = resolver.getWorkflowInstance().getInstanceId();
         operations.interruptInstanceProcess(instanceId);
 
@@ -79,7 +79,7 @@ public class InterruptAndCheckActon extends AbstractAction implements Consumer<F
 
 
     @Override
-    public Action setResolver(FlowResolver resolver) {
+    public Action setResolver(WorkflowResolver resolver) {
         return this;
     }
 }
