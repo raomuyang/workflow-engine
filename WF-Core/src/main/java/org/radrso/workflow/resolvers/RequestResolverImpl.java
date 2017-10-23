@@ -7,7 +7,7 @@ import org.radrso.workflow.constant.RequestMethodMapping;
 import org.radrso.workflow.constant.EngineConstant;
 import org.radrso.workflow.constant.ExceptionCode;
 import org.radrso.workflow.entities.schema.items.Step;
-import org.radrso.workflow.entities.info.WorkflowResult;
+import org.radrso.workflow.entities.model.WorkflowResult;
 import org.radrso.plugins.CustomClassLoader;
 import org.radrso.plugins.JsonUtils;
 import org.radrso.plugins.ReflectInvokeMethod;

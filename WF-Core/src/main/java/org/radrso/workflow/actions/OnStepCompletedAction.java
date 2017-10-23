@@ -1,11 +1,11 @@
-package org.radrso.workflow.internal.actions;
+package org.radrso.workflow.actions;
 
 import io.reactivex.functions.Action;
 import lombok.extern.log4j.Log4j;
 import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.entities.schema.items.Step;
-import org.radrso.workflow.entities.info.StepStatus;
-import org.radrso.workflow.entities.info.WorkflowInstance;
+import org.radrso.workflow.entities.model.StepProcess;
+import org.radrso.workflow.entities.model.WorkflowInstance;
 import org.radrso.workflow.resolvers.WorkflowResolver;
 
 import java.util.Date;
@@ -47,7 +47,7 @@ public class OnStepCompletedAction extends AbstractAction implements Action{
         String stepSign = flowResolver.getCurrentStep().getSign();
         flowResolver.getWorkflowInstance().getStepProcess().put(stepSign, Step.FINISHED);
 
-        Map<String, StepStatus> stepStatusMap = flowResolver.getWorkflowInstance().getStepStatusesMap();
+        Map<String, StepProcess> stepStatusMap = flowResolver.getWorkflowInstance().getStepStatusesMap();
         stepStatusMap.get(stepSign).setStatus(Step.FINISHED);
         flowResolver.getWorkflowInstance().getFinishedSequence().add(
                 flowResolver.getCurrentStep().getSign()

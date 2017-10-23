@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import org.junit.Before;
 import org.junit.Test;
 import org.radrso.workflow.entities.schema.WorkflowSchema;
-import org.radrso.workflow.entities.info.WorkflowInstance;
+import org.radrso.workflow.entities.model.WorkflowInstance;
 
 /**
  * Created by rao-mengnan on 2017/3/17.
@@ -94,14 +94,14 @@ public class TestDemo {
                     "\n" +
                     "          \"ifTransfer\":{\n" +
                     "            \"input\": [\n" +
-                    "              {\"name\": \"info\", \"value\": \"北京周边哪里好玩\"},\n" +
+                    "              {\"name\": \"model\", \"value\": \"北京周边哪里好玩\"},\n" +
                     "              {\"name\": \"key\", \"value\": \"\"}\n" +
                     "            ],\n" +
                     "            \"to\": \"id-outing\"\n" +
                     "          },\n" +
                     "          \"elseTransfer\":{\n" +
                     "            \"input\": [\n" +
-                    "              {\"name\": \"info\", \"value\": \"红烧肉怎么做\"},\n" +
+                    "              {\"name\": \"model\", \"value\": \"红烧肉怎么做\"},\n" +
                     "              {\"name\": \"key\", \"value\": \"\"}\n" +
                     "            ],\n" +
                     "            \"to\": \"id-cooking\"\n" +

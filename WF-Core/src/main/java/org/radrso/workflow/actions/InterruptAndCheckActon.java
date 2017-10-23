@@ -1,4 +1,4 @@
-package org.radrso.workflow.internal.actions;
+package org.radrso.workflow.actions;
 
 /**
  * Created by rao-mengnan on 2017/5/18.
@@ -9,8 +9,8 @@ import io.reactivex.functions.Consumer;
 import lombok.extern.log4j.Log4j;
 import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.constant.ExceptionCode;
-import org.radrso.workflow.entities.info.WorkflowErrorLog;
-import org.radrso.workflow.entities.info.WorkflowInstance;
+import org.radrso.workflow.entities.model.WorkflowErrorLog;
+import org.radrso.workflow.entities.model.WorkflowInstance;
 import org.radrso.workflow.resolvers.WorkflowResolver;
 
 import java.util.Date;

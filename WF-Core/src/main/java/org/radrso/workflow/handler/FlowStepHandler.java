@@ -1,5 +1,6 @@
 package org.radrso.workflow.handler;
 
+import com.sun.istack.internal.NotNull;
 import lombok.extern.log4j.Log4j;
 import org.radrso.workflow.constant.EngineConstant;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
@@ -23,11 +24,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Log4j
 public class FlowStepHandler {
-    private WorkflowSchema schema;
     private Map<String, Step> stepMap;
 
     public FlowStepHandler(WorkflowSchema schema) {
-        this.schema = schema;
         this.stepMap = new ConcurrentHashMap<>();
         for (Step step : schema.getSteps()) {
             stepMap.put(step.getSign(), step);
@@ -51,15 +50,8 @@ public class FlowStepHandler {
         return cursor;
     }
 
-    private Step getLastStep(String sign) {
-
-        Step step = stepMap.get(sign);
-        if (step == null) {
-            // TODO throw it
-            log.warn("No such step: " + sign);
-            return null;
-        }
-        return step;
+    public Step getStepInfo(@NotNull String cursor) {
+        return stepMap.get(cursor);
     }
 
     public List<Next> transferTo(String cursor, WorkflowInstance2 instance) throws UnknownExceptionInRunning, Exception {
@@ -98,14 +90,11 @@ public class FlowStepHandler {
         }
 
         Switch switchBody = transfer.getRunSwitch();
-        SchemaParamHandler paramsResolver = new SchemaParamHandler(instance);
         String type = switchBody.getType();
 
-        Object variableA = paramsResolver.convertStrParam(
-                String.valueOf(switchBody.getVariable()), type);
+        Object variableA = Functions.mapParam2(instance).mapTo(String.valueOf(switchBody.getVariable()), type);
 
-        Object compareTo = paramsResolver.convertStrParam(
-                String.valueOf(switchBody.getCompareTo()), type);
+        Object compareTo =Functions.mapParam2(instance).mapTo(String.valueOf(switchBody.getCompareTo()), type);
 
         String condition = switchBody.getExpression();
         boolean result = Functions.condition(condition).check(variableA, compareTo);
@@ -124,6 +113,17 @@ public class FlowStepHandler {
         next.setProcess(stepProcess);
         next.setTransfer(toNext);
         return next;
+    }
+
+    private Step getLastStep(String sign) {
+
+        Step step = stepMap.get(sign);
+        if (step == null) {
+            // TODO throw it
+            log.warn("No such step: " + sign);
+            return null;
+        }
+        return step;
     }
 
 }

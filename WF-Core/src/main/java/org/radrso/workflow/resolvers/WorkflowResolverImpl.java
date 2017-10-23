@@ -2,15 +2,16 @@ package org.radrso.workflow.resolvers;
 
 import lombok.extern.log4j.Log4j;
 import org.radrso.workflow.constant.EngineConstant;
+import org.radrso.workflow.entities.StatusEnum;
 import org.radrso.workflow.entities.schema.WorkflowSchema;
 import org.radrso.workflow.entities.schema.items.Switch;
 import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.schema.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
-import org.radrso.workflow.entities.info.WorkflowResult;
-import org.radrso.workflow.entities.info.StepStatus;
-import org.radrso.workflow.entities.info.WorkflowInstance;
+import org.radrso.workflow.entities.model.WorkflowResult;
+import org.radrso.workflow.entities.model.StepProcess;
+import org.radrso.workflow.entities.model.WorkflowInstance;
 
 import java.io.Serializable;
 import java.util.*;
@@ -47,9 +48,9 @@ public class WorkflowResolverImpl implements WorkflowResolver, Serializable {
         if (workflowConfig.getSteps() != null)
             workflowConfig.getSteps().forEach(step -> {
 
-                StepStatus stepStatus = new StepStatus(step.getSign(), step.getName());
-                stepStatus.setStatus(Step.WAIT);
-                workflowInstance.getStepStatusesMap().put(step.getSign(), stepStatus);
+                StepProcess stepProcess = new StepProcess(step.getSign(), step.getName());
+                stepProcess.setStatus(StatusEnum.WAIT);
+                workflowInstance.getStepStatusesMap().put(step.getSign(), stepProcess);
 
                 stepMap.put(step.getSign(), step);
                 workflowInstance.getStepProcess().put(step.getSign(), Step.WAIT);
@@ -269,7 +270,7 @@ public class WorkflowResolverImpl implements WorkflowResolver, Serializable {
 
     @Override
     public void updateResponse(String sign, WorkflowResult response) {
-        workflowInstance.getStepStatusesMap().get(sign).setWfResponse(response);
+        workflowInstance.getStepStatusesMap().get(sign).setResult(response);
     }
 
     @Override

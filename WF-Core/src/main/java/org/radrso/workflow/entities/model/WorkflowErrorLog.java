@@ -1,4 +1,4 @@
-package org.radrso.workflow.entities.info;
+package org.radrso.workflow.entities.model;
 
 import lombok.Data;
 import lombok.ToString;

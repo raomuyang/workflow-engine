@@ -5,9 +5,9 @@ import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import org.radrso.workflow.base.Commander;
-import org.radrso.workflow.entities.info.WorkflowInstance;
-import org.radrso.workflow.internal.actions.ActionEnum;
-import org.radrso.workflow.internal.actions.Actions;
+import org.radrso.workflow.entities.model.WorkflowInstance;
+import org.radrso.workflow.annotation.ActionEnum;
+import org.radrso.workflow.actions.Actions;
 import org.radrso.workflow.resolvers.WorkflowResolver;
 
 /**

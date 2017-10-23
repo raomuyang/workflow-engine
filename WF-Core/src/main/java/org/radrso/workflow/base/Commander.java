@@ -2,9 +2,9 @@ package org.radrso.workflow.base;
 
 import org.radrso.workflow.entities.schema.WorkflowSchema;
 import org.radrso.workflow.entities.schema.items.Step;
-import org.radrso.workflow.entities.info.WorkflowResult;
-import org.radrso.workflow.entities.info.WorkflowErrorLog;
-import org.radrso.workflow.entities.info.WorkflowInstance;
+import org.radrso.workflow.entities.model.WorkflowResult;
+import org.radrso.workflow.entities.model.WorkflowErrorLog;
+import org.radrso.workflow.entities.model.WorkflowInstance;
 
 import java.util.List;
 

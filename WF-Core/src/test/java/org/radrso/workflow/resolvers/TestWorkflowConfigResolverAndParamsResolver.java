@@ -10,9 +10,9 @@ import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.schema.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
-import org.radrso.workflow.entities.info.WorkflowResult;
-import org.radrso.workflow.entities.info.StepStatus;
-import org.radrso.workflow.entities.info.WorkflowInstance;
+import org.radrso.workflow.entities.model.WorkflowResult;
+import org.radrso.workflow.entities.model.StepProcess;
+import org.radrso.workflow.entities.model.WorkflowInstance;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,20 +43,20 @@ public class TestWorkflowConfigResolverAndParamsResolver {
         Transfer transfer = workflowConfig.getSteps().get(0).getTransfer();
         paramsResolver.resolverTransferParams(transfer);
 
-        StepStatus stepStatus_1 = workflowResolver.getWorkflowInstance().getStepStatusesMap().get("sign-1");
-        Assert.assertEquals(stepStatus_1.getParams()[0].getClass(), String.class);
-        Assert.assertEquals(stepStatus_1.getParams()[1].getClass(), Double.class);
-        Assert.assertEquals(stepStatus_1.getParams()[2].getClass(), Integer.class);
+        StepProcess stepProcess_1 = workflowResolver.getWorkflowInstance().getStepStatusesMap().get("sign-1");
+        Assert.assertEquals(stepProcess_1.getParams()[0].getClass(), String.class);
+        Assert.assertEquals(stepProcess_1.getParams()[1].getClass(), Double.class);
+        Assert.assertEquals(stepProcess_1.getParams()[2].getClass(), Integer.class);
 
-        System.out.println("List.class:" + stepStatus_1.getParams()[3].getClass());
-        Assert.assertEquals(stepStatus_1.getParams()[3].getClass(), ArrayList.class);
+        System.out.println("List.class:" + stepProcess_1.getParams()[3].getClass());
+        Assert.assertEquals(stepProcess_1.getParams()[3].getClass(), ArrayList.class);
 
-        System.out.println("int[].class:" + stepStatus_1.getParams()[4].getClass());
-        Assert.assertEquals(stepStatus_1.getParams()[4].getClass(), int[].class);
-        Assert.assertEquals(stepStatus_1.getParams()[4].getClass(), int[].class);
+        System.out.println("int[].class:" + stepProcess_1.getParams()[4].getClass());
+        Assert.assertEquals(stepProcess_1.getParams()[4].getClass(), int[].class);
+        Assert.assertEquals(stepProcess_1.getParams()[4].getClass(), int[].class);
 
-        System.out.println("Double[].class:" + stepStatus_1.getParams()[5].getClass());
-        Assert.assertEquals(stepStatus_1.getParams()[5].getClass(), Double[].class);
+        System.out.println("Double[].class:" + stepProcess_1.getParams()[5].getClass());
+        Assert.assertEquals(stepProcess_1.getParams()[5].getClass(), Double[].class);
     }
 
     @Test(expected = ConfigReadException.class)
@@ -64,7 +64,7 @@ public class TestWorkflowConfigResolverAndParamsResolver {
         Transfer transfer = workflowConfig.getSteps().get(0).getTransfer();
         paramsResolver.resolverTransferParams(transfer);
 
-        StepStatus stepStatus_1 = workflowResolver.getWorkflowInstance().getStepStatusesMap().get("sign-1");
+        StepProcess stepProcess_1 = workflowResolver.getWorkflowInstance().getStepStatusesMap().get("sign-1");
 
         WorkflowResult response_1 = new WorkflowResult();
         response_1.setCode(200);
@@ -73,7 +73,7 @@ public class TestWorkflowConfigResolverAndParamsResolver {
         body.put("test1", "test");
         body.put("test2", "1.23");
         response_1.setBody(body);
-        stepStatus_1.setWfResponse(response_1);
+        stepProcess_1.setResult(response_1);
 
         // step2的参数根据step1的输出结果确定
         transfer = workflowConfig.getSteps().get(1).getTransfer();
@@ -96,7 +96,7 @@ public class TestWorkflowConfigResolverAndParamsResolver {
 
     static String wf = "{\n" +
             "  \"application\": \"application-test\",\n" +
-            "  \"id\": \"info-test\",\n" +
+            "  \"id\": \"model-test\",\n" +
             "  \"startTime\":\"2016-01-01\",\n" +
             "  \"stopTime\":\"2017-12-01\",\n" +
             "\n" +

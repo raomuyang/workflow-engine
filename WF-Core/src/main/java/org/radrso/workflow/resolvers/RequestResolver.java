@@ -1,6 +1,6 @@
 package org.radrso.workflow.resolvers;
 
-import org.radrso.workflow.entities.info.WorkflowResult;
+import org.radrso.workflow.entities.model.WorkflowResult;
 
 /**
  * Created by rao-mengnan on 2017/3/16.

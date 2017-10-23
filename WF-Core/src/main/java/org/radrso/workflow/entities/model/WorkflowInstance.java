@@ -1,7 +1,8 @@
-package org.radrso.workflow.entities.info;
+package org.radrso.workflow.entities.model;
 
 import lombok.Data;
 import lombok.ToString;
+import org.radrso.workflow.entities.StatusEnum;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -21,24 +22,17 @@ import java.util.*;
 @ToString
 @Document(collection = "workflowInstance")
 public class WorkflowInstance implements Serializable{
-    public static final String CREATED = "created";
-    public static final String EXPIRED = "expired";
-    public static final String RUNNING = "running";
-    public static final String COMPLETED = "completed";
-    public static final String EXCEPTION = "exception";
-    public static final String INTERRUPTED = "interrupted";
-
     private String workflowId;
     @Id
     private String instanceId;
     private Date createTime = new Date();
     private Date submitTime;
-    private String status = CREATED;
+    private StatusEnum status = StatusEnum.CREATED;
 
     private int branches = 0;
     private Map<Integer, String> branchStepMap;
 
-    private Map<String, StepStatus> stepStatusesMap;
+    private Map<String, StepProcess> stepStatusesMap;
     private Map<String, String> stepProcess;
     private List<String> finishedSequence;
 

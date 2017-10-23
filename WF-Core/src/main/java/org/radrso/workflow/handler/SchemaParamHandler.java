@@ -1,6 +1,7 @@
 package org.radrso.workflow.handler;
 
 import lombok.extern.log4j.Log4j;
+import org.radrso.plugins.ClassUtil;
 import org.radrso.plugins.CustomClassLoader;
 import org.radrso.plugins.JsonUtils;
 import org.radrso.workflow.constant.EngineConstant;
@@ -21,25 +22,7 @@ import java.util.Map;
  */
 @Log4j
 public class SchemaParamHandler {
-    private static final String UTILS_CLASS = "Date|List|Map";
-    private static final Map<String, Class> CLASS_MAP;
 
-    static {
-        CLASS_MAP = new HashMap<>();
-        CLASS_MAP.put("int[]", int[].class);
-        CLASS_MAP.put("double[]", double[].class);
-        CLASS_MAP.put("float[]", float[].class);
-        CLASS_MAP.put("short", short[].class);
-        CLASS_MAP.put("byte[]", byte[].class);
-        CLASS_MAP.put("char[]", char[].class);
-        CLASS_MAP.put("Integer[]", Integer[].class);
-        CLASS_MAP.put("Double[]", Double[].class);
-        CLASS_MAP.put("Float[]", Float[].class);
-        CLASS_MAP.put("Short[]", Short[].class);
-        CLASS_MAP.put("Byte[]", Byte[].class);
-        CLASS_MAP.put("Character[]", Character[].class);
-        CLASS_MAP.put("Boolean[]", Boolean[].class);
-    }
 
 
     private WorkflowInstance2 workflowInstance;
@@ -48,7 +31,7 @@ public class SchemaParamHandler {
         this.workflowInstance = workflowInstance;
     }
 
-    public List<Map<String, Object>> parameters(Transfer transfer) throws ConfigReadException, UnknownExceptionInRunning {
+    public List<Map<String, Object>> parameters(Transfer transfer) throws Exception {
         List<InputItem> inputs = transfer.getInput();
         if (inputs == null || inputs.size() == 0)
             return new ArrayList<>();
@@ -62,7 +45,6 @@ public class SchemaParamHandler {
             kv.put(inputItem.getName(), value);
             paramList.add(kv);
         }
-
         return paramList;
     }
 
@@ -76,7 +58,7 @@ public class SchemaParamHandler {
         if (EngineConstant.SCHEMA_INSTANCE_ID_VALUE.toLowerCase()
                 .equals(String.valueOf(param).toLowerCase()))
             return workflowInstance.getInstanceId();
- 
+
         try {
             if (param.startsWith(EngineConstant.OUTPUT_VALUE)) {
 
@@ -86,12 +68,12 @@ public class SchemaParamHandler {
                     return getStepResultBody(index[0]);
                 } else {
                     Object result = getStepResultBody(index[0]);
-                    Map kv = conversion(result, Map.class);
+                    Map kv = ClassUtil.conversion(result, Map.class);
                     for (int i = 1; i < index.length; ++i) {
                         result = kv.get(index[i]);
-                        if (i + 1 < index.length) kv = conversion(result, Map.class);
+                        if (i + 1 < index.length) kv = ClassUtil.conversion(result, Map.class);
                     }
-                    return conversion(result, objectClass(type));
+                    return ClassUtil.conversion(result, ClassUtil.objectClass(type));
                 }
             }
         } catch (Exception e) {
@@ -101,51 +83,6 @@ public class SchemaParamHandler {
         return param;
     }
 
-    public <T> T conversion (Object o, Class<T> clazz) {
-        return JsonUtils.mapToBean(o.toString(), clazz);
-    }
-
-    public Class objectClass(String type) {
-        if (type == null) {
-            return String.class;
-        }
-        type = casting(type);
-        try {
-            Class clazz;
-            if (type.contains("["))
-                clazz = CLASS_MAP.get(type);
-            else
-                clazz = CustomClassLoader.getClassLoader().loadClass(type);
-            if (clazz == null)
-                throw new ClassNotFoundException(String.format("No such class [%s]", type));
-            return clazz;
-            // TODO 包装错误
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(String.format("Param type error: (%s)", type) + e);
-        } catch (Throwable throwable) {
-            throw new RuntimeException("Value case error: " + throwable.getMessage());
-        }
-
-    }
-
-    /**
-     * Java base type
-     *
-     * @param type {@link java.lang} {@link java.util.Date}
-     * @return {@link java.lang.Number} or {@link java.util.Date}
-     */
-    private String casting(String type) {
-        if (type.contains(".") || type.contains("["))
-            return type;
-
-        type = type.substring(0, 1).toUpperCase() + type.substring(1).toLowerCase();
-        if (UTILS_CLASS.contains(type) && !type.contains("|"))
-            return "java.util." + type;
-        if (type.equals("Int")) {
-            type = "Integer";
-        }
-        return "java.lang." + type;
-    }
 
     private Object getStepResultBody(String stepSign) {
         return workflowInstance.getStepProcessMap().get(stepSign).getResult();

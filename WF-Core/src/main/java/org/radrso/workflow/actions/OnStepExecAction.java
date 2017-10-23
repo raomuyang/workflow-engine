@@ -1,4 +1,4 @@
-package org.radrso.workflow.internal.actions;
+package org.radrso.workflow.actions;
 
 import com.alibaba.dubbo.rpc.RpcException;
 import io.reactivex.annotations.NonNull;
@@ -13,10 +13,10 @@ import org.radrso.workflow.entities.schema.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;
-import org.radrso.workflow.entities.info.WorkflowResult;
-import org.radrso.workflow.entities.info.StepStatus;
-import org.radrso.workflow.entities.info.WorkflowErrorLog;
-import org.radrso.workflow.entities.info.WorkflowInstance;
+import org.radrso.workflow.entities.model.WorkflowResult;
+import org.radrso.workflow.entities.model.StepProcess;
+import org.radrso.workflow.entities.model.WorkflowErrorLog;
+import org.radrso.workflow.entities.model.WorkflowInstance;
 import org.radrso.workflow.launcher.WorkflowLaunchers;
 import org.radrso.workflow.resolvers.Resolvers;
 import org.radrso.workflow.resolvers.WorkflowResolver;
@@ -51,9 +51,9 @@ public class OnStepExecAction extends AbstractAction implements Consumer<Workflo
                 workflowResolver.next();
                 Step step = workflowResolver.getCurrentStep();
                 if (step != null) {
-                    StepStatus stepStatus = workflowResolver.getWorkflowInstance().getStepStatusesMap().get(step.getSign());
-                    if (stepStatus.getBegin() == null)
-                        stepStatus.setBegin(new Date());
+                    StepProcess stepProcess = workflowResolver.getWorkflowInstance().getStepStatusesMap().get(step.getSign());
+                    if (stepProcess.getBegin() == null)
+                        stepProcess.setBegin(new Date());
                 }
 
                 execBranches(workflowResolver);

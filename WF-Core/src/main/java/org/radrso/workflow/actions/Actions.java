@@ -1,5 +1,6 @@
-package org.radrso.workflow.internal.actions;
+package org.radrso.workflow.actions;
 
+import org.radrso.workflow.annotation.ActionEnum;
 import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.constant.ExceptionCode;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;

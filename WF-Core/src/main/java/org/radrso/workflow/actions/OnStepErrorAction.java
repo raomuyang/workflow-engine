@@ -1,4 +1,4 @@
-package org.radrso.workflow.internal.actions;
+package org.radrso.workflow.actions;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
@@ -6,11 +6,12 @@ import lombok.extern.log4j.Log4j;
 import org.bson.types.ObjectId;
 import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.constant.ExceptionCode;
+import org.radrso.workflow.entities.StatusEnum;
 import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;
-import org.radrso.workflow.entities.info.StepStatus;
-import org.radrso.workflow.entities.info.WorkflowErrorLog;
-import org.radrso.workflow.entities.info.WorkflowInstance;
+import org.radrso.workflow.entities.model.StepProcess;
+import org.radrso.workflow.entities.model.WorkflowErrorLog;
+import org.radrso.workflow.entities.model.WorkflowInstance;
 import org.radrso.workflow.resolvers.WorkflowResolver;
 
 import java.util.Map;
@@ -33,19 +34,19 @@ public class OnStepErrorAction extends AbstractAction implements Consumer<Throwa
         WorkflowInstance instance = workflowResolver.getWorkflowInstance();
         log.error("[STEP-EXCEPTION] " + instance.getInstanceId() + " " + workflowResolver.getCurrentStep().getSign() + " " + throwable);
         if (WFRuntimeException.WORKFLOW_EXPIRED.equals(throwable.getMessage()))
-            instance.setStatus(WorkflowInstance.EXPIRED);
+            instance.setStatus(StatusEnum.EXPIRED);
         else
-            instance.setStatus(WorkflowInstance.EXCEPTION);
+            instance.setStatus(StatusEnum.EXCEPTION);
 
         Step currentStep = workflowResolver.getCurrentStep();
         if (currentStep != null) {
             String stepSign = workflowResolver.getCurrentStep().getSign();
-            Map<String, StepStatus> stepStatusMap = workflowResolver.getWorkflowInstance().getStepStatusesMap();
-            StepStatus stepStatus = stepStatusMap.get(stepSign);
+            Map<String, StepProcess> stepStatusMap = workflowResolver.getWorkflowInstance().getStepStatusesMap();
+            StepProcess stepProcess = stepStatusMap.get(stepSign);
 
             workflowResolver.getWorkflowInstance().getStepProcess().put(stepSign, Step.STOPPED);
-            if (stepStatus != null)
-                stepStatus.setStatus(Step.STOPPED);
+            if (stepProcess != null)
+                stepProcess.setStatus(Step.STOPPED);
             else
                 log.error("StepStatus is null:" + stepSign);
         }

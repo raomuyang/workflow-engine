@@ -1,8 +1,9 @@
-package org.radrso.workflow.entities.info;
+package org.radrso.workflow.entities.model;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.radrso.workflow.entities.StatusEnum;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -13,22 +14,23 @@ import java.util.Date;
  * status       Step执行状态
  * params       当前Step参数列表
  * paramsNames  当前Step参数的参数名，顺序与params list一直
- * wfResponse   当前Step执行后的返回结果
+ * result   当前Step执行后的返回结果
  */
 @Getter
 @Setter
 @ToString
-public class StepStatus implements Serializable{
+public class StepProcess implements Serializable{
     private String sign;
     private String name;
-    private String status;
+    private StatusEnum status;
     private Date begin;
     private Date end;
     private Object[] params;
     private String[] paramNames;
-    private WorkflowResult wfResponse;
+    private WorkflowResult result;
+    private String preNode;
 
-    public StepStatus(String sign, String name) {
+    public StepProcess(String sign, String name) {
         this.sign = sign;
         this.name = name;
     }

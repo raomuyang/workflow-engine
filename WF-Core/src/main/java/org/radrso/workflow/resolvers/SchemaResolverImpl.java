@@ -11,9 +11,8 @@ import org.radrso.workflow.entities.schema.items.InputItem;
 import org.radrso.workflow.entities.schema.items.Transfer;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
-import org.radrso.workflow.entities.info.StepStatus;
-import org.radrso.workflow.entities.info.WorkflowInstance;
-import org.radrso.workflow.resolvers.SchemaResolver;
+import org.radrso.workflow.entities.model.StepProcess;
+import org.radrso.workflow.entities.model.WorkflowInstance;
 
 import java.util.HashMap;
 import java.util.List;
@@ -90,7 +89,7 @@ public class SchemaResolverImpl implements SchemaResolver {
                 paramStr = paramStr.replaceAll("\\[", ".").replaceAll("]", "");
                 sp = paramStr.split("\\.");
                 // sp[1]是step-sign，即该step的id。初始时result为参数表达式的step返回值。WFResponse中的body才是返回值实体
-                Object output = getStepStatusMap().get(sp[1]).getWfResponse().getBody();
+                Object output = getStepStatusMap().get(sp[1]).getResult().getBody();
                 result = output;
 
                 for (; parseStrIndex < sp.length; ++parseStrIndex) {
@@ -165,7 +164,7 @@ public class SchemaResolverImpl implements SchemaResolver {
         return "java.lang." + type;
     }
 
-    private Map<String, StepStatus> getStepStatusMap() {
+    private Map<String, StepProcess> getStepStatusMap() {
         return this.workflowInstance.getStepStatusesMap();
     }
 

@@ -1,8 +1,8 @@
-package org.radrso.workflow.internal.actions;
+package org.radrso.workflow.actions;
 
 import io.reactivex.functions.Action;
 import org.radrso.workflow.base.Commander;
-import org.radrso.workflow.entities.info.WorkflowInstance;
+import org.radrso.workflow.entities.model.WorkflowInstance;
 import org.radrso.workflow.resolvers.WorkflowResolver;
 
 /**

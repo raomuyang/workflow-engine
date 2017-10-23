@@ -1,4 +1,4 @@
-package org.radrso.workflow.internal.actions;
+package org.radrso.workflow.actions;
 
 import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.internal.Operations;
@@ -10,7 +10,7 @@ public abstract class AbstractAction implements Action{
     protected Commander commander;
     protected Operations operations;
 
-    public AbstractAction(Commander commander) {
+    AbstractAction(Commander commander) {
         this.commander = commander;
         this.operations = new Operations(commander);
     }

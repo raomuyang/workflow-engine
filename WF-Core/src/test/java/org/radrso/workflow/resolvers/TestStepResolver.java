@@ -3,7 +3,7 @@ package org.radrso.workflow.resolvers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.radrso.workflow.entities.schema.items.Step;
-import org.radrso.workflow.entities.info.WorkflowResult;
+import org.radrso.workflow.entities.model.WorkflowResult;
 
 /**
  * Created by rao-mengnan on 2017/3/12.
@@ -45,7 +45,7 @@ public class TestStepResolver {
         Step step = new Step();
         step.setCall("http://www.tuling123.com/openapi/{endpoint}");
         step.setMethod("POsT");
-        String[] paramNames = new String[]{"key", "info", "userid", "{endpoint}", "$Content-Type"};
+        String[] paramNames = new String[]{"key", "model", "userid", "{endpoint}", "$Content-Type"};
         String[] params = new String[]{"asdf", "你好", "12345678", "api", "asdfasf"};
 
         RequestResolverImpl resolver = new RequestResolverImpl(step, params, paramNames);

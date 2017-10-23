@@ -27,7 +27,7 @@ import java.util.Map;
 
 /**
  * Created by raomengnan on 17-1-15.
- * 解析步骤的执行，请求URL或者调用指定方法
+ * FSM中的输出函数，执行当前的步骤:http请求或class方法执行
  */
 @Log4j
 public class RequestHandler {
