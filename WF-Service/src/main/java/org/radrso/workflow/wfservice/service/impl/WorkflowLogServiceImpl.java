@@ -1,6 +1,6 @@
 package org.radrso.workflow.wfservice.service.impl;
 
-import org.radrso.workflow.entities.info.WorkflowErrorLog;
+import org.radrso.workflow.entities.model.WorkflowErrorLog;
 import org.radrso.workflow.wfservice.repositories.WorkflowErrorLogRepository;
 import org.radrso.workflow.wfservice.service.WorkflowLogService;
 import org.springframework.beans.factory.annotation.Autowired;

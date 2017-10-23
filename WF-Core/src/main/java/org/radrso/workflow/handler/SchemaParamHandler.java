@@ -6,7 +6,7 @@ import org.radrso.plugins.JsonUtils;
 import org.radrso.workflow.constant.EngineConstant;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
-import org.radrso.workflow.entities.info.WorkflowInstance2;
+import org.radrso.workflow.entities.model.WorkflowInstance2;
 import org.radrso.workflow.entities.schema.items.InputItem;
 import org.radrso.workflow.entities.schema.items.Transfer;
 
@@ -68,19 +68,19 @@ public class SchemaParamHandler {
 
     /**
      *
-     * @param paramStr {output}.step_x_sign.xxx.xxx
+     * @param param {output}.step_x_sign.xxx.xxx
      * @return object
      */
-    public Object convertStrParam(String paramStr, String type) throws ConfigReadException {
+    public Object convertStrParam(String param, String type) throws ConfigReadException {
 
         if (EngineConstant.SCHEMA_INSTANCE_ID_VALUE.toLowerCase()
-                .equals(String.valueOf(paramStr).toLowerCase()))
+                .equals(String.valueOf(param).toLowerCase()))
             return workflowInstance.getInstanceId();
-
+ 
         try {
-            if (paramStr.startsWith(EngineConstant.OUTPUT_VALUE)) {
+            if (param.startsWith(EngineConstant.OUTPUT_VALUE)) {
 
-                String[] index = paramStr.replace(EngineConstant.OUTPUT_VALUE + ".", "").split("\\.");
+                String[] index = param.replace(EngineConstant.OUTPUT_VALUE + ".", "").split("\\.");
                 if (index.length == 1) {
                     log.debug(String.format("Request index: %s", index[0]));
                     return getStepResultBody(index[0]);
@@ -98,7 +98,7 @@ public class SchemaParamHandler {
             throw new ConfigReadException("Invalid config.", e);
         }
 
-        return paramStr;
+        return param;
     }
 
     public <T> T conversion (Object o, Class<T> clazz) {

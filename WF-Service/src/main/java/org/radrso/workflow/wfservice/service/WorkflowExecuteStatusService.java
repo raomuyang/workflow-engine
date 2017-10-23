@@ -1,6 +1,6 @@
 package org.radrso.workflow.wfservice.service;
 
-import org.radrso.workflow.entities.info.WorkflowExecuteStatus;
+import org.radrso.workflow.entities.model.WorkflowExecuteStatus;
 import org.springframework.data.domain.Page;
 
 /**

@@ -4,7 +4,7 @@ import org.radrso.workflow.base.Operations;
 import org.radrso.workflow.constant.EngineConstant;
 import org.radrso.workflow.entities.schema.JarFile;
 import org.radrso.workflow.entities.schema.items.Step;
-import org.radrso.workflow.entities.info.WorkflowResult;
+import org.radrso.workflow.entities.model.WorkflowResult;
 import org.radrso.workflow.base.BaseOperations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

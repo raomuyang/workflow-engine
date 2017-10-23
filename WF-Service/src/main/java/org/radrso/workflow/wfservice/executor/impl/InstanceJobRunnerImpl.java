@@ -1,12 +1,12 @@
 package org.radrso.workflow.wfservice.executor.impl;
 
 import org.radrso.plugins.requests.entity.ResponseCode;
-import org.radrso.workflow.entities.info.WorkflowInstance;
+import org.radrso.workflow.entities.model.WorkflowInstance;
 import org.radrso.workflow.launcher.FlowLauncher;
 import org.radrso.workflow.launcher.WorkflowLaunchers;
 import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.resolvers.WorkflowResolver;
-import org.radrso.workflow.entities.info.WorkflowResult;
+import org.radrso.workflow.entities.model.WorkflowResult;
 import org.radrso.workflow.wfservice.executor.InstanceJobRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
