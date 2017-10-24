@@ -1,9 +1,13 @@
-package org.radrso.workflow.handler;
+package org.radrso.workflow.schedulers;
 
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import lombok.extern.log4j.Log4j;
+import org.radrso.workflow.internal.model.Next;
+import org.radrso.workflow.internal.model.Tasks;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 
@@ -18,6 +22,12 @@ public class TaskScheduler {
 
     private static ListeningExecutorService executor;
     private static TaskScanner scanner;
+
+    public static void submit(List<? extends Next> nextList) {
+        List<TaskAgent> agents = new ArrayList<>();
+        for (Next sub: nextList) agents.add(new TaskAgent(sub));
+        Tasks.submit(agents);
+    }
 
     synchronized static ListeningExecutorService getService() {
         if (executor == null) {

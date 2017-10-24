@@ -1,4 +1,4 @@
-package org.radrso.workflow.actions;
+package org.radrso.workflow.actionold;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
@@ -45,8 +45,8 @@ public class OnStepErrorAction extends AbstractAction implements Consumer<Throwa
             StepProcess stepProcess = stepStatusMap.get(stepSign);
 
             workflowResolver.getWorkflowInstance().getStepProcess().put(stepSign, Step.STOPPED);
-            if (stepProcess != null)
-                stepProcess.setStatus(Step.STOPPED);
+            if (stepProcess != null);
+//                stepProcess.setStatus(Step.STOPPED);
             else
                 log.error("StepStatus is null:" + stepSign);
         }

@@ -48,7 +48,7 @@ public class WorkflowResolverImpl implements WorkflowResolver, Serializable {
         if (workflowConfig.getSteps() != null)
             workflowConfig.getSteps().forEach(step -> {
 
-                StepProcess stepProcess = new StepProcess(step.getSign(), step.getName());
+                StepProcess stepProcess = new StepProcess(workflowInstance.getInstanceId(), step.getSign(), step.getName());
                 stepProcess.setStatus(StatusEnum.WAIT);
                 workflowInstance.getStepStatusesMap().put(step.getSign(), stepProcess);
 
@@ -66,20 +66,20 @@ public class WorkflowResolverImpl implements WorkflowResolver, Serializable {
      */
     @Override
     public WorkflowResolverImpl next() throws ConfigReadException, UnknownExceptionInRunning {
-        Transfer currentTransfer = getCurrentTransfer();
-        if (currentTransfer == null)
-            return null;
-
-        Step nextStep = transferToNextStep(currentTransfer);
-
-        //修改instance中每个step对应的状态
-        workflowInstance.getStepProcess().put(currentStep.getSign(), Step.FINISHED);
-        workflowInstance.getStepStatusesMap().get(currentStep.getSign()).setStatus(Step.FINISHED);
-
-        lastStep = currentStep;
-        currentStep = nextStep;
-        workflowInstance.getStepProcess().put(currentStep.getSign(), Step.RUNNING);
-        workflowInstance.getStepStatusesMap().get(currentStep.getSign()).setStatus(Step.RUNNING);
+//        Transfer currentTransfer = getCurrentTransfer();
+//        if (currentTransfer == null)
+//            return null;
+//
+//        Step nextStep = transferToNextStep(currentTransfer);
+//
+//        //修改instance中每个step对应的状态
+//        workflowInstance.getStepProcess().put(currentStep.getSign(), Step.FINISHED);
+//        workflowInstance.getStepStatusesMap().get(currentStep.getSign()).setStatus(Step.FINISHED);
+//
+//        lastStep = currentStep;
+//        currentStep = nextStep;
+//        workflowInstance.getStepProcess().put(currentStep.getSign(), Step.RUNNING);
+//        workflowInstance.getStepStatusesMap().get(currentStep.getSign()).setStatus(Step.RUNNING);
 
         return this;
     }

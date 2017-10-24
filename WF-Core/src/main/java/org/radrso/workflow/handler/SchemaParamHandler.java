@@ -2,12 +2,9 @@ package org.radrso.workflow.handler;
 
 import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.ClassUtil;
-import org.radrso.plugins.CustomClassLoader;
-import org.radrso.plugins.JsonUtils;
 import org.radrso.workflow.constant.EngineConstant;
 import org.radrso.workflow.entities.exceptions.ConfigReadException;
-import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
-import org.radrso.workflow.entities.model.WorkflowInstance2;
+import org.radrso.workflow.internal.model.WorkflowInstanceInfo;
 import org.radrso.workflow.entities.schema.items.InputItem;
 import org.radrso.workflow.entities.schema.items.Transfer;
 
@@ -25,10 +22,10 @@ public class SchemaParamHandler {
 
 
 
-    private WorkflowInstance2 workflowInstance;
+    private WorkflowInstanceInfo workflowInstanceInfo;
 
-    public SchemaParamHandler(WorkflowInstance2 workflowInstance) {
-        this.workflowInstance = workflowInstance;
+    public SchemaParamHandler(WorkflowInstanceInfo workflowInstanceInfo) {
+        this.workflowInstanceInfo = workflowInstanceInfo;
     }
 
     public List<Map<String, Object>> parameters(Transfer transfer) throws Exception {
@@ -57,7 +54,7 @@ public class SchemaParamHandler {
 
         if (EngineConstant.SCHEMA_INSTANCE_ID_VALUE.toLowerCase()
                 .equals(String.valueOf(param).toLowerCase()))
-            return workflowInstance.getInstanceId();
+            return workflowInstanceInfo.getInstanceId();
 
         try {
             if (param.startsWith(EngineConstant.OUTPUT_VALUE)) {
@@ -85,7 +82,7 @@ public class SchemaParamHandler {
 
 
     private Object getStepResultBody(String stepSign) {
-        return workflowInstance.getStepProcessMap().get(stepSign).getResult();
+        return workflowInstanceInfo.getStepProcessMap().get(stepSign).getResult();
     }
 
 }

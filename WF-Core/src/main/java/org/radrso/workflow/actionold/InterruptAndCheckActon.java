@@ -1,4 +1,4 @@
-package org.radrso.workflow.actions;
+package org.radrso.workflow.actionold;
 
 /**
  * Created by rao-mengnan on 2017/5/18.
@@ -42,19 +42,19 @@ public class InterruptAndCheckActon extends AbstractAction implements Consumer<W
                 break;
             }
 
-            if (originInstanceInfo.getStatus().equals(WorkflowInstance.RUNNING)){
-                originInstanceInfo =  commander.getInstance(instanceId);
-                continue;
-            }
+//            if (originInstanceInfo.getStatus().equals(WorkflowInstance.RUNNING)){
+//                originInstanceInfo =  commander.getInstance(instanceId);
+//                continue;
+//            }
 
             interrupted = true;
             for (int i = 1; i <= branches; i++){
                 String id = instanceId + "-" + i;
                 WorkflowInstance instanceBranch = commander.getInstance(id);
-                if (instanceBranch.getStatus().equals(WorkflowInstance.RUNNING)) {
-                    interrupted = false;
-                    break;
-                }
+//                if (instanceBranch.getStatus().equals(WorkflowInstance.RUNNING)) {
+//                    interrupted = false;
+//                    break;
+//                }
             }
         }
         if (!interrupted){

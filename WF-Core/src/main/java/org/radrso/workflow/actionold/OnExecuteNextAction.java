@@ -1,4 +1,4 @@
-package org.radrso.workflow.actions;
+package org.radrso.workflow.actionold;
 
 import io.reactivex.functions.Action;
 import org.radrso.workflow.base.Commander;
@@ -19,7 +19,7 @@ public class OnExecuteNextAction extends AbstractAction implements Action {
     @Override
     public void run() throws Exception {
         WorkflowInstance instance = resolver.getWorkflowInstance();
-        instance.setStatus(WorkflowInstance.RUNNING);
+//        instance.setStatus(WorkflowInstance.RUNNING);
         commander.updateInstance(instance);
 
         Actions.startStream(resolver, commander);

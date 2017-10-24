@@ -1,12 +1,11 @@
 package org.radrso.workflow.handler;
 
-import com.sun.istack.internal.NotNull;
+import lombok.NonNull;
 import lombok.extern.log4j.Log4j;
 import org.radrso.workflow.constant.EngineConstant;
-import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
-import org.radrso.workflow.entities.model.Next;
+import org.radrso.workflow.internal.model.Next;
 import org.radrso.workflow.entities.model.StepProcess;
-import org.radrso.workflow.entities.model.WorkflowInstance2;
+import org.radrso.workflow.internal.model.WorkflowInstanceInfo;
 import org.radrso.workflow.entities.schema.WorkflowSchema;
 import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.schema.items.Switch;
@@ -36,8 +35,8 @@ public class FlowStepHandler {
     /**
      * 指向当前已完成步骤的游标，开始向下一步骤转移
      */
-    public List<String> getCursor(WorkflowInstance2 instance) {
-        List<String> cursor = instance.getCursor();
+    public List<String> getCursor(WorkflowInstanceInfo instanceInfo) {
+        List<String> cursor = instanceInfo.getCursor();
         if (cursor == null) {
             log.warn("Invalid cursor.");
             // TODO throw it
@@ -50,11 +49,11 @@ public class FlowStepHandler {
         return cursor;
     }
 
-    public Step getStepInfo(@NotNull String cursor) {
+    public Step getStepInfo(@NonNull String cursor) {
         return stepMap.get(cursor);
     }
 
-    public List<Next> transferTo(String cursor, WorkflowInstance2 instance) throws UnknownExceptionInRunning, Exception {
+    public List<Next> transferTo(String cursor, WorkflowInstanceInfo instance) throws Exception {
 
         Step lastStep = getLastStep(cursor);
         if (lastStep == null) return null;
@@ -81,10 +80,10 @@ public class FlowStepHandler {
     /**
      *
      * @param transfer inner transfer schema body
-     * @param instance workflow instance
+     * @param instanceInfo workflow instanceInfo
      * @return Switch transfer direction.
      */
-    private Transfer selectSwitch(Transfer transfer, WorkflowInstance2 instance) throws Exception {
+    Transfer selectSwitch(Transfer transfer, WorkflowInstanceInfo instanceInfo) throws Exception {
         if (transfer.getRunSwitch() == null) {
             return transfer;
         }
@@ -92,30 +91,46 @@ public class FlowStepHandler {
         Switch switchBody = transfer.getRunSwitch();
         String type = switchBody.getType();
 
-        Object variableA = Functions.mapParam2(instance).mapTo(String.valueOf(switchBody.getVariable()), type);
+        Object variableA = Functions.mapParam2(instanceInfo).mapTo(String.valueOf(switchBody.getVariable()), type);
 
-        Object compareTo =Functions.mapParam2(instance).mapTo(String.valueOf(switchBody.getCompareTo()), type);
+        Object compareTo =Functions.mapParam2(instanceInfo).mapTo(String.valueOf(switchBody.getCompareTo()), type);
 
         String condition = switchBody.getExpression();
         boolean result = Functions.condition(condition).check(variableA, compareTo);
         return result ? switchBody.getIfTransfer() : switchBody.getElseTransfer();
     }
 
-    private Next getNext(Transfer transfer, String precursor, WorkflowInstance2 instance) throws UnknownExceptionInRunning, Exception {
+    /**
+     * TODO 目前step process在此处初始化，尚未考虑到从持久数据中初始化
+     * @param transfer
+     * @param precursor
+     * @param instanceInfo
+     * @return
+     * @throws Exception
+     */
+    Next getNext(Transfer transfer, String precursor, WorkflowInstanceInfo instanceInfo) throws Exception {
         Next next = new Next();
         next.setPrecursor(precursor);
 
-        Transfer toNext = selectSwitch(transfer, instance);
+        Transfer toNext = selectSwitch(transfer, instanceInfo);
         String nextCursor = toNext.getTo();
-        StepProcess stepProcess = instance.getStepProcessMap().get(nextCursor);
-        stepProcess.setPreNode(precursor);
+        StepProcess stepProcess = instanceInfo.getStepProcessMap().get(nextCursor);
+        Step stepInfo = stepMap.get(nextCursor);
 
+        if (stepProcess == null) {
+            stepProcess = new StepProcess(instanceInfo.getInstanceId(), nextCursor, stepInfo.getName());
+            instanceInfo.getStepProcessMap().put(nextCursor, stepProcess);
+        }
+        stepProcess.setPrecursor(precursor);
+
+        List<Map<String, Object>> params = Functions.mapParam1(instanceInfo).mapTo(transfer);
+        next.setParams(params);
         next.setProcess(stepProcess);
-        next.setTransfer(toNext);
+        next.setStepInfo(stepInfo);
         return next;
     }
 
-    private Step getLastStep(String sign) {
+    Step getLastStep(String sign) {
 
         Step step = stepMap.get(sign);
         if (step == null) {

@@ -1,4 +1,4 @@
-package org.radrso.workflow.actions;
+package org.radrso.workflow.actionold;
 
 import com.alibaba.dubbo.rpc.RpcException;
 import io.reactivex.annotations.NonNull;
@@ -155,10 +155,10 @@ public class OnStepExecAction extends AbstractAction implements Consumer<Workflo
 
             // 防止重复执行已经执行过的分支
             WorkflowInstance instance = commander.getInstance(branchId);
-            if (instance != null && WorkflowInstance.COMPLETED.equals(instance.getStatus())) {
-                scatterTransfer = workflowResolver.popBranchTransfer();
-                continue;
-            }
+//            if (instance != null && WorkflowInstance.COMPLETED.equals(instance.getStatus())) {
+//                scatterTransfer = workflowResolver.popBranchTransfer();
+//                continue;
+//            }
 
             String msg = String.format("Scatter to [%s] from step[%s]/[%s]",
                     scatterTransfer.getTo(), currentStep.getSign(), workflowResolver.getWorkflowInstance().getInstanceId());

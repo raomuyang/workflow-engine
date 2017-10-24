@@ -9,7 +9,7 @@ import org.radrso.plugins.requests.entity.exceptions.impl.RequestException;
  */
 public class RequestMethodMapping {
     public static MethodEnum getMethod(String name) throws RequestException {
-        name = name.toLowerCase();
+        name = String.valueOf(name).toLowerCase();
         switch (name){
             case "get": return MethodEnum.GET;
             case "post": return MethodEnum.POST;

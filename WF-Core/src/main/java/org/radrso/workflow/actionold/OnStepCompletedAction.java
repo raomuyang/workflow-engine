@@ -1,4 +1,4 @@
-package org.radrso.workflow.actions;
+package org.radrso.workflow.actionold;
 
 import io.reactivex.functions.Action;
 import lombok.extern.log4j.Log4j;
@@ -39,7 +39,7 @@ public class OnStepCompletedAction extends AbstractAction implements Action{
                 log.warn(String.format("Check instance stopped: Can't find instance by [%s], maybe doesn't created", instanceId));
                 return;
             }
-            originInfo.setStatus(WorkflowInstance.INTERRUPTED);
+//            originInfo.setStatus(WorkflowInstance.INTERRUPTED);
             commander.updateInstance(originInfo);
             return;
         }
@@ -48,14 +48,14 @@ public class OnStepCompletedAction extends AbstractAction implements Action{
         flowResolver.getWorkflowInstance().getStepProcess().put(stepSign, Step.FINISHED);
 
         Map<String, StepProcess> stepStatusMap = flowResolver.getWorkflowInstance().getStepStatusesMap();
-        stepStatusMap.get(stepSign).setStatus(Step.FINISHED);
+//        stepStatusMap.get(stepSign).setStatus(Step.FINISHED);
         flowResolver.getWorkflowInstance().getFinishedSequence().add(
                 flowResolver.getCurrentStep().getSign()
         );
 
         boolean eof = flowResolver.eof();
         if (eof) {
-            flowResolver.getWorkflowInstance().setStatus(WorkflowInstance.COMPLETED);
+//            flowResolver.getWorkflowInstance().setStatus(WorkflowInstance.COMPLETED);
             flowResolver.getWorkflowInstance().setSubmitTime(new Date());
         }
 
