@@ -15,9 +15,8 @@ import java.util.Map;
  * Created by raomengnan on 17-2-9.
  * sign         Step标志（ID）
  * status       Step执行状态
- * params       当前Step参数列表
- * paramsNames  当前Step参数的参数名，顺序与params list一直
- * result   当前Step执行后的返回结果
+ * params       Step参数列表
+ * result       Step执行后的返回结果
  */
 @Data
 @ToString

@@ -44,11 +44,6 @@
             <artifactId>guava</artifactId>
             <version>20.0</version>
         </dependency>
-        <dependency>
-            <groupId>io.reactivex.rxjava2</groupId>
-            <artifactId>rxjava</artifactId>
-            <version>2.0.7</version>
-        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
@@ -56,11 +51,14 @@
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
+
+        <!--deprecate-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>dubbo</artifactId>
             <version>RELEASE</version>
         </dependency>
+        <!--deprecate-->
 
     </dependencies>
 
