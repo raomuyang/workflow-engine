@@ -1,14 +1,14 @@
 package org.radrso.workflow.internal.function;
 
-import org.radrso.workflow.entities.model.WorkflowResult;
+import org.radrso.workflow.entity.model.WorkflowResult;
 import org.radrso.workflow.function.*;
 import org.radrso.workflow.handler.PackageImportHandler;
 import org.radrso.workflow.internal.model.Next;
 import org.radrso.workflow.internal.model.WorkflowInstanceInfo;
-import org.radrso.workflow.entities.schema.items.Transfer;
+import org.radrso.workflow.entity.schema.items.Transfer;
 import org.radrso.workflow.handler.CompareHandler;
 import org.radrso.workflow.handler.SchemaParamHandler;
-import org.radrso.workflow.schedulers.TaskScheduler;
+import org.radrso.workflow.scheduler.TaskScheduler;
 
 import java.util.List;
 import java.util.Map;

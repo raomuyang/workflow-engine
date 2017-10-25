@@ -2,8 +2,8 @@ package org.radrso.workflow.resolvers;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.radrso.workflow.entities.schema.items.Step;
-import org.radrso.workflow.entities.model.WorkflowResult;
+import org.radrso.workflow.entity.schema.items.Step;
+import org.radrso.workflow.entity.model.WorkflowResult;
 
 /**
  * Created by rao-mengnan on 2017/3/12.

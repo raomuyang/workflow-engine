@@ -1,6 +1,6 @@
 package org.radrso.workflow.wfservice.repositories;
 
-import org.radrso.workflow.entities.schema.WorkflowSchema;
+import org.radrso.workflow.entity.schema.WorkflowSchema;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

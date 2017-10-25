@@ -1,9 +1,8 @@
 package org.radrso.workflow.internal.model;
 
 import lombok.Data;
-import org.radrso.workflow.entities.model.StepProgress;
-import org.radrso.workflow.entities.schema.items.Step;
-import org.radrso.workflow.entities.schema.items.Transfer;
+import org.radrso.workflow.entity.model.StepProgress;
+import org.radrso.workflow.entity.schema.items.Step;
 
 import java.io.Serializable;
 import java.util.Date;

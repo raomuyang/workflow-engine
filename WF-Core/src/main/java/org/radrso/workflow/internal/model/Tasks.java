@@ -1,7 +1,7 @@
 package org.radrso.workflow.internal.model;
 
 import lombok.NonNull;
-import org.radrso.workflow.schedulers.TaskAgent;
+import org.radrso.workflow.scheduler.TaskAgent;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;

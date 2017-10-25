@@ -1,7 +1,7 @@
 package org.radrso.workflow.wfservice.controller;
 
 import lombok.extern.log4j.Log4j;
-import org.radrso.workflow.entities.model.WorkflowErrorLog;
+import org.radrso.workflow.entity.model.WorkflowErrorLog;
 import org.radrso.workflow.wfservice.service.WorkflowLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

@@ -1,7 +1,7 @@
 package org.radrso.workflow.wfservice.service.impl;
 
 import lombok.extern.log4j.Log4j;
-import org.radrso.workflow.entities.model.WorkflowRuntimeState;
+import org.radrso.workflow.entity.model.WorkflowRuntimeState;
 import org.radrso.workflow.wfservice.repositories.WorkflowStatusRepository;
 import org.radrso.workflow.wfservice.service.WorkflowExecuteStatusService;
 import org.springframework.beans.factory.annotation.Autowired;

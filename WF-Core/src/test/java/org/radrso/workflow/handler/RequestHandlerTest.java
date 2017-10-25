@@ -4,8 +4,8 @@ import org.apache.http.entity.ContentType;
 import org.junit.Assert;
 import org.junit.Test;
 import org.radrso.workflow.constant.WFStatusCode;
-import org.radrso.workflow.entities.model.WorkflowResult;
-import org.radrso.workflow.entities.schema.items.Step;
+import org.radrso.workflow.entity.model.WorkflowResult;
+import org.radrso.workflow.entity.schema.items.Step;
 
 import java.util.*;
 

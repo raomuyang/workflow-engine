@@ -1,9 +1,9 @@
 package org.radrso.workflow.internal.model;
 
 import lombok.ToString;
-import org.radrso.workflow.entities.StatusEnum;
-import org.radrso.workflow.entities.model.Instance;
-import org.radrso.workflow.entities.model.StepProgress;
+import org.radrso.workflow.entity.StatusEnum;
+import org.radrso.workflow.entity.model.Instance;
+import org.radrso.workflow.entity.model.StepProgress;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

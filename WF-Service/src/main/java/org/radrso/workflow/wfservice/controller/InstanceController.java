@@ -1,9 +1,9 @@
 package org.radrso.workflow.wfservice.controller;
 
 import lombok.extern.log4j.Log4j;
-import org.radrso.workflow.entities.schema.WorkflowSchema;
-import org.radrso.workflow.entities.model.WorkflowResult;
-import org.radrso.workflow.entities.model.WorkflowInstance;
+import org.radrso.workflow.entity.schema.WorkflowSchema;
+import org.radrso.workflow.entity.model.WorkflowResult;
+import org.radrso.workflow.entity.model.WorkflowInstance;
 import org.radrso.workflow.resolvers.WorkflowResolver;
 import org.radrso.workflow.resolvers.Resolvers;
 import org.radrso.workflow.wfservice.executor.InstanceJobRunner;

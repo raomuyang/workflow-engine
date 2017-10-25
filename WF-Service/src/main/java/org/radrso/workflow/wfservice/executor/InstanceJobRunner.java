@@ -1,7 +1,7 @@
 package org.radrso.workflow.wfservice.executor;
 
 import org.radrso.workflow.resolvers.WorkflowResolver;
-import org.radrso.workflow.entities.model.WorkflowResult;
+import org.radrso.workflow.entity.model.WorkflowResult;
 
 /**
  * Created by raomengnan on 17-1-14.

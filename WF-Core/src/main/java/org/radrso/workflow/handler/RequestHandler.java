@@ -14,8 +14,8 @@ import org.radrso.workflow.constant.EngineConstant;
 import org.radrso.workflow.constant.ExceptionCode;
 import org.radrso.workflow.constant.RequestMethodMapping;
 import org.radrso.workflow.constant.WFStatusCode;
-import org.radrso.workflow.entities.model.WorkflowResult;
-import org.radrso.workflow.entities.schema.items.Step;
+import org.radrso.workflow.entity.model.WorkflowResult;
+import org.radrso.workflow.entity.schema.items.Step;
 
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;

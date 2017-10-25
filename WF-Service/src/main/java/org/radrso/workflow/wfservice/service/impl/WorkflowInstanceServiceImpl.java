@@ -1,8 +1,8 @@
 package org.radrso.workflow.wfservice.service.impl;
 
 import org.bson.types.ObjectId;
-import org.radrso.workflow.entities.schema.WorkflowSchema;
-import org.radrso.workflow.entities.model.WorkflowInstance;
+import org.radrso.workflow.entity.schema.WorkflowSchema;
+import org.radrso.workflow.entity.model.WorkflowInstance;
 import org.radrso.workflow.wfservice.repositories.WorkflowInstanceRepository;
 import org.radrso.workflow.wfservice.repositories.WorkflowRepository;
 import org.radrso.workflow.wfservice.service.WorkflowInstanceService;

@@ -4,12 +4,12 @@ import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.ClassUtil;
 import org.radrso.workflow.constant.EngineConstant;
 import org.radrso.workflow.constant.WFStatusCode;
-import org.radrso.workflow.entities.exceptions.SchemaResolveException;
-import org.radrso.workflow.entities.exceptions.WFError;
-import org.radrso.workflow.entities.model.WorkflowResult;
+import org.radrso.workflow.entity.exception.SchemaResolveException;
+import org.radrso.workflow.entity.exception.WFError;
+import org.radrso.workflow.entity.model.WorkflowResult;
 import org.radrso.workflow.internal.model.WorkflowInstanceInfo;
-import org.radrso.workflow.entities.schema.items.InputItem;
-import org.radrso.workflow.entities.schema.items.Transfer;
+import org.radrso.workflow.entity.schema.items.InputItem;
+import org.radrso.workflow.entity.schema.items.Transfer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

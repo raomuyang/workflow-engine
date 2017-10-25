@@ -1,6 +1,6 @@
 package org.radrso.workflow.wfservice.repositoy;
 
-import org.radrso.workflow.entities.model.Instance;
+import org.radrso.workflow.entity.model.Instance;
 
 import java.util.List;
 

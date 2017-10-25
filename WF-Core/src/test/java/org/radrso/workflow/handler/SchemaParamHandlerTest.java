@@ -5,10 +5,10 @@ import com.google.gson.GsonBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.radrso.plugins.JsonUtils;
-import org.radrso.workflow.entities.model.StepProgress;
-import org.radrso.workflow.entities.model.WorkflowResult;
-import org.radrso.workflow.entities.schema.WorkflowSchema;
-import org.radrso.workflow.entities.schema.items.Transfer;
+import org.radrso.workflow.entity.model.StepProgress;
+import org.radrso.workflow.entity.model.WorkflowResult;
+import org.radrso.workflow.entity.schema.WorkflowSchema;
+import org.radrso.workflow.entity.schema.items.Transfer;
 import org.radrso.workflow.internal.model.WorkflowInstanceInfo;
 
 import java.util.List;

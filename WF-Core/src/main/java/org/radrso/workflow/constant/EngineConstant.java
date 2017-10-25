@@ -2,7 +2,7 @@ package org.radrso.workflow.constant;
 
 import org.radrso.plugins.FileUtils;
 import org.radrso.plugins.JsonUtils;
-import org.radrso.workflow.entities.Properties;
+import org.radrso.workflow.entity.Properties;
 
 import java.io.File;
 import java.util.ArrayList;

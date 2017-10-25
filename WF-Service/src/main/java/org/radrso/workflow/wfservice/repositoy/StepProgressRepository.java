@@ -1,6 +1,6 @@
 package org.radrso.workflow.wfservice.repositoy;
 
-import org.radrso.workflow.entities.model.StepProgress;
+import org.radrso.workflow.entity.model.StepProgress;
 
 import java.util.List;
 

@@ -5,7 +5,7 @@ import org.radrso.plugins.CustomClassLoader;
 import org.radrso.plugins.FileUtils;
 import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.workflow.constant.ExceptionCode;
-import org.radrso.workflow.entities.model.WorkflowResult;
+import org.radrso.workflow.entity.model.WorkflowResult;
 
 import java.io.File;
 import java.io.IOException;

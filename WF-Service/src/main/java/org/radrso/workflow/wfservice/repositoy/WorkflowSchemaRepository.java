@@ -1,6 +1,6 @@
 package org.radrso.workflow.wfservice.repositoy;
 
-import org.radrso.workflow.entities.schema.WorkflowSchema;
+import org.radrso.workflow.entity.schema.WorkflowSchema;
 
 /**
  * Created by Rao-Mengnan

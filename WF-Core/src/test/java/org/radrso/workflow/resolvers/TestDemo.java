@@ -3,8 +3,8 @@ package org.radrso.workflow.resolvers;
 import com.google.gson.Gson;
 import org.junit.Before;
 import org.junit.Test;
-import org.radrso.workflow.entities.schema.WorkflowSchema;
-import org.radrso.workflow.entities.model.WorkflowInstance;
+import org.radrso.workflow.entity.schema.WorkflowSchema;
+import org.radrso.workflow.entity.model.WorkflowInstance;
 
 /**
  * Created by rao-mengnan on 2017/3/17.
