@@ -3,7 +3,7 @@ package org.radrso.workflow.resolvers;
 import org.radrso.workflow.entities.schema.items.Switch;
 import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.schema.items.Transfer;
-import org.radrso.workflow.entities.exceptions.ConfigReadException;
+import org.radrso.workflow.entities.exceptions.SchemaResolveException;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 import org.radrso.workflow.entities.model.WorkflowResult;
 import org.radrso.workflow.entities.model.WorkflowInstance;
@@ -20,9 +20,9 @@ public interface WorkflowResolver {
      * 当前状态 -- > 当前转移函数 -- > 下一个转移状态 + 分支状态
      *
      * @return
-     * @throws ConfigReadException
+     * @throws SchemaResolveException
      */
-    WorkflowResolver next() throws ConfigReadException, UnknownExceptionInRunning;
+    WorkflowResolver next() throws SchemaResolveException, UnknownExceptionInRunning;
 
     /**
      * 回滚到上一步
@@ -51,18 +51,18 @@ public interface WorkflowResolver {
      *
      * @param transfer
      * @return
-     * @throws ConfigReadException
+     * @throws SchemaResolveException
      */
-    Step transferToNextStep(Transfer transfer) throws ConfigReadException, UnknownExceptionInRunning;
+    Step transferToNextStep(Transfer transfer) throws SchemaResolveException, UnknownExceptionInRunning;
 
     /**
      * 通过判断函数获取下一个要转移的的状态
      *
      * @param aSwitch
      * @return
-     * @throws ConfigReadException
+     * @throws SchemaResolveException
      */
-    Transfer selectNextTransfer(Switch aSwitch) throws ConfigReadException, UnknownExceptionInRunning;
+    Transfer selectNextTransfer(Switch aSwitch) throws SchemaResolveException, UnknownExceptionInRunning;
 
     /**
      * 更新workflowInstance中的response记录

@@ -7,7 +7,7 @@ import org.radrso.workflow.entities.schema.WorkflowSchema;
 import org.radrso.workflow.entities.schema.items.Switch;
 import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.schema.items.Transfer;
-import org.radrso.workflow.entities.exceptions.ConfigReadException;
+import org.radrso.workflow.entities.exceptions.SchemaResolveException;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 import org.radrso.workflow.entities.model.WorkflowResult;
 import org.radrso.workflow.entities.model.StepProcess;
@@ -62,10 +62,10 @@ public class WorkflowResolverImpl implements WorkflowResolver, Serializable {
      * 当前状态 -- > 当前转移函数 -- > 下一个转移状态 + 分支状态
      *
      * @return 当前的resolver
-     * @throws ConfigReadException
+     * @throws SchemaResolveException
      */
     @Override
-    public WorkflowResolverImpl next() throws ConfigReadException, UnknownExceptionInRunning {
+    public WorkflowResolverImpl next() throws SchemaResolveException, UnknownExceptionInRunning {
 //        Transfer currentTransfer = getCurrentTransfer();
 //        if (currentTransfer == null)
 //            return null;
@@ -129,10 +129,10 @@ public class WorkflowResolverImpl implements WorkflowResolver, Serializable {
      *
      * @param transfer
      * @return
-     * @throws ConfigReadException
+     * @throws SchemaResolveException
      */
     @Override
-    public Step transferToNextStep(Transfer transfer) throws ConfigReadException, UnknownExceptionInRunning {
+    public Step transferToNextStep(Transfer transfer) throws SchemaResolveException, UnknownExceptionInRunning {
         if (transfer == null)
             return null;
 
@@ -152,10 +152,10 @@ public class WorkflowResolverImpl implements WorkflowResolver, Serializable {
      *
      * @param aSwitch
      * @return
-     * @throws ConfigReadException
+     * @throws SchemaResolveException
      */
     @Override
-    public Transfer selectNextTransfer(Switch aSwitch) throws ConfigReadException, UnknownExceptionInRunning {
+    public Transfer selectNextTransfer(Switch aSwitch) throws SchemaResolveException, UnknownExceptionInRunning {
         log.debug(aSwitch);
         String type = aSwitch.getType();
 
@@ -188,7 +188,7 @@ public class WorkflowResolverImpl implements WorkflowResolver, Serializable {
             case "||":
                 return ((Boolean) computeA || (Boolean) computeB) ? aSwitch.getIfTransfer() : aSwitch.getElseTransfer();
             default:
-                throw new ConfigReadException("Unknow expression: " + condition);
+                throw new SchemaResolveException("Unknow expression: " + condition);
         }
     }
 

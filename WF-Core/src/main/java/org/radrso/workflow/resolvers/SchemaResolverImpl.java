@@ -9,7 +9,7 @@ import org.radrso.plugins.StringUtils;
 import org.radrso.workflow.constant.EngineConstant;
 import org.radrso.workflow.entities.schema.items.InputItem;
 import org.radrso.workflow.entities.schema.items.Transfer;
-import org.radrso.workflow.entities.exceptions.ConfigReadException;
+import org.radrso.workflow.entities.exceptions.SchemaResolveException;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 import org.radrso.workflow.entities.model.StepProcess;
 import org.radrso.workflow.entities.model.WorkflowInstance;
@@ -22,6 +22,7 @@ import java.util.Map;
  * Created by rao-mengnan on 2017/3/16.
  */
 @Log4j
+@Deprecated
 public class SchemaResolverImpl implements SchemaResolver {
     private static final String UTILS_CLASS = "Data|List|Map";
     private static final Map<String, Class> classMap;
@@ -50,7 +51,7 @@ public class SchemaResolverImpl implements SchemaResolver {
     }
 
     @Override
-    public Object[] resolverTransferParams(Transfer transfer) throws ConfigReadException, UnknownExceptionInRunning {
+    public Object[] resolverTransferParams(Transfer transfer) throws SchemaResolveException, UnknownExceptionInRunning {
         List<InputItem> inputs = transfer.getInput();
         if (inputs == null || inputs.size() == 0)
             return new Object[]{};
@@ -73,7 +74,7 @@ public class SchemaResolverImpl implements SchemaResolver {
     }
 
     @Override
-    public Object resolverStringToParams(String paramStr) throws UnknownExceptionInRunning, ConfigReadException {
+    public Object resolverStringToParams(String paramStr) throws UnknownExceptionInRunning, SchemaResolveException {
         String errorMsg = null;
 
         if (paramStr.toLowerCase().equals(EngineConstant.SCHEMA_INSTANCE_ID_VALUE))
@@ -124,14 +125,14 @@ public class SchemaResolverImpl implements SchemaResolver {
             }
 
             if (errorMsg != null)
-                throw new ConfigReadException(errorMsg);
+                throw new SchemaResolveException(errorMsg);
             return result;
         }
         return paramStr;
     }
 
     @Override
-    public Object parseValue(String type, Object o) throws ConfigReadException {
+    public Object parseValue(String type, Object o) throws SchemaResolveException {
         if (type == null)
             return o.toString();
         try {
@@ -145,9 +146,9 @@ public class SchemaResolverImpl implements SchemaResolver {
                 throw new ClassNotFoundException(String.format("No such class [%s]", type));
             return JsonUtils.mapToBean(o.toString(), clazz);
         } catch (ClassNotFoundException e) {
-            throw new ConfigReadException(String.format("Param type error: (%s)", type) + e);
+            throw new SchemaResolveException(String.format("Param type error: (%s)", type) + e);
         } catch (Throwable throwable) {
-            throw new ConfigReadException("Value case error: " + throwable.getMessage());
+            throw new SchemaResolveException("Value case error: " + throwable.getMessage());
         }
 
     }

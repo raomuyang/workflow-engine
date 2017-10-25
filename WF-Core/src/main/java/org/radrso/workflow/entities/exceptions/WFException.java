@@ -4,7 +4,7 @@ import org.radrso.workflow.constant.WFErrorCode;
 
 /**
  * Created by Rao-Mengnan
- * on 2017/10/24.
+ * on 17-1-16.
  */
 public class WFException extends RuntimeException {
     protected int code;

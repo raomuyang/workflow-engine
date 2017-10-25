@@ -5,7 +5,7 @@ import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.entities.schema.items.Transfer;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;
-import org.radrso.workflow.entities.model.WorkflowExecuteStatus;
+import org.radrso.workflow.entities.model.WorkflowRuntimeState;
 import org.radrso.workflow.entities.model.WorkflowInstance;
 import org.radrso.workflow.resolvers.WorkflowResolver;
 
@@ -43,7 +43,7 @@ public class Operations {
         if (status == null)
             throw new WFRuntimeException(WFRuntimeException.NO_SUCH_WORKFLOW_STATUS, ResponseCode.HTTP_NOT_FOUND.code());
 
-        boolean available = WorkflowExecuteStatus.START.equals(status);
+        boolean available = WorkflowRuntimeState.START.equals(status);
         if (!available)
             return false;
         return true;

@@ -3,6 +3,7 @@ package org.radrso.workflow.entities.exceptions;
 /**
  * Created by raomengnan on 17-1-17.
  */
+@Deprecated
 public class UnknownExceptionInRunning extends Throwable{
     public UnknownExceptionInRunning(String msg){
         super(msg);

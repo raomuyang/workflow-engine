@@ -1,7 +1,7 @@
 package org.radrso.workflow.wfservice.service.impl;
 
 import lombok.extern.log4j.Log4j;
-import org.radrso.workflow.entities.model.WorkflowExecuteStatus;
+import org.radrso.workflow.entities.model.WorkflowRuntimeState;
 import org.radrso.workflow.wfservice.repositories.WorkflowStatusRepository;
 import org.radrso.workflow.wfservice.service.WorkflowExecuteStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,17 +19,17 @@ public class WorkflowExecuteStatusServiceImpl implements WorkflowExecuteStatusSe
     private WorkflowStatusRepository workflowStatusRepository;
 
     @Override
-    public WorkflowExecuteStatus get(String workflowId) {
+    public WorkflowRuntimeState get(String workflowId) {
         return workflowStatusRepository.findOne(workflowId);
     }
 
     @Override
-    public Page<WorkflowExecuteStatus> getAll(int pno, int psize){
+    public Page<WorkflowRuntimeState> getAll(int pno, int psize){
         PageRequest pageRequest = new PageRequest(pno, psize);
         return workflowStatusRepository.findAll(pageRequest);
     }
     @Override
-    public boolean save(WorkflowExecuteStatus status) {
+    public boolean save(WorkflowRuntimeState status) {
         if(status == null || status.getWorkflowId() == null)
             return false;
         workflowStatusRepository.save(status);
@@ -38,7 +38,7 @@ public class WorkflowExecuteStatusServiceImpl implements WorkflowExecuteStatusSe
 
     @Override
     public String getStatus(String workflowId) {
-        WorkflowExecuteStatus status = get(workflowId);
+        WorkflowRuntimeState status = get(workflowId);
         if(status != null)
             return status.getStatus();
         return null;

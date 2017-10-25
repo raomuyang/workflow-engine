@@ -3,7 +3,7 @@ package org.radrso.workflow.handler;
 import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.ClassUtil;
 import org.radrso.workflow.constant.EngineConstant;
-import org.radrso.workflow.entities.exceptions.ConfigReadException;
+import org.radrso.workflow.entities.exceptions.SchemaResolveException;
 import org.radrso.workflow.internal.model.WorkflowInstanceInfo;
 import org.radrso.workflow.entities.schema.items.InputItem;
 import org.radrso.workflow.entities.schema.items.Transfer;
@@ -20,15 +20,13 @@ import java.util.Map;
 @Log4j
 public class SchemaParamHandler {
 
-
-
     private WorkflowInstanceInfo workflowInstanceInfo;
 
     public SchemaParamHandler(WorkflowInstanceInfo workflowInstanceInfo) {
         this.workflowInstanceInfo = workflowInstanceInfo;
     }
 
-    public List<Map<String, Object>> parameters(Transfer transfer) throws Exception {
+    public List<Map<String, Object>> parameters(Transfer transfer) throws SchemaResolveException {
         List<InputItem> inputs = transfer.getInput();
         if (inputs == null || inputs.size() == 0)
             return new ArrayList<>();
@@ -50,7 +48,7 @@ public class SchemaParamHandler {
      * @param param {output}.step_x_sign.xxx.xxx
      * @return object
      */
-    public Object convertStrParam(String param, String type) throws ConfigReadException {
+    public Object convertStrParam(String param, String type) throws SchemaResolveException {
 
         if (EngineConstant.SCHEMA_INSTANCE_ID_VALUE.toLowerCase()
                 .equals(String.valueOf(param).toLowerCase()))
@@ -73,8 +71,8 @@ public class SchemaParamHandler {
                     return ClassUtil.conversion(result, ClassUtil.objectClass(type));
                 }
             }
-        } catch (Exception e) {
-            throw new ConfigReadException("Invalid config.", e);
+        } catch (Throwable e) {
+            throw new SchemaResolveException("Invalid schema.", e);
         }
 
         return param;

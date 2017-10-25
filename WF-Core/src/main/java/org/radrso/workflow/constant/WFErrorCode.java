@@ -1,8 +1,5 @@
 package org.radrso.workflow.constant;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by Rao-Mengnan
  * on 16-12-9.
@@ -12,7 +9,7 @@ public enum  WFErrorCode {
     INTERRUPT_EXCEPTION(3040, "Interrupt exception"),
 
     NULL_PARAM_EXCEPTION(4001, "JSON object is null"),
-    CONFIG_PARSE_ERROR(4002, "Can not resolved the params in schema "),
+    SCHEMA_PARSE_ERROR(4002, "Can not resolved the params in schema "),
     UNSUPPORTED_REQUEST_METHOD(4003, "METHOD NOT SUPPORTED"),
 
     CLASS_NOT_FOUND(4041, "Invoke class not found"),

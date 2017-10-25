@@ -16,8 +16,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Document(collection = "workflowStatus")
-public class WorkflowExecuteStatus implements Serializable{
+@Document(collection = "runtime")
+public class WorkflowRuntimeState implements Serializable{
     public static final String CREATED = "created";
     public static final String START = "started";
     public static final String STOP = "stopped";

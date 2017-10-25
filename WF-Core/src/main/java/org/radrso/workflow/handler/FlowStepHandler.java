@@ -3,6 +3,8 @@ package org.radrso.workflow.handler;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j;
 import org.radrso.workflow.constant.EngineConstant;
+import org.radrso.workflow.constant.WFErrorCode;
+import org.radrso.workflow.entities.exceptions.WFException;
 import org.radrso.workflow.internal.model.Next;
 import org.radrso.workflow.entities.model.StepProcess;
 import org.radrso.workflow.internal.model.WorkflowInstanceInfo;
@@ -39,8 +41,7 @@ public class FlowStepHandler {
         List<String> cursor = instanceInfo.getCursor();
         if (cursor == null) {
             log.warn("Invalid cursor.");
-            // TODO throw it
-            return new ArrayList<>();
+            throw new WFException("Cursor is null.");
         }
         if (cursor.size() == 0) {
             log.info("Current cursor size 0.");
@@ -53,7 +54,7 @@ public class FlowStepHandler {
         return stepMap.get(cursor);
     }
 
-    public List<Next> transferTo(String cursor, WorkflowInstanceInfo instance) throws Exception {
+    public List<Next> transferTo(String cursor, WorkflowInstanceInfo instance) throws WFException {
 
         Step lastStep = getLastStep(cursor);
         if (lastStep == null) return null;
@@ -83,7 +84,7 @@ public class FlowStepHandler {
      * @param instanceInfo workflow instanceInfo
      * @return Switch transfer direction.
      */
-    Transfer selectSwitch(Transfer transfer, WorkflowInstanceInfo instanceInfo) throws Exception {
+    Transfer selectSwitch(Transfer transfer, WorkflowInstanceInfo instanceInfo) throws WFException {
         if (transfer.getRunSwitch() == null) {
             return transfer;
         }
@@ -91,24 +92,28 @@ public class FlowStepHandler {
         Switch switchBody = transfer.getRunSwitch();
         String type = switchBody.getType();
 
-        Object variableA = Functions.mapParam2(instanceInfo).mapTo(String.valueOf(switchBody.getVariable()), type);
+        try {
+            Object variableA = Functions.mapParam2(instanceInfo).mapTo(String.valueOf(switchBody.getVariable()), type);
 
-        Object compareTo =Functions.mapParam2(instanceInfo).mapTo(String.valueOf(switchBody.getCompareTo()), type);
+            Object compareTo =Functions.mapParam2(instanceInfo).mapTo(String.valueOf(switchBody.getCompareTo()), type);
 
-        String condition = switchBody.getExpression();
-        boolean result = Functions.condition(condition).check(variableA, compareTo);
-        return result ? switchBody.getIfTransfer() : switchBody.getElseTransfer();
+            String condition = switchBody.getExpression();
+            boolean result = Functions.condition(condition).check(variableA, compareTo);
+            return result ? switchBody.getIfTransfer() : switchBody.getElseTransfer();
+        } catch (Exception e) {
+            throw new WFException(WFErrorCode.SCHEMA_PARSE_ERROR.code(), e.getMessage(), e);
+        }
     }
 
     /**
      * TODO 目前step process在此处初始化，尚未考虑到从持久数据中初始化
-     * @param transfer
-     * @param precursor
-     * @param instanceInfo
-     * @return
-     * @throws Exception
+     * @param transfer the next transfer info.
+     * @param precursor the precursor of next node.
+     * @param instanceInfo information of this workflow runtime instance.
+     * @return Next node, include the next step info, the step params...
+     * @throws WFException Schema resolve failed.
      */
-    Next getNext(Transfer transfer, String precursor, WorkflowInstanceInfo instanceInfo) throws Exception {
+    Next getNext(Transfer transfer, String precursor, WorkflowInstanceInfo instanceInfo) throws WFException {
         Next next = new Next();
         next.setPrecursor(precursor);
 
@@ -123,20 +128,23 @@ public class FlowStepHandler {
         }
         stepProcess.setPrecursor(precursor);
 
-        List<Map<String, Object>> params = Functions.mapParam1(instanceInfo).mapTo(transfer);
-        next.setParams(params);
-        next.setProcess(stepProcess);
-        next.setStepInfo(stepInfo);
-        return next;
+        try {
+            List<Map<String, Object>> params = Functions.mapParam1(instanceInfo).mapTo(transfer);
+            next.setParams(params);
+            next.setProcess(stepProcess);
+            next.setStepInfo(stepInfo);
+            return next;
+        } catch (Exception e) {
+            throw new WFException(WFErrorCode.SCHEMA_PARSE_ERROR.code(), e.getMessage(), e);
+        }
     }
 
     Step getLastStep(String sign) {
 
         Step step = stepMap.get(sign);
         if (step == null) {
-            // TODO throw it
             log.warn("No such step: " + sign);
-            return null;
+            throw new WFException("No such step: " + sign);
         }
         return step;
     }

@@ -4,7 +4,7 @@ import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.DateTools;
 import org.radrso.workflow.entities.schema.JarFile;
 import org.radrso.workflow.entities.schema.WorkflowSchema;
-import org.radrso.workflow.entities.model.WorkflowExecuteStatus;
+import org.radrso.workflow.entities.model.WorkflowRuntimeState;
 import org.radrso.workflow.wfservice.service.WorkflowExecuteStatusService;
 import org.radrso.workflow.wfservice.service.WorkflowService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,7 +101,7 @@ public class WorkflowConfroller {
     }
 
     @RequestMapping("/{workflowId}/status")
-    public WorkflowExecuteStatus getWorkflowStatus(@PathVariable("workflowId") String workflowId){
+    public WorkflowRuntimeState getWorkflowStatus(@PathVariable("workflowId") String workflowId){
         workflowService.updateServiceStatus(workflowService.getByWorkflowId(workflowId));
         return statusService.get(workflowId);
     }
@@ -140,7 +140,7 @@ public class WorkflowConfroller {
     }
 
     @RequestMapping("/status/pno/{pno}/psize/{psize}/")
-    public Page<WorkflowExecuteStatus> getAllStatus(@PathVariable("pno") int pno, @PathVariable("psize")int psize){
+    public Page<WorkflowRuntimeState> getAllStatus(@PathVariable("pno") int pno, @PathVariable("psize")int psize){
         return statusService.getAll(pno, psize);
     }
 
