@@ -51,14 +51,9 @@ public class FlowStepHandler {
         return cursor;
     }
 
-    public Step getStepInfo(@NonNull String cursor) {
-        return stepMap.get(cursor);
-    }
-
     public List<Next> transferTo(String cursor, WorkflowInstanceInfo instance) throws WFException {
 
         Step lastStep = getLastStep(cursor);
-        if (lastStep == null) return null;
 
         List<Next> nextList = new ArrayList<>();
 
