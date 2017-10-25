@@ -1,14 +1,14 @@
 package org.radrso.workflow.entities.model;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 import org.radrso.workflow.entities.StatusEnum;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by raomengnan on 17-2-9.
@@ -28,8 +28,7 @@ public class StepProcess implements Serializable{
     private StatusEnum status;
     private Date begin;
     private Date end;
-    private Object[] params;
-    private String[] paramNames;
+    private List<Map<String, Object>> params;
     private WorkflowResult result;
     private String precursor;
 

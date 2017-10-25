@@ -6,7 +6,7 @@ import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.workflow.base.Operations;
 import org.radrso.workflow.constant.EngineConstant;
 import org.radrso.workflow.constant.ExceptionCode;
-import org.radrso.workflow.entities.schema.JarFile;
+import org.radrso.workflow.entities.model.JarFile;
 import org.radrso.workflow.entities.schema.WorkflowSchema;
 import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;

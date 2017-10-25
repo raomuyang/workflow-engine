@@ -21,6 +21,8 @@ public class CompareHandler {
             case "=":
             case "==":
                 return (a.compareTo(b) == 0);
+            case "!=":
+                return (a.compareTo(b) != 0);
             case "<":
                 return (a.compareTo(b) < 0);
             case ">=":

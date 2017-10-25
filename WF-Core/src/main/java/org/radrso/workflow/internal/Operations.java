@@ -15,6 +15,7 @@ import java.util.Date;
  * Created by rao-mengnan on 2017/5/18.
  */
 
+@Deprecated
 @Log4j
 public class Operations {
     private Commander commander;
@@ -68,9 +69,9 @@ public class Operations {
             throw new WFRuntimeException(msg, ResponseCode.HTTP_NOT_FOUND.code());
         }
 
-        if (instance.getStatus().equals(WorkflowInstance.INTERRUPTED)) {
-            return true;
-        }
+//        if (instance.getStatus().equals(WorkflowInstance.INTERRUPTED)) {
+//            return true;
+//        }
         return false;
     }
 
@@ -84,7 +85,7 @@ public class Operations {
             return false;
         }
 
-        instance.setStatus(WorkflowInstance.INTERRUPTED);
+//        instance.setStatus(WorkflowInstance.INTERRUPTED);
         return commander.updateInstance(instance);
     }
 }

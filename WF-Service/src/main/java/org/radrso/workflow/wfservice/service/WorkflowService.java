@@ -1,6 +1,6 @@
 package org.radrso.workflow.wfservice.service;
 
-import org.radrso.workflow.entities.schema.JarFile;
+import org.radrso.workflow.entities.model.JarFile;
 import org.radrso.workflow.entities.schema.WorkflowSchema;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;

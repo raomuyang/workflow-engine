@@ -1,5 +1,6 @@
 package org.radrso.workflow.entities.schema.items;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,8 @@ import java.util.List;
 @ToString
 public class Transfer implements Serializable{
     private List<InputItem> input;
+
+    @SerializedName("switch")
     private Switch runSwitch;
     private Date deadline;
     private String to;

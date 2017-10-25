@@ -4,6 +4,7 @@ import lombok.NonNull;
 import lombok.extern.log4j.Log4j;
 import org.radrso.workflow.constant.EngineConstant;
 import org.radrso.workflow.constant.WFStatusCode;
+import org.radrso.workflow.entities.exceptions.WFError;
 import org.radrso.workflow.entities.exceptions.WFException;
 import org.radrso.workflow.internal.model.Next;
 import org.radrso.workflow.entities.model.StepProcess;
@@ -99,14 +100,19 @@ public class FlowStepHandler {
 
             String condition = switchBody.getExpression();
             boolean result = Functions.condition(condition).check(variableA, compareTo);
-            return result ? switchBody.getIfTransfer() : switchBody.getElseTransfer();
+            return result ? switchBody.getThanTransfer() : switchBody.getElseTransfer();
         } catch (Exception e) {
+            if (e instanceof WFError) {
+                WFError e1 = (WFError) e;
+                throw new WFException(e1.getCode(), e1.getDetailMessage(), e);
+            }
             throw new WFException(WFStatusCode.SCHEMA_PARSE_ERROR.code(), e.getMessage(), e);
         }
     }
 
     /**
      * TODO 目前step process在此处初始化，尚未考虑到从持久数据中初始化
+     * init step process, step info, step params
      * @param transfer the next transfer info.
      * @param precursor the precursor of next node.
      * @param instanceInfo information of this workflow runtime instance.
@@ -117,6 +123,7 @@ public class FlowStepHandler {
         Next next = new Next();
         next.setPrecursor(precursor);
 
+        // init step process
         Transfer toNext = selectSwitch(transfer, instanceInfo);
         String nextCursor = toNext.getTo();
         StepProcess stepProcess = instanceInfo.getStepProcessMap().get(nextCursor);
@@ -130,11 +137,17 @@ public class FlowStepHandler {
 
         try {
             List<Map<String, Object>> params = Functions.mapParam1(instanceInfo).mapTo(transfer);
+            stepProcess.setParams(params);
+
             next.setParams(params);
             next.setProcess(stepProcess);
             next.setStepInfo(stepInfo);
             return next;
         } catch (Exception e) {
+            if (e instanceof WFError) {
+                WFError e1 = (WFError) e;
+                throw new WFException(e1.getCode(), e1.getDetailMessage(), e);
+            }
             throw new WFException(WFStatusCode.SCHEMA_PARSE_ERROR.code(), e.getMessage(), e);
         }
     }

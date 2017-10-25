@@ -6,7 +6,7 @@ import org.radrso.workflow.constant.WFStatusCode;
  * Created by Rao-Mengnan
  * on 17-1-16.
  */
-public class WFException extends RuntimeException {
+public class WFException extends RuntimeException implements WFError {
     protected int code;
 
     public WFException(String msg) {
@@ -34,10 +34,12 @@ public class WFException extends RuntimeException {
         this.code = code;
     }
 
+    @Override
     public String getDetailMessage() {
         return super.getMessage();
     }
 
+    @Override
     public int getCode() {
         return this.code;
     }

@@ -1,0 +1,94 @@
+{
+  "application": "application-test",
+  "id": "model-test",
+  "start_time":"2016-01-01",
+  "stop_time":"2017-12-01",
+
+  "steps": [
+    {
+      "sign": "&START",
+      "name": "Start",
+      "transfer":{
+        "input": [
+          {"name": "instance-id", "value": "{instance}"},
+          {"name": "test1",  "type": "String", "value": "test"},
+          {"name": "test2",  "type": "double", "value": 11},
+          {"name": "test3",  "type": "int", "value": 2},
+          {"name": "list",  "type": "List", "value": "[1,2]"},
+          {"name": "int-array",  "type": "int[]", "value": "[3,4]"},
+          {"name": "double-array",  "type": "Double[]", "value": "[5,6,7]"},
+          {"name": "map",  "type": "map", "value": "{\"a\": 1, \"b\": 2}"}
+        ],
+
+        "to": "sign-1",
+        "scatters":[
+          {"to": "sign-2"},
+          {"to": "sign-3"}
+        ]
+      }
+    },
+
+    {
+      "sign": "sign-1",
+      "name": "step-test-1",
+      "call": "class:org.radrso.test.TestWorkflow",
+      "method": "testStep1",
+
+      "transfer": {
+        "input": [
+          {"name": "test1",  "type": "String", "value": "{output}[sign-1][test1]"},
+          {"name": "test2",  "type": "double", "value": "{output}[sign-1][test2]"}
+        ],
+        "to": "sign-3"
+      }
+    },
+
+    {
+      "sign": "sign-2",
+      "name": "step-test-2",
+      "call": "class:org.radrso.test.TestWorkflow",
+      "method": "testStep2",
+      "loop": 1,
+
+      "transfer": {
+
+        "switch":
+        {
+          "variable": "{output}[sign-2][test2]",
+          "compare_to": 1000,
+          "type": "double",
+          "if": "<",
+          "than":{
+            "input":[],
+            "to": "sign-3"
+          },
+          "else":{
+            "input":[],
+            "to": "start"
+          }
+        }
+      }
+    },
+
+    {
+      "sign": "sign-3",
+      "name": "step-test-5",
+      "call": "class:org.radrso.test.TestWorkflow",
+      "method": "testStep5",
+      "loop": 1,
+
+      "transfer": {
+
+        "deadline":"2017-11-12",
+        "to": "&FINISH"
+      }
+    },
+
+    {
+      "sign": "&FINISH",
+      "name": "Finish the workflow",
+      "call": "class:org.radrso.test.TestWorkflow",
+      "method": "finish"
+    }
+  ]
+}

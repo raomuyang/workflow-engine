@@ -20,6 +20,7 @@ import java.util.*;
 /**
  * Created by raomengnan on 17-1-14.
  */
+@Deprecated
 @Log4j
 public class WorkflowResolverImpl implements WorkflowResolver, Serializable {
 
@@ -173,20 +174,20 @@ public class WorkflowResolverImpl implements WorkflowResolver, Serializable {
         String condition = aSwitch.getExpression();
         switch (condition) {
             case ">":
-                return (a.compareTo(b) > 0) ? aSwitch.getIfTransfer() : aSwitch.getElseTransfer();
+                return (a.compareTo(b) > 0) ? aSwitch.getThanTransfer() : aSwitch.getElseTransfer();
             case "=":
             case "==":
-                return (a.compareTo(b) == 0) ? aSwitch.getIfTransfer() : aSwitch.getElseTransfer();
+                return (a.compareTo(b) == 0) ? aSwitch.getThanTransfer() : aSwitch.getElseTransfer();
             case "<":
-                return (a.compareTo(b) < 0) ? aSwitch.getIfTransfer() : aSwitch.getElseTransfer();
+                return (a.compareTo(b) < 0) ? aSwitch.getThanTransfer() : aSwitch.getElseTransfer();
             case ">=":
-                return (a.compareTo(b) >= 0) ? aSwitch.getIfTransfer() : aSwitch.getElseTransfer();
+                return (a.compareTo(b) >= 0) ? aSwitch.getThanTransfer() : aSwitch.getElseTransfer();
             case "<=":
-                return (a.compareTo(b) <= 0) ? aSwitch.getIfTransfer() : aSwitch.getElseTransfer();
+                return (a.compareTo(b) <= 0) ? aSwitch.getThanTransfer() : aSwitch.getElseTransfer();
             case "&&":
-                return ((Boolean) computeA && (Boolean) computeB) ? aSwitch.getIfTransfer() : aSwitch.getElseTransfer();
+                return ((Boolean) computeA && (Boolean) computeB) ? aSwitch.getThanTransfer() : aSwitch.getElseTransfer();
             case "||":
-                return ((Boolean) computeA || (Boolean) computeB) ? aSwitch.getIfTransfer() : aSwitch.getElseTransfer();
+                return ((Boolean) computeA || (Boolean) computeB) ? aSwitch.getThanTransfer() : aSwitch.getElseTransfer();
             default:
                 throw new SchemaResolveException("Unknow expression: " + condition);
         }
@@ -226,12 +227,13 @@ public class WorkflowResolverImpl implements WorkflowResolver, Serializable {
      */
     @Override
     public Object[] getCurrentStepParams() {
-        return workflowInstance.getStepStatusesMap().get(getCurrentStep().getSign()).getParams();
+        return null;
     }
 
     @Override
     public String[] getCurrentStepParamNames() {
-        return workflowInstance.getStepStatusesMap().get(getCurrentStep().getSign()).getParamNames();
+//        return workflowInstance.getStepStatusesMap().get(getCurrentStep().getSign()).getParamNames();
+        return null;
     }
 
     /**

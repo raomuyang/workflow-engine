@@ -68,8 +68,8 @@ public class SchemaResolverImpl implements SchemaResolver {
             paramsNames[i] = inputItem.getName();
         }
 
-        getStepStatusMap().get(transfer.getTo()).setParams(params);
-        getStepStatusMap().get(transfer.getTo()).setParamNames(paramsNames);
+//        getStepStatusMap().get(transfer.getTo()).setParams(params);
+//        getStepStatusMap().get(transfer.getTo()).setParamNames(paramsNames);
         return params;
     }
 

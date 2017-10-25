@@ -113,67 +113,68 @@ public class RequestResolverImpl implements RequestResolver {
     @Override
     public WorkflowResult netRequest() {
 
-        ContentType contentType = ContentType.APPLICATION_JSON;
-        //获取请求方法 GET/PUT/POST/DELETE
-        MethodEnum method;
-        try {
-            method = RequestMethodMapping.getMethod(step.getMethod());
-        } catch (RequestException e) {
-            log.error(e);
-            return new WorkflowResult(ExceptionCode.UNSUPPORTED_REQUEST_METHOD.code(),
-                    e.getMessage(), null);
-        }
-
-        //转换参数，配置文件中以$转义的，添加到header中
-        Map<String, Object> paramMap = new HashMap<>();
-        Map<String, Object> headers = new HashMap<>();
-        Map<String, Object> urlParams = new HashMap<>();
-        if(params == null)
-            params = new Object[]{};
-        for (int i = 0; i < params.length; i++){
-
-            if(paramNames[i] != null && paramNames[i].startsWith("$")){
-                if(paramNames[i].toLowerCase().equals("$content-type")){
-                    String type = String.valueOf(params[i]);
-                    String encoding = "utf-8";
-                    if(type.contains(";") && !type.startsWith(";")) {
-                        type = type.split(";")[0];
-                        encoding = type.split(";")[1];
-                    }
-                    Charset charset;
-                    try {
-                        charset = Charset.forName(encoding);
-                    }catch (UnsupportedCharsetException e){
-                        charset = Charset.forName("utf-8");
-                    }
-                    contentType = ContentType.create(type, charset);
-                    headers.put("Content-Type", contentType.toString());
-                    continue;
-                }
-                headers.put(paramNames[i].substring(1), params[i]);
-            }
-
-            else if(paramNames[i].matches(EngineConstant.VALUES_ESCAPE)){
-                String[] matchers = EngineConstant.matcherValuesEscape(paramNames[i]);
-                if(matchers.length > 1)
-                    paramMap.put(paramNames[i], params[i]);
-                else {
-                    String key = matchers[0];
-                    urlParams.put(key, params[i]);
-                }
-            }
-            else
-                paramMap.put(paramNames[i], params[i]);
-        }
-
-        String url = step.getCall();
-        String[] replaces = EngineConstant.matcherValuesEscape(url);
-        if (replaces.length > 0)
-            for(String key: replaces)
-                url = url.replace(key, String.valueOf(urlParams.get(key)));
-        step.setCall(url);
-
-        return sendNetRequest(method, headers, paramMap, contentType);
+        return null;
+//        ContentType contentType = ContentType.APPLICATION_JSON;
+//        //获取请求方法 GET/PUT/POST/DELETE
+//        MethodEnum method;
+//        try {
+//            method = RequestMethodMapping.getMethod(step.getMethod());
+//        } catch (RequestException e) {
+//            log.error(e);
+//            return new WorkflowResult(ExceptionCode.UNSUPPORTED_REQUEST_METHOD.code(),
+//                    e.getMessage(), null);
+//        }
+//
+//        //转换参数，配置文件中以$转义的，添加到header中
+//        Map<String, Object> paramMap = new HashMap<>();
+//        Map<String, Object> headers = new HashMap<>();
+//        Map<String, Object> urlParams = new HashMap<>();
+//        if(params == null)
+//            params = new Object[]{};
+//        for (int i = 0; i < params.length; i++){
+//
+//            if(paramNames[i] != null && paramNames[i].startsWith("$")){
+//                if(paramNames[i].toLowerCase().equals("$content-type")){
+//                    String type = String.valueOf(params[i]);
+//                    String encoding = "utf-8";
+//                    if(type.contains(";") && !type.startsWith(";")) {
+//                        type = type.split(";")[0];
+//                        encoding = type.split(";")[1];
+//                    }
+//                    Charset charset;
+//                    try {
+//                        charset = Charset.forName(encoding);
+//                    }catch (UnsupportedCharsetException e){
+//                        charset = Charset.forName("utf-8");
+//                    }
+//                    contentType = ContentType.create(type, charset);
+//                    headers.put("Content-Type", contentType.toString());
+//                    continue;
+//                }
+//                headers.put(paramNames[i].substring(1), params[i]);
+//            }
+//
+//            else if(paramNames[i].matches(EngineConstant.VALUES_ESCAPE)){
+//                String[] matchers = EngineConstant.matcherValuesEscape(paramNames[i]);
+//                if(matchers.length > 1)
+//                    paramMap.put(paramNames[i], params[i]);
+//                else {
+//                    String key = matchers[0];
+//                    urlParams.put(key, params[i]);
+//                }
+//            }
+//            else
+//                paramMap.put(paramNames[i], params[i]);
+//        }
+//
+//        String url = step.getCall();
+//        String[] replaces = EngineConstant.matcherValuesEscape(url);
+//        if (replaces.length > 0)
+//            for(String key: replaces)
+//                url = url.replace(key, String.valueOf(urlParams.get(key)));
+//        step.setCall(url);
+//
+//        return sendNetRequest(method, headers, paramMap, contentType);
     }
 
     private WorkflowResult sendNetRequest(MethodEnum method, Map<String, Object> headers, Map paramMap, ContentType contentType){

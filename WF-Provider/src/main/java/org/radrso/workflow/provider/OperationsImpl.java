@@ -2,7 +2,7 @@ package org.radrso.workflow.provider;
 
 import org.radrso.workflow.base.Operations;
 import org.radrso.workflow.constant.EngineConstant;
-import org.radrso.workflow.entities.schema.JarFile;
+import org.radrso.workflow.entities.model.JarFile;
 import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.model.WorkflowResult;
 import org.radrso.workflow.base.BaseOperations;

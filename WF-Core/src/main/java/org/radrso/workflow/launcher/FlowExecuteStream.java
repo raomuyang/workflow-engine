@@ -13,6 +13,7 @@ import org.radrso.workflow.resolvers.WorkflowResolver;
 /**
  * Created by rao-mengnan on 2017/5/18.
  */
+@Deprecated
 public class FlowExecuteStream {
     private WorkflowResolver resolver;
     private Commander commander;
@@ -23,7 +24,7 @@ public class FlowExecuteStream {
     }
 
     public void process() {
-        resolver.getWorkflowInstance().setStatus(WorkflowInstance.RUNNING);
+//        resolver.getWorkflowInstance().setStatus(WorkflowInstance.RUNNING);
 
         Consumer<WorkflowResolver> onStepExecAction
                 = (Consumer<WorkflowResolver>) Actions.getAction(ActionEnum.ON_STEP_EXEC, commander);

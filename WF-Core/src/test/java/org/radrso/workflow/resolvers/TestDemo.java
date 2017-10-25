@@ -92,7 +92,7 @@ public class TestDemo {
                     "          \"type\": \"String\",\n" +
                     "          \"expression\": \"=\",\n" +
                     "\n" +
-                    "          \"ifTransfer\":{\n" +
+                    "          \"thanTransfer\":{\n" +
                     "            \"input\": [\n" +
                     "              {\"name\": \"model\", \"value\": \"北京周边哪里好玩\"},\n" +
                     "              {\"name\": \"key\", \"value\": \"\"}\n" +

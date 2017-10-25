@@ -1,5 +1,6 @@
 package org.radrso.workflow.entities.schema;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,7 +28,9 @@ public class WorkflowSchema implements Serializable{
     @Id
     private String id;
     private String owner;
+    @SerializedName("start_time")
     private Date startTime;
+    @SerializedName("stop_time")
     private Date stopTime;
     private List<Step> steps;
     private List<String> jars = new ArrayList<>();

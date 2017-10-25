@@ -21,7 +21,6 @@ public class CustomClassLoader extends URLClassLoader {
             @Override
             public void run() {
                 try {
-                    System.out.println("[SHUTDOWNHOOK] CLOSE CLASSLOADER");
                     getClassLoader().close();
                 } catch (IOException e) {
                     e.printStackTrace();

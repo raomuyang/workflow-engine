@@ -1,5 +1,6 @@
 package org.radrso.workflow.entities.schema.items;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import java.io.Serializable;
  * compareTo        另一个计算对象，同上
  * type             计算对象的类型
  * expression       表达式  >  =  <  >=  <=
- * ifTransfer     表达式为true时的下个转移transfer
+ * thanTransfer     表达式为true时的下个转移transfer
  * elseTransfer   表达式为false时的下个转移transfer
  */
 
@@ -23,9 +24,13 @@ import java.io.Serializable;
 @ToString
 public class Switch implements Serializable{
     private Object variable;
+    @SerializedName("compare_to")
     private Object compareTo;
     private String type;
+    @SerializedName("if")
     private String expression;
-    private Transfer ifTransfer;
+    @SerializedName("than")
+    private Transfer thanTransfer;
+    @SerializedName("else")
     private Transfer elseTransfer;
 }

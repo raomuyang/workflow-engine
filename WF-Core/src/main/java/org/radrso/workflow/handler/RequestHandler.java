@@ -34,12 +34,22 @@ public class RequestHandler {
 
     private Object[] params;
     private String[] paramNames;
+
+    protected Map<String, Object> paramMap = new HashMap<>();
+    protected Map<String, Object> headers = new HashMap<>();
+    protected ContentType contentType = ContentType.APPLICATION_JSON;
+
     public RequestHandler(Step step, List<Map<String, Object>> paramList){
         this.step = step;
 
-        params = new Object[paramList.size()];
-        paramNames = new String[paramList.size()];
+        if (paramList.size() > 0) {
+            params = new Object[paramList.size()];
+            paramNames = new String[paramList.size()];
+        } else {
+            params = new Object[0];
+            paramNames = new String[0];
 
+        }
         for (int i = 0; i < paramList.size(); ++i) {
             Map<String, Object> map = paramList.get(i);
             Object key = (map.keySet().toArray())[0];
@@ -119,8 +129,6 @@ public class RequestHandler {
      * @return  WFResponse中的Response是执行结果的消息实体
      */
     public WorkflowResult netRequest() {
-
-        ContentType contentType = ContentType.APPLICATION_JSON;
         //获取请求方法 GET/PUT/POST/DELETE
         MethodEnum method;
         try {
@@ -131,58 +139,70 @@ public class RequestHandler {
                     e.getMessage(), null);
         }
 
+        initRequestInfo();
+
+        return sendNetRequest(method, headers, paramMap, contentType);
+    }
+
+    protected void initRequestInfo() {
         //转换参数，配置文件中以$转义的，添加到header中
-        Map<String, Object> paramMap = new HashMap<>();
-        Map<String, Object> headers = new HashMap<>();
-        Map<String, Object> urlParams = new HashMap<>();
-        if(params == null)
-            params = new Object[]{};
         for (int i = 0; i < params.length; i++){
+            String name = paramNames[i];
+            Object value = params[i];
 
-
-            if(paramNames[i] != null && paramNames[i].startsWith(EngineConstant.HEADER_PARAMS_ESCAPE)){
-                if(paramNames[i].toLowerCase().equals(EngineConstant.CONTENT_TYPE_PARAM_NAME)){
-                    String type = String.valueOf(params[i]);
-                    String encoding = EngineConstant.DEFAULT_ENCODING;
-                    if(type.contains(";") && !type.startsWith(";")) {
-                        type = type.split(";")[0];
-                        encoding = type.split(";")[1];
-                    }
-                    Charset charset;
-                    try {
-                        charset = Charset.forName(encoding);
-                    }catch (UnsupportedCharsetException e){
-                        charset = Charset.forName(EngineConstant.DEFAULT_ENCODING);
-                    }
-                    contentType = ContentType.create(type, charset);
-                    headers.put("Content-Type", contentType.toString());
-                    continue;
-                }
-                headers.put(paramNames[i].substring(1), params[i]);
+            if (putHeader(name, value)) {
+                continue;
             }
 
             // url placeholder
-            else if(paramNames[i].matches(EngineConstant.VALUES_ESCAPE)){
-                String[] matches = EngineConstant.matcherValuesEscape(paramNames[i]);
-                if(matches.length > 1)
-                    paramMap.put(paramNames[i], params[i]);
-                else {
-                    String key = matches[0];
-                    urlParams.put(key, params[i]);
-                }
+            if(setUrlPlaceholder(name, value)){
+                continue;
             }
-            else
-                paramMap.put(paramNames[i], params[i]);
+            paramMap.put(paramNames[i], params[i]);
         }
+    }
 
-        String url = step.getCall();
-        String[] replaces = EngineConstant.matcherValuesEscape(url);
-        if (replaces.length > 0)
-            for(String key: replaces)
-                url = url.replace(key, String.valueOf(urlParams.get(key)));
-        step.setCall(url);
+    private boolean putHeader(String name, Object value) {
+        if(name != null && name.startsWith(EngineConstant.HEADER_PARAMS_ESCAPE)){
+            if(name.toLowerCase().equals(EngineConstant.CONTENT_TYPE_PARAM_NAME)){
+                String type = String.valueOf(value);
+                String encoding = EngineConstant.DEFAULT_ENCODING;
+                if(type.contains(";") && !type.startsWith(";")) {
+                    type = String.valueOf(value).split(";")[0];
+                    encoding = String.valueOf(value).split(";")[1];
+                }
+                Charset charset;
+                try {
+                    charset = Charset.forName(encoding);
+                }catch (UnsupportedCharsetException e){
+                    charset = Charset.forName(EngineConstant.DEFAULT_ENCODING);
+                }
+                contentType = ContentType.create(type, charset);
+                headers.put("Content-Type", contentType.toString());
+                return true;
+            }
 
-        return sendNetRequest(method, headers, paramMap, contentType);
+            if (name.length() > 1) {
+                headers.put(name.substring(1), value);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean setUrlPlaceholder(String name, Object value) {
+        if(name.matches(EngineConstant.VALUES_ESCAPE)){
+            String[] matches = EngineConstant.matcherValuesEscape(name);
+            if(matches.length > 1) return false;
+            else {
+                String key = matches[0];
+                String url = step.getCall();
+                url = url.replace(key, String.valueOf(value));
+                step.setCall(url);
+                return true;
+            }
+        }
+        return false;
     }
 
     private WorkflowResult sendNetRequest(MethodEnum method, Map<String, Object> headers, Map paramMap, ContentType contentType){

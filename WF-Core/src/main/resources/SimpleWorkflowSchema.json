@@ -1,8 +1,8 @@
 {
   "application": "APPLICATION-NAME -- Example",
   "id": "WORKFLOW-ID",
-  "startTime":"2016-01-01",
-  "stopTime":"2016-01-01",
+  "start_time":"2016-01-01",
+  "stop_time":"2016-01-01",
 
   "steps": [
     {
@@ -24,7 +24,6 @@
       "name": "step name",
       "call": "org.radrso.xxx.XXXClass || url",
       "method": "xxxClass / GET / POST / PUT / DELETE...",
-      "loop": 10,
 
       "transfer": {
         "input": [
@@ -33,25 +32,24 @@
           {"name": "test3",  "type": "test3"}
         ],
 
-        "judge":
+        "switch":
         {
-          "compute": "{output}[sign-1][xxx][xxx]",
-          "computeWith": 123,
+          "variable": "{output}[sign-1][xxx][xxx]",
+          "compare_to": 123,
           "type": "",
-          "expression": "> == < && ||",
-          "passTransfer":{
+          "if": "> == < && ||",
+          "than":{
             "input":[],
             "to": "sign-2"
           },
-          "nopassTransfer":{
+          "else":{
             "input":[],
             "to": "sign-3"
           }
         },
 
-        "wait":3000,
         "to": "sign-2",
-        "scatters":["sign-3 judge生效，则后面的to和scatter不起作用"]
+        "scatters":["sign-3 switch 生效，则后面的to和scatter不起作用"]
       }
     },
 

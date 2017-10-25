@@ -75,7 +75,7 @@
           "type": "String",
           "expression": "=",
 
-          "ifTransfer":{
+          "thanTransfer":{
             "input": [
               {"name": "info", "value": "北京周边哪里好玩"},
               {"name": "key", "value": ""}

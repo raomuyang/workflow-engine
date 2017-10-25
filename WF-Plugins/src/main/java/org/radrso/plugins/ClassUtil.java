@@ -30,10 +30,11 @@ public class ClassUtil {
     }
 
     public static  <T> T conversion (Object o, Class<T> clazz) {
+        if (clazz.isAssignableFrom(o.getClass())) return (T) o;
         return JsonUtils.mapToBean(o.toString(), clazz);
     }
 
-    public static Class objectClass(String type) {
+    public static Class objectClass(String type) throws ClassNotFoundException {
         if (type == null) {
             return String.class;
         }
@@ -47,9 +48,8 @@ public class ClassUtil {
             if (clazz == null)
                 throw new ClassNotFoundException(String.format("No such class [%s]", type));
             return clazz;
-            // TODO 包装错误
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(String.format("Param type error: (%s)", type) + e);
+            throw new ClassNotFoundException(String.format("Param type error: (%s)", type));
         } catch (Throwable throwable) {
             throw new RuntimeException("Value case error: " + throwable.getMessage());
         }

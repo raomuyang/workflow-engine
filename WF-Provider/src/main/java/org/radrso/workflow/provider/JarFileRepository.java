@@ -1,6 +1,6 @@
 package org.radrso.workflow.provider;
 
-import org.radrso.workflow.entities.schema.JarFile;
+import org.radrso.workflow.entities.model.JarFile;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
