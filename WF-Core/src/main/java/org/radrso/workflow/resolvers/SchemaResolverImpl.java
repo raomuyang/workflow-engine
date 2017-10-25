@@ -11,7 +11,7 @@ import org.radrso.workflow.entities.schema.items.InputItem;
 import org.radrso.workflow.entities.schema.items.Transfer;
 import org.radrso.workflow.entities.exceptions.SchemaResolveException;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
-import org.radrso.workflow.entities.model.StepProcess;
+import org.radrso.workflow.entities.model.StepProgress;
 import org.radrso.workflow.entities.model.WorkflowInstance;
 
 import java.util.HashMap;
@@ -165,7 +165,7 @@ public class SchemaResolverImpl implements SchemaResolver {
         return "java.lang." + type;
     }
 
-    private Map<String, StepProcess> getStepStatusMap() {
+    private Map<String, StepProgress> getStepStatusMap() {
         return this.workflowInstance.getStepStatusesMap();
     }
 

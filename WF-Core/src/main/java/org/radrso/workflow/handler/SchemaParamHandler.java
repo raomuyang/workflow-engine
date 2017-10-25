@@ -91,7 +91,7 @@ public class SchemaParamHandler {
 
 
     private WorkflowResult getStepResultBody(String stepSign) {
-        return workflowInstanceInfo.getStepProcessMap().get(stepSign).getResult();
+        return workflowInstanceInfo.getStepProgressMap().get(stepSign).getResult();
     }
 
 }

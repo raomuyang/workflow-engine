@@ -32,7 +32,7 @@ public class WorkflowInstance implements Serializable{
     private int branches = 0;
     private Map<Integer, String> branchStepMap;
 
-    private Map<String, StepProcess> stepStatusesMap;
+    private Map<String, StepProgress> stepStatusesMap;
     private Map<String, String> stepProcess;
     private List<String> finishedSequence;
 

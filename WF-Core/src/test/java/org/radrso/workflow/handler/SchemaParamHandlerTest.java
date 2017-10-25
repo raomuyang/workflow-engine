@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.radrso.plugins.JsonUtils;
-import org.radrso.workflow.entities.model.StepProcess;
+import org.radrso.workflow.entities.model.StepProgress;
 import org.radrso.workflow.entities.model.WorkflowResult;
 import org.radrso.workflow.entities.schema.WorkflowSchema;
 import org.radrso.workflow.entities.schema.items.Transfer;
@@ -35,12 +35,12 @@ public class SchemaParamHandlerTest {
 
         instanceInfo = new WorkflowInstanceInfo();
         instanceInfo.setInstanceId(INSTANCE_ID);
-        StepProcess process = new StepProcess(instanceInfo.getInstanceId(), STEP_SIGN, "step 1");
+        StepProgress process = new StepProgress(instanceInfo.getInstanceId(), STEP_SIGN, "step 1");
         WorkflowResult result = new WorkflowResult();
         Map map = new Gson().fromJson("{\"response\": {\"body\": {\"msg\":\"this is result\"} }}", Map.class);
         result.setBody(map);
         process.setResult(result);
-        instanceInfo.getStepProcessMap().put(process.getSign(), process);
+        instanceInfo.getStepProgressMap().put(process.getSign(), process);
 
         handler = new SchemaParamHandler(instanceInfo);
     }

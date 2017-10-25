@@ -20,8 +20,8 @@ import java.util.Map;
  */
 @Data
 @ToString
-@Document(collection = "steps")
-public class StepProcess implements Serializable{
+@Document(collection = "progress")
+public class StepProgress implements Serializable{
     private String instanceId;
     private String sign;
     private String name;
@@ -32,7 +32,7 @@ public class StepProcess implements Serializable{
     private WorkflowResult result;
     private String precursor;
 
-    public StepProcess(String instanceId, String sign, String name) {
+    public StepProgress(String instanceId, String sign, String name) {
         this.instanceId = instanceId;
         this.sign = sign;
         this.name = name;

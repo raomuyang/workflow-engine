@@ -76,10 +76,10 @@ public class RequestHandlerTest {
         Assert.assertEquals(contentType.getCharset(), handler.contentType.getCharset());
         Assert.assertEquals(contentType.getMimeType(), handler.contentType.getMimeType());
 
-        Assert.assertEquals(1, handler.headers.size());
-        Assert.assertEquals("asdf", handler.paramMap.get("key"));
-        System.out.println(handler.headers);
-        System.out.println(handler.paramMap);
+        Assert.assertEquals(1, handler.httpHeaders.size());
+        Assert.assertEquals("asdf", handler.httpParamMap.get("key"));
+        System.out.println(handler.httpHeaders);
+        System.out.println(handler.httpParamMap);
     }
 
     @Test
@@ -95,7 +95,7 @@ public class RequestHandlerTest {
         RequestHandler handler = new RequestHandler(step, paramList);
         handler.initRequestInfo();
 
-        Assert.assertEquals(params[0], handler.headers.get("Authorization"));
+        Assert.assertEquals(params[0], handler.httpHeaders.get("Authorization"));
         WorkflowResult result = handler.netRequest();
         Assert.assertNotEquals(WFStatusCode.OK.code(), result.getCode());
     }

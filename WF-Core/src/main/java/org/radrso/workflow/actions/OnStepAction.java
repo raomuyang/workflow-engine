@@ -1,10 +1,9 @@
 package org.radrso.workflow.actions;
 
-import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.workflow.constant.WFStatusCode;
 import org.radrso.workflow.entities.StatusEnum;
 import org.radrso.workflow.entities.exceptions.WFException;
-import org.radrso.workflow.entities.model.StepProcess;
+import org.radrso.workflow.entities.model.StepProgress;
 import org.radrso.workflow.internal.model.Next;
 import org.radrso.workflow.entities.model.WorkflowResult;
 import org.radrso.workflow.entities.schema.items.Step;
@@ -24,24 +23,14 @@ public class OnStepAction implements Consumer<Next> {
     public void accept(Next next) throws Exception {
         Step step = next.getStepInfo();
 
-        StepProcess process = next.getProcess();
+        StepProgress progress = next.getProgress();
         List<Map<String, Object>> params = next.getParams();
         WorkflowResult response;
         RequestHandler requestHandler = new RequestHandler(step, params);
-        if (step.getCall() == null || !step.getCall().contains(":")) {
-            response = new WorkflowResult(ResponseCode.HTTP_BAD_REQUEST.code(), "Error Protocol:" + step.getCall(), null);
-        } else {
-            String protocol = step.getCall().substring(0, step.getCall().indexOf(":"));
-
-            if (protocol.toLowerCase().contains("http"))
-                response = requestHandler.netRequest();
-            else
-                response = requestHandler.classRequest();
-
-        }
-        process.setResult(response);
+        response = requestHandler.handle();
+        progress.setResult(response);
         if (WFStatusCode.isOK(response.getCode())) {
-            process.setStatus(StatusEnum.COMPLETED);
+            progress.setStatus(StatusEnum.COMPLETED);
         } else {
             throw new WFException(response.getCode(), response.getMsg());
         }

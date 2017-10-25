@@ -10,7 +10,7 @@ import org.radrso.workflow.entities.schema.items.Transfer;
 import org.radrso.workflow.entities.exceptions.SchemaResolveException;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 import org.radrso.workflow.entities.model.WorkflowResult;
-import org.radrso.workflow.entities.model.StepProcess;
+import org.radrso.workflow.entities.model.StepProgress;
 import org.radrso.workflow.entities.model.WorkflowInstance;
 
 import java.io.Serializable;
@@ -49,9 +49,9 @@ public class WorkflowResolverImpl implements WorkflowResolver, Serializable {
         if (workflowConfig.getSteps() != null)
             workflowConfig.getSteps().forEach(step -> {
 
-                StepProcess stepProcess = new StepProcess(workflowInstance.getInstanceId(), step.getSign(), step.getName());
-                stepProcess.setStatus(StatusEnum.WAIT);
-                workflowInstance.getStepStatusesMap().put(step.getSign(), stepProcess);
+                StepProgress stepProgress = new StepProgress(workflowInstance.getInstanceId(), step.getSign(), step.getName());
+                stepProgress.setStatus(StatusEnum.WAIT);
+                workflowInstance.getStepStatusesMap().put(step.getSign(), stepProgress);
 
                 stepMap.put(step.getSign(), step);
                 workflowInstance.getStepProcess().put(step.getSign(), Step.WAIT);

@@ -9,7 +9,7 @@ import org.radrso.workflow.constant.ExceptionCode;
 import org.radrso.workflow.entities.StatusEnum;
 import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;
-import org.radrso.workflow.entities.model.StepProcess;
+import org.radrso.workflow.entities.model.StepProgress;
 import org.radrso.workflow.entities.model.WorkflowErrorLog;
 import org.radrso.workflow.entities.model.WorkflowInstance;
 import org.radrso.workflow.resolvers.WorkflowResolver;
@@ -41,11 +41,11 @@ public class OnStepErrorAction extends AbstractAction implements Consumer<Throwa
         Step currentStep = workflowResolver.getCurrentStep();
         if (currentStep != null) {
             String stepSign = workflowResolver.getCurrentStep().getSign();
-            Map<String, StepProcess> stepStatusMap = workflowResolver.getWorkflowInstance().getStepStatusesMap();
-            StepProcess stepProcess = stepStatusMap.get(stepSign);
+            Map<String, StepProgress> stepStatusMap = workflowResolver.getWorkflowInstance().getStepStatusesMap();
+            StepProgress stepProgress = stepStatusMap.get(stepSign);
 
             workflowResolver.getWorkflowInstance().getStepProcess().put(stepSign, Step.STOPPED);
-            if (stepProcess != null);
+            if (stepProgress != null);
 //                stepProcess.setStatus(Step.STOPPED);
             else
                 log.error("StepStatus is null:" + stepSign);

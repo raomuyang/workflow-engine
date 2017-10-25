@@ -7,7 +7,7 @@ import org.radrso.workflow.constant.WFStatusCode;
 import org.radrso.workflow.entities.exceptions.WFError;
 import org.radrso.workflow.entities.exceptions.WFException;
 import org.radrso.workflow.internal.model.Next;
-import org.radrso.workflow.entities.model.StepProcess;
+import org.radrso.workflow.entities.model.StepProgress;
 import org.radrso.workflow.internal.model.WorkflowInstanceInfo;
 import org.radrso.workflow.entities.schema.WorkflowSchema;
 import org.radrso.workflow.entities.schema.items.Step;
@@ -112,7 +112,7 @@ public class FlowStepHandler {
 
     /**
      * TODO 目前step process在此处初始化，尚未考虑到从持久数据中初始化
-     * init step process, step info, step params
+     * init step progress, step info, step params
      * @param transfer the next transfer info.
      * @param precursor the precursor of next node.
      * @param instanceInfo information of this workflow runtime instance.
@@ -123,24 +123,24 @@ public class FlowStepHandler {
         Next next = new Next();
         next.setPrecursor(precursor);
 
-        // init step process
+        // init step progress
         Transfer toNext = selectSwitch(transfer, instanceInfo);
         String nextCursor = toNext.getTo();
-        StepProcess stepProcess = instanceInfo.getStepProcessMap().get(nextCursor);
+        StepProgress stepProgress = instanceInfo.getStepProgressMap().get(nextCursor);
         Step stepInfo = stepMap.get(nextCursor);
 
-        if (stepProcess == null) {
-            stepProcess = new StepProcess(instanceInfo.getInstanceId(), nextCursor, stepInfo.getName());
-            instanceInfo.getStepProcessMap().put(nextCursor, stepProcess);
+        if (stepProgress == null) {
+            stepProgress = new StepProgress(instanceInfo.getInstanceId(), nextCursor, stepInfo.getName());
+            instanceInfo.getStepProgressMap().put(nextCursor, stepProgress);
         }
-        stepProcess.setPrecursor(precursor);
+        stepProgress.setPrecursor(precursor);
 
         try {
             List<Map<String, Object>> params = Functions.mapParam1(instanceInfo).mapTo(transfer);
-            stepProcess.setParams(params);
+            stepProgress.setParams(params);
 
             next.setParams(params);
-            next.setProcess(stepProcess);
+            next.setProgress(stepProgress);
             next.setStepInfo(stepInfo);
             return next;
         } catch (Exception e) {

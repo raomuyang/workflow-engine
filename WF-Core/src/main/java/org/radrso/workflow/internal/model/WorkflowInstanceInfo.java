@@ -3,7 +3,7 @@ package org.radrso.workflow.internal.model;
 import lombok.ToString;
 import org.radrso.workflow.entities.StatusEnum;
 import org.radrso.workflow.entities.model.Instance;
-import org.radrso.workflow.entities.model.StepProcess;
+import org.radrso.workflow.entities.model.StepProgress;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,7 +25,7 @@ public class WorkflowInstanceInfo {
 
     private int branches;
     private List<String> cursor;
-    private Map<String, StepProcess> stepProcessMap;
+    private Map<String, StepProgress> stepProgressMap;
     private Queue<String> finishedSequence;
 
     public WorkflowInstanceInfo() {
@@ -42,7 +42,7 @@ public class WorkflowInstanceInfo {
     private void init(Instance instance) {
         this.instance = instance;
         cursor = new ArrayList<>();
-        stepProcessMap = new ConcurrentHashMap<>();
+        stepProgressMap = new ConcurrentHashMap<>();
         finishedSequence = new ConcurrentLinkedDeque<>();
     }
 
@@ -102,12 +102,12 @@ public class WorkflowInstanceInfo {
         this.cursor = cursor;
     }
 
-    public Map<String, StepProcess> getStepProcessMap() {
-        return stepProcessMap;
+    public Map<String, StepProgress> getStepProgressMap() {
+        return stepProgressMap;
     }
 
-    public void setStepProcessMap(Map<String, StepProcess> stepProcessMap) {
-        this.stepProcessMap = stepProcessMap;
+    public void setStepProgressMap(Map<String, StepProgress> stepProgressMap) {
+        this.stepProgressMap = stepProgressMap;
     }
 
     public Queue<String> getFinishedSequence() {

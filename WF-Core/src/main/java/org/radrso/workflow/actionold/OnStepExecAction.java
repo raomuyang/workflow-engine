@@ -14,7 +14,7 @@ import org.radrso.workflow.entities.exceptions.SchemaResolveException;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;
 import org.radrso.workflow.entities.model.WorkflowResult;
-import org.radrso.workflow.entities.model.StepProcess;
+import org.radrso.workflow.entities.model.StepProgress;
 import org.radrso.workflow.entities.model.WorkflowErrorLog;
 import org.radrso.workflow.entities.model.WorkflowInstance;
 import org.radrso.workflow.launcher.WorkflowLaunchers;
@@ -51,9 +51,9 @@ public class OnStepExecAction extends AbstractAction implements Consumer<Workflo
                 workflowResolver.next();
                 Step step = workflowResolver.getCurrentStep();
                 if (step != null) {
-                    StepProcess stepProcess = workflowResolver.getWorkflowInstance().getStepStatusesMap().get(step.getSign());
-                    if (stepProcess.getBegin() == null)
-                        stepProcess.setBegin(new Date());
+                    StepProgress stepProgress = workflowResolver.getWorkflowInstance().getStepStatusesMap().get(step.getSign());
+                    if (stepProgress.getBegin() == null)
+                        stepProgress.setBegin(new Date());
                 }
 
                 execBranches(workflowResolver);

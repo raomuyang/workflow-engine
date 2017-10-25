@@ -35,9 +35,9 @@ public class RequestHandler {
     private Object[] params;
     private String[] paramNames;
 
-    protected Map<String, Object> paramMap = new HashMap<>();
-    protected Map<String, Object> headers = new HashMap<>();
-    protected ContentType contentType = ContentType.APPLICATION_JSON;
+    Map<String, Object> httpParamMap = new HashMap<>();
+    Map<String, Object> httpHeaders = new HashMap<>();
+    ContentType contentType = ContentType.APPLICATION_JSON;
 
     public RequestHandler(Step step, List<Map<String, Object>> paramList){
         this.step = step;
@@ -57,6 +57,22 @@ public class RequestHandler {
             params[i] = value;
             paramNames[i] = (String) key;
         }
+    }
+
+    public WorkflowResult handle() {
+        WorkflowResult result;
+        if (step.getCall() == null || !step.getCall().contains(":")) {
+            result = new WorkflowResult(WFStatusCode.HTTP_BAD_REQUEST.code(), "Error Protocol:" + step.getCall(), null);
+        } else {
+            String protocol = step.getCall().substring(0, step.getCall().indexOf(":"));
+
+            if (protocol.toLowerCase().contains("http"))
+                result = netRequest();
+            else
+                result = classRequest();
+
+        }
+        return result;
     }
 
     /**
@@ -141,10 +157,10 @@ public class RequestHandler {
 
         initRequestInfo();
 
-        return sendNetRequest(method, headers, paramMap, contentType);
+        return sendNetRequest(method, httpHeaders, httpParamMap, contentType);
     }
 
-    protected void initRequestInfo() {
+    void initRequestInfo() {
         //转换参数，配置文件中以$转义的，添加到header中
         for (int i = 0; i < params.length; i++){
             String name = paramNames[i];
@@ -158,7 +174,7 @@ public class RequestHandler {
             if(setUrlPlaceholder(name, value)){
                 continue;
             }
-            paramMap.put(paramNames[i], params[i]);
+            httpParamMap.put(paramNames[i], params[i]);
         }
     }
 
@@ -178,12 +194,12 @@ public class RequestHandler {
                     charset = Charset.forName(EngineConstant.DEFAULT_ENCODING);
                 }
                 contentType = ContentType.create(type, charset);
-                headers.put("Content-Type", contentType.toString());
+                httpHeaders.put("Content-Type", contentType.toString());
                 return true;
             }
 
             if (name.length() > 1) {
-                headers.put(name.substring(1), value);
+                httpHeaders.put(name.substring(1), value);
                 return true;
             }
         }
