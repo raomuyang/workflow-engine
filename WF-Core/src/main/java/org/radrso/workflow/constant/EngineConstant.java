@@ -22,6 +22,9 @@ public class EngineConstant {
           properties = JsonUtils.loadJsonFile(path, Properties.class);
      }
 
+     public static final String DEFAULT_ENCODING = "utf-8";
+     public static final String CONTENT_TYPE_PARAM_NAME = "$content-type";
+
      public static final String PROVIDER_JAR_HOME = FileUtils.getProjectHome() + File.separator + "provider-jars" + File.separator;
      public static final String SERVICE_JAR_HOME = FileUtils.getProjectHome() + File.separator + "service-jars" + File.separator;
 

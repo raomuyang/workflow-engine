@@ -10,7 +10,7 @@ import org.radrso.workflow.constant.ExceptionCode;
 import org.radrso.workflow.entities.schema.WorkflowSchema;
 import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.schema.items.Transfer;
-import org.radrso.workflow.entities.exceptions.ConfigReadException;
+import org.radrso.workflow.entities.exceptions.SchemaResolveException;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 import org.radrso.workflow.entities.exceptions.WFRuntimeException;
 import org.radrso.workflow.entities.model.WorkflowResult;
@@ -110,7 +110,7 @@ public class OnStepExecAction extends AbstractAction implements Consumer<Workflo
                         workflowResolver.rollback();
                     }
                 }
-            } catch (ConfigReadException e) {
+            } catch (SchemaResolveException e) {
                 System.out.println(e);
                 loopDo = true;
                 workflowResolver.rollback();

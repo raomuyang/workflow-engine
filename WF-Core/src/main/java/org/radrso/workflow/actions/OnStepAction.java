@@ -1,7 +1,9 @@
 package org.radrso.workflow.actions;
 
 import org.radrso.plugins.requests.entity.ResponseCode;
+import org.radrso.workflow.constant.WFStatusCode;
 import org.radrso.workflow.entities.StatusEnum;
+import org.radrso.workflow.entities.exceptions.WFException;
 import org.radrso.workflow.entities.model.StepProcess;
 import org.radrso.workflow.internal.model.Next;
 import org.radrso.workflow.entities.model.WorkflowResult;
@@ -38,11 +40,10 @@ public class OnStepAction implements Consumer<Next> {
 
         }
         process.setResult(response);
-        if (response.getCode() == ResponseCode.HTTP_OK.code()) {
+        if (WFStatusCode.isOK(response.getCode())) {
             process.setStatus(StatusEnum.COMPLETED);
         } else {
-            // TODO 封装
-            throw new Exception(response.toString());
+            throw new WFException(response.getCode(), response.getMsg());
         }
     }
 }

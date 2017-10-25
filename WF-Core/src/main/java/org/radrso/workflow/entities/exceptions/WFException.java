@@ -1,6 +1,6 @@
 package org.radrso.workflow.entities.exceptions;
 
-import org.radrso.workflow.constant.WFErrorCode;
+import org.radrso.workflow.constant.WFStatusCode;
 
 /**
  * Created by Rao-Mengnan
@@ -10,10 +10,10 @@ public class WFException extends RuntimeException {
     protected int code;
 
     public WFException(String msg) {
-        this(WFErrorCode.UNKNOWN.code(), msg);
+        this(WFStatusCode.UNKNOWN.code(), msg);
     }
 
-    public WFException(WFErrorCode errorCode) {
+    public WFException(WFStatusCode errorCode) {
         this(errorCode.code(), errorCode.info());
     }
 
@@ -21,7 +21,7 @@ public class WFException extends RuntimeException {
         this(code, msg, null);
     }
 
-    public WFException(WFErrorCode errorCode, String msg) {
+    public WFException(WFStatusCode errorCode, String msg) {
         this(errorCode.code(), msg, null);
     }
 

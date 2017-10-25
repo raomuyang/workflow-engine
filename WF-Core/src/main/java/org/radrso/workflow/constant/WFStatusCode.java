@@ -4,7 +4,19 @@ package org.radrso.workflow.constant;
  * Created by Rao-Mengnan
  * on 16-12-9.
  */
-public enum  WFErrorCode {
+public enum WFStatusCode {
+
+    OK(200, "HTTP_OK"),
+
+    HTTP_REQUEST_CONTINUE(100, "Continue"),
+    HTTP_BAD_REQUEST(400, "Bad Request"),
+    HTTP_UNAUTHORIZED(401, "Unauthorized"),
+    HTTP_FORBIDDEN(403, "Forbidden"),
+    HTTP_NOT_FOUND(404, "Not Found"),
+    HTTP_METHOD_NOT_ALLOWED(405, "Method Not Allowed"),
+    HTTP_INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
+    HTTP_BAD_GATEWAY(502, "Bad Gateway"),
+    HTTP_SERVICE_UNAVAILABLE(503, "Service Unavailable"),
 
     INTERRUPT_EXCEPTION(3040, "Interrupt exception"),
 
@@ -25,7 +37,7 @@ public enum  WFErrorCode {
 
     int code;
     String info;
-    WFErrorCode(int code, String info) {
+    WFStatusCode(int code, String info) {
         this.code = code;
         this.info = info;
     }
@@ -36,5 +48,9 @@ public enum  WFErrorCode {
 
     public String info() {
         return this.info;
+    }
+
+    public static boolean isOK(int code) {
+        return code / 100 == 2;
     }
 }

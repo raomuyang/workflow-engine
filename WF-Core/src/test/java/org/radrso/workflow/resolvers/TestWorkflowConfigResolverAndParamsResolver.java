@@ -8,7 +8,7 @@ import org.radrso.workflow.constant.EngineConstant;
 import org.radrso.workflow.entities.schema.WorkflowSchema;
 import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.schema.items.Transfer;
-import org.radrso.workflow.entities.exceptions.ConfigReadException;
+import org.radrso.workflow.entities.exceptions.SchemaResolveException;
 import org.radrso.workflow.entities.exceptions.UnknownExceptionInRunning;
 import org.radrso.workflow.entities.model.WorkflowResult;
 import org.radrso.workflow.entities.model.StepProcess;
@@ -38,7 +38,7 @@ public class TestWorkflowConfigResolverAndParamsResolver {
     }
 
     @Test
-    public void testGetParam() throws UnknownExceptionInRunning, ConfigReadException {
+    public void testGetParam() throws UnknownExceptionInRunning, SchemaResolveException {
 
         Transfer transfer = workflowConfig.getSteps().get(0).getTransfer();
         paramsResolver.resolverTransferParams(transfer);
@@ -59,8 +59,8 @@ public class TestWorkflowConfigResolverAndParamsResolver {
         Assert.assertEquals(stepProcess_1.getParams()[5].getClass(), Double[].class);
     }
 
-    @Test(expected = ConfigReadException.class)
-    public void testResolveResponseParam() throws UnknownExceptionInRunning, ConfigReadException {
+    @Test(expected = SchemaResolveException.class)
+    public void testResolveResponseParam() throws UnknownExceptionInRunning, SchemaResolveException {
         Transfer transfer = workflowConfig.getSteps().get(0).getTransfer();
         paramsResolver.resolverTransferParams(transfer);
 

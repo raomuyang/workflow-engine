@@ -18,6 +18,7 @@ import java.util.Date;
 /**
  * 中断和检查中断的动作
  */
+@Deprecated
 @Log4j
 public class InterruptAndCheckActon extends AbstractAction implements Consumer<WorkflowResolver> {
 

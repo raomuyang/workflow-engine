@@ -3,7 +3,7 @@ package org.radrso.workflow.handler;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j;
 import org.radrso.workflow.constant.EngineConstant;
-import org.radrso.workflow.constant.WFErrorCode;
+import org.radrso.workflow.constant.WFStatusCode;
 import org.radrso.workflow.entities.exceptions.WFException;
 import org.radrso.workflow.internal.model.Next;
 import org.radrso.workflow.entities.model.StepProcess;
@@ -101,7 +101,7 @@ public class FlowStepHandler {
             boolean result = Functions.condition(condition).check(variableA, compareTo);
             return result ? switchBody.getIfTransfer() : switchBody.getElseTransfer();
         } catch (Exception e) {
-            throw new WFException(WFErrorCode.SCHEMA_PARSE_ERROR.code(), e.getMessage(), e);
+            throw new WFException(WFStatusCode.SCHEMA_PARSE_ERROR.code(), e.getMessage(), e);
         }
     }
 
@@ -135,7 +135,7 @@ public class FlowStepHandler {
             next.setStepInfo(stepInfo);
             return next;
         } catch (Exception e) {
-            throw new WFException(WFErrorCode.SCHEMA_PARSE_ERROR.code(), e.getMessage(), e);
+            throw new WFException(WFStatusCode.SCHEMA_PARSE_ERROR.code(), e.getMessage(), e);
         }
     }
 

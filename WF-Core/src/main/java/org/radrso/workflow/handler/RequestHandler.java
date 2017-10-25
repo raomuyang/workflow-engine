@@ -9,14 +9,13 @@ import org.radrso.plugins.requests.BaseRequest;
 import org.radrso.plugins.requests.RequestFactory;
 import org.radrso.plugins.requests.entity.MethodEnum;
 import org.radrso.plugins.requests.entity.Response;
-import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.plugins.requests.entity.exceptions.impl.RequestException;
 import org.radrso.workflow.constant.EngineConstant;
 import org.radrso.workflow.constant.ExceptionCode;
 import org.radrso.workflow.constant.RequestMethodMapping;
+import org.radrso.workflow.constant.WFStatusCode;
 import org.radrso.workflow.entities.model.WorkflowResult;
 import org.radrso.workflow.entities.schema.items.Step;
-import org.radrso.workflow.resolvers.RequestResolver;
 
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
@@ -32,11 +31,12 @@ import java.util.Map;
 @Log4j
 public class RequestHandler {
     private Step step;
+
     private Object[] params;
     private String[] paramNames;
-
     public RequestHandler(Step step, List<Map<String, Object>> paramList){
         this.step = step;
+
         params = new Object[paramList.size()];
         paramNames = new String[paramList.size()];
 
@@ -81,34 +81,33 @@ public class RequestHandler {
             WorkflowResult response = new WorkflowResult();
             Class clazz = CustomClassLoader.getClassLoader().loadClass(className);
             Object ret = ReflectInvokeMethod.invoke(clazz, clazz.newInstance(), methodName, params);
-            response.setCode(ResponseCode.HTTP_OK.code());
+            response.setCode(WFStatusCode.OK.code());
             response.setBody(ret);
             return response;
 
         } catch (ClassNotFoundException e) {
             log.warn(e);
-            return new WorkflowResult(ExceptionCode.CLASS_NOT_FOUND.code(),
+            return new WorkflowResult(WFStatusCode.CLASS_NOT_FOUND.code(),
                     e.getMessage(), e.getMessage());
-
         } catch (NoSuchMethodException e) {
             log.error(e);
-            return new WorkflowResult(ExceptionCode.METHOD_NOT_FOUND.code(),
+            return new WorkflowResult(WFStatusCode.METHOD_NOT_FOUND.code(),
                     e.getMessage(), e.getMessage());
         } catch (IllegalAccessException e) {
             log.error(e);
-            return new WorkflowResult(ExceptionCode.METHOD_ACCESS_ERROR.code(),
+            return new WorkflowResult(WFStatusCode.METHOD_ACCESS_ERROR.code(),
                     e.getMessage(), e.getMessage());
         } catch (InvocationTargetException e) {
             log.error(e);
-            return new WorkflowResult(ExceptionCode.METHOD_INVOCATION_ERROR.code(),
+            return new WorkflowResult(WFStatusCode.METHOD_INVOCATION_ERROR.code(),
                     e.getMessage(), e.getMessage());
         } catch (InstantiationException e) {
             log.error(e);
-            return new WorkflowResult(ExceptionCode.CLASS_INSTANCE_EXCEPTION.code(),
+            return new WorkflowResult(WFStatusCode.CLASS_INSTANCE_EXCEPTION.code(),
                     e.getMessage(), e.getMessage());
         } catch (IllegalArgumentException e){
             log.error(e);
-            return new WorkflowResult(ExceptionCode.ILLEGAL_ARGMENT_EXCEPTION.code(),
+            return new WorkflowResult(WFStatusCode.ILLEGAL_ARGUMENT_EXCEPTION.code(),
                     e.getMessage(), e.getMessage());
         }
 
@@ -128,7 +127,7 @@ public class RequestHandler {
             method = RequestMethodMapping.getMethod(step.getMethod());
         } catch (RequestException e) {
             log.error(e);
-            return new WorkflowResult(ExceptionCode.UNSUPPORTED_REQUEST_METHOD.code(),
+            return new WorkflowResult(WFStatusCode.UNSUPPORTED_REQUEST_METHOD.code(),
                     e.getMessage(), null);
         }
 
@@ -140,10 +139,11 @@ public class RequestHandler {
             params = new Object[]{};
         for (int i = 0; i < params.length; i++){
 
-            if(paramNames[i] != null && paramNames[i].startsWith("$")){
-                if(paramNames[i].toLowerCase().equals("$content-type")){
+
+            if(paramNames[i] != null && paramNames[i].startsWith(EngineConstant.HEADER_PARAMS_ESCAPE)){
+                if(paramNames[i].toLowerCase().equals(EngineConstant.CONTENT_TYPE_PARAM_NAME)){
                     String type = String.valueOf(params[i]);
-                    String encoding = "utf-8";
+                    String encoding = EngineConstant.DEFAULT_ENCODING;
                     if(type.contains(";") && !type.startsWith(";")) {
                         type = type.split(";")[0];
                         encoding = type.split(";")[1];
@@ -152,7 +152,7 @@ public class RequestHandler {
                     try {
                         charset = Charset.forName(encoding);
                     }catch (UnsupportedCharsetException e){
-                        charset = Charset.forName("utf-8");
+                        charset = Charset.forName(EngineConstant.DEFAULT_ENCODING);
                     }
                     contentType = ContentType.create(type, charset);
                     headers.put("Content-Type", contentType.toString());
@@ -161,12 +161,13 @@ public class RequestHandler {
                 headers.put(paramNames[i].substring(1), params[i]);
             }
 
+            // url placeholder
             else if(paramNames[i].matches(EngineConstant.VALUES_ESCAPE)){
-                String[] matchers = EngineConstant.matcherValuesEscape(paramNames[i]);
-                if(matchers.length > 1)
+                String[] matches = EngineConstant.matcherValuesEscape(paramNames[i]);
+                if(matches.length > 1)
                     paramMap.put(paramNames[i], params[i]);
                 else {
-                    String key = matchers[0];
+                    String key = matches[0];
                     urlParams.put(key, params[i]);
                 }
             }
