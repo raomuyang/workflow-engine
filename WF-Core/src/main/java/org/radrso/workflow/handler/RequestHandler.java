@@ -39,7 +39,7 @@ public class RequestHandler {
     Map<String, Object> httpHeaders = new HashMap<>();
     ContentType contentType = ContentType.APPLICATION_JSON;
 
-    public RequestHandler(Step step, List<Map<String, Object>> paramList){
+    public RequestHandler(Step step, List<Map<String, Object>> paramList) {
         this.step = step;
 
         if (paramList.size() > 0) {
@@ -80,22 +80,22 @@ public class RequestHandler {
      * 反射调用会对基本数据类型和包装数据类型自动装箱和拆箱，但不会对基本数据类型
      * 数组和包装数据类型的数组进行装箱和拆箱
      * 1. 工作流引擎在读取配置文件时，会将配置文件中的基础数据类型进行包装，这意味着如果指定调用的方法的参数中有
-     *      数据类型数组与参数不匹配，可能不能自动装箱拆箱，会返回NoSuchMethodException错误
+     * 数据类型数组与参数不匹配，可能不能自动装箱拆箱，会返回NoSuchMethodException错误
      * 2. 同理，如果指定的方法中带有基础类型的可变长参数，可变长参数相当于一个数组，同样
-            无法自动拆箱
-     *  3. 建议指定调用的方法入参类型为包装类型，会提高效率，避免异常
-     *  4. 可以在配置文件中指定数组类型
-
-     * @return  WFResponse中的Response是执行结果的消息实体
+     * 无法自动拆箱
+     * 3. 建议指定调用的方法入参类型为包装类型，会提高效率，避免异常
+     * 4. 可以在配置文件中指定数组类型
+     *
+     * @return WFResponse中的Response是执行结果的消息实体
      */
-    public WorkflowResult classRequest(){
+    public WorkflowResult classRequest() {
 
         String className = null;
-        String[] classStr  = step.getCall().split(":");
-        if(classStr.length > 1)
+        String[] classStr = step.getCall().split(":");
+        if (classStr.length > 1)
             className = classStr[1];
 
-        if(className == null){
+        if (className == null) {
             String errorMsg = ExceptionCode.UNKNOW.info() + String.format("[%s, %s]", "ClassName split error", step.getCall());
             log.error(errorMsg);
             return new WorkflowResult(ExceptionCode.UNKNOW.code(), errorMsg, errorMsg);
@@ -114,27 +114,27 @@ public class RequestHandler {
         } catch (ClassNotFoundException e) {
             log.warn(e);
             return new WorkflowResult(WFStatusCode.CLASS_NOT_FOUND.code(),
-                    e.getMessage(), e.getMessage());
+                    e.getMessage(), null);
         } catch (NoSuchMethodException e) {
             log.error(e);
             return new WorkflowResult(WFStatusCode.METHOD_NOT_FOUND.code(),
-                    e.getMessage(), e.getMessage());
+                    e.getMessage(), null);
         } catch (IllegalAccessException e) {
             log.error(e);
             return new WorkflowResult(WFStatusCode.METHOD_ACCESS_ERROR.code(),
-                    e.getMessage(), e.getMessage());
+                    e.getMessage(), null);
         } catch (InvocationTargetException e) {
             log.error(e);
             return new WorkflowResult(WFStatusCode.METHOD_INVOCATION_ERROR.code(),
-                    e.getMessage(), e.getMessage());
+                    e.getMessage(), null);
         } catch (InstantiationException e) {
             log.error(e);
             return new WorkflowResult(WFStatusCode.CLASS_INSTANCE_EXCEPTION.code(),
-                    e.getMessage(), e.getMessage());
-        } catch (IllegalArgumentException e){
+                    e.getMessage(), null);
+        } catch (IllegalArgumentException e) {
             log.error(e);
             return new WorkflowResult(WFStatusCode.ILLEGAL_ARGUMENT_EXCEPTION.code(),
-                    e.getMessage(), e.getMessage());
+                    e.getMessage(), null);
         }
 
 
@@ -142,7 +142,8 @@ public class RequestHandler {
 
     /**
      * 调用网络请求
-     * @return  WFResponse中的Response是执行结果的消息实体
+     *
+     * @return WFResponse中的Response是执行结果的消息实体
      */
     public WorkflowResult netRequest() {
         //获取请求方法 GET/PUT/POST/DELETE
@@ -162,7 +163,7 @@ public class RequestHandler {
 
     void initRequestInfo() {
         //转换参数，配置文件中以$转义的，添加到header中
-        for (int i = 0; i < params.length; i++){
+        for (int i = 0; i < params.length; i++) {
             String name = paramNames[i];
             Object value = params[i];
 
@@ -171,7 +172,7 @@ public class RequestHandler {
             }
 
             // url placeholder
-            if(setUrlPlaceholder(name, value)){
+            if (setUrlPlaceholder(name, value)) {
                 continue;
             }
             httpParamMap.put(paramNames[i], params[i]);
@@ -179,18 +180,18 @@ public class RequestHandler {
     }
 
     private boolean putHeader(String name, Object value) {
-        if(name != null && name.startsWith(EngineConstant.HEADER_PARAMS_ESCAPE)){
-            if(name.toLowerCase().equals(EngineConstant.CONTENT_TYPE_PARAM_NAME)){
+        if (name != null && name.startsWith(EngineConstant.HEADER_PARAMS_ESCAPE)) {
+            if (name.toLowerCase().equals(EngineConstant.CONTENT_TYPE_PARAM_NAME)) {
                 String type = String.valueOf(value);
                 String encoding = EngineConstant.DEFAULT_ENCODING;
-                if(type.contains(";") && !type.startsWith(";")) {
+                if (type.contains(";") && !type.startsWith(";")) {
                     type = String.valueOf(value).split(";")[0];
                     encoding = String.valueOf(value).split(";")[1];
                 }
                 Charset charset;
                 try {
                     charset = Charset.forName(encoding);
-                }catch (UnsupportedCharsetException e){
+                } catch (UnsupportedCharsetException e) {
                     charset = Charset.forName(EngineConstant.DEFAULT_ENCODING);
                 }
                 contentType = ContentType.create(type, charset);
@@ -207,9 +208,9 @@ public class RequestHandler {
     }
 
     private boolean setUrlPlaceholder(String name, Object value) {
-        if(name.matches(EngineConstant.VALUES_ESCAPE)){
+        if (name.matches(EngineConstant.VALUES_ESCAPE)) {
             String[] matches = EngineConstant.matcherValuesEscape(name);
-            if(matches.length > 1) return false;
+            if (matches.length > 1) return false;
             else {
                 String key = matches[0];
                 String url = step.getCall();
@@ -221,7 +222,7 @@ public class RequestHandler {
         return false;
     }
 
-    private WorkflowResult sendNetRequest(MethodEnum method, Map<String, Object> headers, Map paramMap, ContentType contentType){
+    private WorkflowResult sendNetRequest(MethodEnum method, Map<String, Object> headers, Map paramMap, ContentType contentType) {
         // 通过请求工厂创建请求，发送请求
         BaseRequest request;
         Response response;
@@ -244,7 +245,7 @@ public class RequestHandler {
         // 解析Http/Https请求返回的数据
         WorkflowResult wfResponse = new WorkflowResult();
         wfResponse.setCode(response.getStatusCode());
-        if(!response.isSuccess())
+        if (!response.isSuccess())
             wfResponse.setMsg(response.getErrorMsg());
 
         wfResponse.setBody(response.getContent());

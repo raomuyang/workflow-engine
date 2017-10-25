@@ -88,7 +88,7 @@ public class WorkflowConfroller {
         map.put("status", res);
 
         if(!res){
-            map.put("msg", "Upload error, pleas check the applicationId");
+            map.put("msg", "Upload error, pleas apply the applicationId");
             return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(map, HttpStatus.OK);
@@ -118,7 +118,7 @@ public class WorkflowConfroller {
         String msg = String.format("Restart workflow %s successful, deadline is %s", workflowId, deadline);
         HttpStatus statusCode = HttpStatus.OK;
         if (!res) {
-            msg = String.format("Restart workflow %s successful, deadline is %s, please check it", workflowId, deadline);
+            msg = String.format("Restart workflow %s successful, deadline is %s, please apply it", workflowId, deadline);
             statusCode = HttpStatus.BAD_REQUEST;
         }
         modelMap.put("msg", msg);

@@ -6,6 +6,7 @@ import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.schema.items.Transfer;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +18,10 @@ import java.util.Map;
 public class Next implements Serializable {
     String precursor;
     Step stepInfo;
-    Transfer transfer;
+    private Date deadline;
     StepProgress progress;
-    List<Map<String, Object>> params;
+
+    public List<Map<String, Object>> getParams() {
+        return progress.getParams();
+    }
 }

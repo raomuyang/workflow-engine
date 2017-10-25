@@ -1,24 +1,23 @@
-package org.radrso.workflow.base;
+package org.radrso.workflow.handler;
 
 import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.CustomClassLoader;
 import org.radrso.plugins.FileUtils;
 import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.workflow.constant.ExceptionCode;
-import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.model.WorkflowResult;
-import org.radrso.workflow.resolvers.RequestResolver;
-import org.radrso.workflow.resolvers.Resolvers;
 
 import java.io.File;
 import java.io.IOException;
 
 
 /**
- * Created by rao-mengnan on 2017/3/14.
+ * Created by rao-mengnan
+ * on 2017/3/14.
  */
+
 @Log4j
-public final class BaseOperations {
+public final class PackageImportHandler {
     public static final String RESPONSE = "success";
 
     /**
@@ -46,7 +45,7 @@ public final class BaseOperations {
         return new WorkflowResult(ResponseCode.HTTP_OK.code(), null, RESPONSE);
     }
 
-    public static WorkflowResult checkAndImportJar(String dir, String jarName) {
+    public static WorkflowResult importLocalJar(String dir, String jarName) {
         String path = dir + File.separator + jarName;
         File file = new File(path);
         if (file.exists()) {
@@ -60,28 +59,5 @@ public final class BaseOperations {
         } else {
             return new WorkflowResult(ExceptionCode.JAR_FILE_NOT_FOUND.code(), ExceptionCode.JAR_FILE_NOT_FOUND.info(), null);
         }
-    }
-
-    /**
-     * 执行工作流的一个步骤
-     *
-     * @param step       当前执行的Step对象
-     * @param params     启动这个步骤的参数
-     * @param paramNames 启动这个步骤的参数名，与参数顺序相同
-     * @return 返回WFResponse，封装对象的response属性才是执行结果
-     */
-    public static WorkflowResult execute(Step step, Object[] params, String[] paramNames) {
-        RequestResolver resolver = Resolvers.getStepActionResolver(step, params, paramNames);
-        if (step.getCall() == null || step.getCall().indexOf(":") < 0) {
-            return new WorkflowResult(ResponseCode.HTTP_BAD_REQUEST.code(), "Error Protocol:" + step.getCall(), null);
-        }
-        String protocol = step.getCall().substring(0, step.getCall().indexOf(":"));
-
-        WorkflowResult response;
-        if (protocol.toLowerCase().contains("http"))
-            response = resolver.netRequest();
-        else
-            response = resolver.classRequest();
-        return response;
     }
 }

@@ -25,9 +25,9 @@ public class OnStepAction implements Consumer<Next> {
 
         StepProgress progress = next.getProgress();
         List<Map<String, Object>> params = next.getParams();
-        WorkflowResult response;
         RequestHandler requestHandler = new RequestHandler(step, params);
-        response = requestHandler.handle();
+        WorkflowResult response = requestHandler.handle();
+
         progress.setResult(response);
         if (WFStatusCode.isOK(response.getCode())) {
             progress.setStatus(StatusEnum.COMPLETED);

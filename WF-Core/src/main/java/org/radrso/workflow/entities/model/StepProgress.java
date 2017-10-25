@@ -3,6 +3,7 @@ package org.radrso.workflow.entities.model;
 import lombok.Data;
 import lombok.ToString;
 import org.radrso.workflow.entities.StatusEnum;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
@@ -22,8 +23,10 @@ import java.util.Map;
 @ToString
 @Document(collection = "progress")
 public class StepProgress implements Serializable{
-    private String instanceId;
+    @Id
     private String sign;
+
+    private String instanceId;
     private String name;
     private StatusEnum status;
     private Date begin;

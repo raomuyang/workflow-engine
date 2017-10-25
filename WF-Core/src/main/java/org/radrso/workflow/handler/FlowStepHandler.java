@@ -1,6 +1,5 @@
 package org.radrso.workflow.handler;
 
-import lombok.NonNull;
 import lombok.extern.log4j.Log4j;
 import org.radrso.workflow.constant.EngineConstant;
 import org.radrso.workflow.constant.WFStatusCode;
@@ -94,7 +93,7 @@ public class FlowStepHandler {
             Object compareTo =Functions.mapParam2(instanceInfo).mapTo(String.valueOf(switchBody.getCompareTo()), type);
 
             String condition = switchBody.getExpression();
-            boolean result = Functions.condition(condition).check(variableA, compareTo);
+            boolean result = Functions.condition(condition).apply(variableA, compareTo);
             return result ? switchBody.getThanTransfer() : switchBody.getElseTransfer();
         } catch (Exception e) {
             if (e instanceof WFError) {
@@ -134,9 +133,9 @@ public class FlowStepHandler {
             List<Map<String, Object>> params = Functions.mapParam1(instanceInfo).mapTo(transfer);
             stepProgress.setParams(params);
 
-            next.setParams(params);
             next.setProgress(stepProgress);
             next.setStepInfo(stepInfo);
+            next.setDeadline(transfer.getDeadline());
             return next;
         } catch (Exception e) {
             if (e instanceof WFError) {

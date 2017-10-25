@@ -1,12 +1,11 @@
 package org.radrso.workflow.internal.function;
 
-import org.radrso.workflow.function.Consumer;
+import org.radrso.workflow.entities.model.WorkflowResult;
+import org.radrso.workflow.function.*;
+import org.radrso.workflow.handler.PackageImportHandler;
 import org.radrso.workflow.internal.model.Next;
 import org.radrso.workflow.internal.model.WorkflowInstanceInfo;
 import org.radrso.workflow.entities.schema.items.Transfer;
-import org.radrso.workflow.function.Condition;
-import org.radrso.workflow.function.ConversionParam1;
-import org.radrso.workflow.function.ConversionParam2;
 import org.radrso.workflow.handler.CompareHandler;
 import org.radrso.workflow.handler.SchemaParamHandler;
 import org.radrso.workflow.schedulers.TaskScheduler;
@@ -19,11 +18,11 @@ import java.util.Map;
  * on 2017/10/23.
  */
 public class Functions {
-    public static Condition<Object, Object, Boolean> condition(String condition) {
+    public static Function2<Object, Object, Boolean> condition(String condition) {
         CompareHandler handler = new CompareHandler(condition);
-        return new Condition<Object, Object, Boolean>() {
+        return new Function2<Object, Object, Boolean>() {
             @Override
-            public Boolean check(Object o, Object o2) throws Exception {
+            public Boolean apply(Object o, Object o2) throws Exception {
                 return handler.compare(o, o2);
             }
         };
@@ -54,6 +53,24 @@ public class Functions {
             @Override
             public void accept(List<Next> nextList) throws Exception {
                 TaskScheduler.submit(nextList);
+            }
+        };
+    }
+
+    public static Function3<String, String, byte[], WorkflowResult> importPackage() {
+        return new Function3<String, String, byte[], WorkflowResult>() {
+            @Override
+            public WorkflowResult apply(String dir, String jarName, byte[] bytes) throws Exception {
+                return PackageImportHandler.importJar(dir, jarName, bytes);
+            }
+        };
+    }
+
+    public static Function2<String, String, WorkflowResult> importPackageFile() {
+        return new Function2<String, String, WorkflowResult>() {
+            @Override
+            public WorkflowResult apply(String dir, String jarName) throws Exception {
+                return PackageImportHandler.importLocalJar(dir, jarName);
             }
         };
     }

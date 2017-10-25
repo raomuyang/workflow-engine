@@ -5,7 +5,7 @@ import org.radrso.workflow.constant.EngineConstant;
 import org.radrso.workflow.entities.model.JarFile;
 import org.radrso.workflow.entities.schema.items.Step;
 import org.radrso.workflow.entities.model.WorkflowResult;
-import org.radrso.workflow.base.BaseOperations;
+import org.radrso.workflow.handler.PackageImportHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ public class OperationsImpl implements Operations {
 
     @Override
     public WorkflowResult executeStepAction(Step step, Object[] params, String[] paramNames) {
-        return BaseOperations.execute(step, params, paramNames);
+        return PackageImportHandler.execute(step, params, paramNames);
     }
 
     @Override
@@ -31,8 +31,8 @@ public class OperationsImpl implements Operations {
         File file = new File(fp + jarName);
         if (!file.exists()) {
             JarFile jarFile = jarFileRepository.findByApplicationAndName(application, jarName);
-            return BaseOperations.importJar(fp, jarName, jarFile.getFile());
+            return PackageImportHandler.importJar(fp, jarName, jarFile.getFile());
         }
-        return BaseOperations.checkAndImportJar(fp, jarName);
+        return PackageImportHandler.importLocalJar(fp, jarName);
     }
 }
