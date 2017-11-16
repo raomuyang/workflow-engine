@@ -1,8 +1,8 @@
 package org.radrso.workflow.wfservice.service.impl;
 
 import org.bson.types.ObjectId;
-import org.radrso.workflow.entities.config.WorkflowConfig;
-import org.radrso.workflow.entities.wf.WorkflowInstance;
+import org.radrso.workflow.entity.schema.WorkflowSchema;
+import org.radrso.workflow.entity.model.WorkflowInstance;
 import org.radrso.workflow.wfservice.repositories.WorkflowInstanceRepository;
 import org.radrso.workflow.wfservice.repositories.WorkflowRepository;
 import org.radrso.workflow.wfservice.service.WorkflowInstanceService;
@@ -31,7 +31,7 @@ public class WorkflowInstanceServiceImpl implements WorkflowInstanceService{
 
     @Override
     public WorkflowInstance newInstance(String workflowId) {
-        WorkflowConfig workflowConfig = workflowRepository.findOne(workflowId);
+        WorkflowSchema workflowConfig = workflowRepository.findOne(workflowId);
         if(workflowConfig == null)
             return null;
 

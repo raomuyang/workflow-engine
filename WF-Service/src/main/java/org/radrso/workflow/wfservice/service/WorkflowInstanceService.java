@@ -1,6 +1,6 @@
 package org.radrso.workflow.wfservice.service;
 
-import org.radrso.workflow.entities.wf.WorkflowInstance;
+import org.radrso.workflow.entity.model.WorkflowInstance;
 
 import java.util.List;
 import java.util.Map;

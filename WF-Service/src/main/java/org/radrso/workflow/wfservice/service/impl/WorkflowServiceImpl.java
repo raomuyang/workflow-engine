@@ -2,10 +2,10 @@ package org.radrso.workflow.wfservice.service.impl;
 
 import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.FileUtils;
-import org.radrso.workflow.constant.ConfigConstant;
-import org.radrso.workflow.entities.config.JarFile;
-import org.radrso.workflow.entities.config.WorkflowConfig;
-import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
+import org.radrso.workflow.constant.EngineConstant;
+import org.radrso.workflow.entity.model.JarFile;
+import org.radrso.workflow.entity.schema.WorkflowSchema;
+import org.radrso.workflow.entity.model.WorkflowRuntimeState;
 import org.radrso.workflow.wfservice.repositories.JarFileRepository;
 import org.radrso.workflow.wfservice.repositories.WorkflowRepository;
 import org.radrso.workflow.wfservice.repositories.WorkflowStatusRepository;
@@ -36,7 +36,7 @@ public class WorkflowServiceImpl implements WorkflowService {
     private JarFileRepository jarFileRepository;
 
     @Override
-    public boolean save(WorkflowConfig workflowConfig) {
+    public boolean save(WorkflowSchema workflowConfig) {
         if(workflowConfig == null || workflowConfig.getApplication() == null || workflowConfig.getId() == null)
             return false;
         workflowRepository.save(workflowConfig);
@@ -44,24 +44,24 @@ public class WorkflowServiceImpl implements WorkflowService {
     }
 
     @Override
-    public List<WorkflowConfig> getAll(){
+    public List<WorkflowSchema> getAll(){
         return workflowRepository.findAll();
     }
 
     @Override
-    public Page<WorkflowConfig> getAll(int pno, int psize){
+    public Page<WorkflowSchema> getAll(int pno, int psize){
         return workflowRepository.findAll(new PageRequest(pno, psize));
     }
 
     @Override
-    public WorkflowConfig getByWorkflowId(String workflowId) {
+    public WorkflowSchema getByWorkflowId(String workflowId) {
         if(workflowId == null)
             return null;
         return workflowRepository.findOne(workflowId);
     }
 
     @Override
-    public List<WorkflowConfig> getByApplication(String application) {
+    public List<WorkflowSchema> getByApplication(String application) {
         if(application == null)
             return new ArrayList<>();
         return workflowRepository.findByApplication(application);
@@ -86,25 +86,25 @@ public class WorkflowServiceImpl implements WorkflowService {
 
     @Override
     public void stopWorkflow(String workflow) {
-        WorkflowConfig workflowConfig = getByWorkflowId(workflow);
+        WorkflowSchema workflowConfig = getByWorkflowId(workflow);
         if (workflowConfig == null) {
             return;
         }
         workflowConfig.setStopTime(new Date());
         workflowRepository.save(workflowConfig);
 
-        WorkflowExecuteStatus executeStatus = statusRepository.findOne(workflow);
+        WorkflowRuntimeState executeStatus = statusRepository.findOne(workflow);
         String status = executeStatus.getStatus();
-        if (status.equals(WorkflowExecuteStatus.STOP)){
+        if (status.equals(WorkflowRuntimeState.STOP)){
             return;
         }
-        executeStatus.setStatus(WorkflowExecuteStatus.STOP);
+        executeStatus.setStatus(WorkflowRuntimeState.STOP);
         statusRepository.save(executeStatus);
     }
 
     @Override
     public boolean restartWorkflow(String workflow, Date stopTime) {
-        WorkflowConfig workflowConfig = getByWorkflowId(workflow);
+        WorkflowSchema workflowConfig = getByWorkflowId(workflow);
         if (workflowConfig == null || workflowConfig.getStartTime().after(stopTime)) {
             return false;
         }
@@ -112,12 +112,12 @@ public class WorkflowServiceImpl implements WorkflowService {
         workflowConfig.setStopTime(stopTime);
         workflowRepository.save(workflowConfig);
 
-        WorkflowExecuteStatus executeStatus = statusRepository.findOne(workflow);
+        WorkflowRuntimeState executeStatus = statusRepository.findOne(workflow);
         String status = executeStatus.getStatus();
-        if (status.equals(WorkflowExecuteStatus.START)) {
+        if (status.equals(WorkflowRuntimeState.START)) {
             return true;
         }
-        executeStatus.setStatus(WorkflowExecuteStatus.START);
+        executeStatus.setStatus(WorkflowRuntimeState.START);
         statusRepository.save(executeStatus);
         return true;
     }
@@ -128,7 +128,7 @@ public class WorkflowServiceImpl implements WorkflowService {
             return false;
         }
 
-        String jarRoots = ConfigConstant.SERVICE_JAR_HOME + application + File.separator;
+        String jarRoots = EngineConstant.SERVICE_JAR_HOME + application + File.separator;
         String originalFileName = originFile.getOriginalFilename();
         try {
            boolean res = FileUtils.writeFile(jarRoots , originalFileName, originFile.getBytes());
@@ -155,7 +155,7 @@ public class WorkflowServiceImpl implements WorkflowService {
     }
 
     @Override
-    public void updateServiceStatus(WorkflowConfig workflowConfig){
+    public void updateServiceStatus(WorkflowSchema workflowConfig){
         if(workflowConfig == null)
             return;
 
@@ -164,18 +164,18 @@ public class WorkflowServiceImpl implements WorkflowService {
             Date start = workflowConfig.getStartTime();
             Date stop = workflowConfig.getStopTime();
 
-            WorkflowExecuteStatus executeStatus = statusRepository.findOne(workflowConfig.getId());
+            WorkflowRuntimeState executeStatus = statusRepository.findOne(workflowConfig.getId());
             String status = executeStatus.getStatus();
             if (executeStatus == null)
-                executeStatus = new WorkflowExecuteStatus(workflowConfig.getId(), workflowConfig.getApplication(), WorkflowExecuteStatus.CREATED, null);
+                executeStatus = new WorkflowRuntimeState(workflowConfig.getId(), workflowConfig.getApplication(), WorkflowRuntimeState.CREATED, null);
 
             // 针对不同的状态进行修正
             Date current = new Date();
-            if (current.after(start) && current.before(stop) && status.equals(WorkflowExecuteStatus.CREATED)) {
-                executeStatus.setStatus(WorkflowExecuteStatus.START);
+            if (current.after(start) && current.before(stop) && status.equals(WorkflowRuntimeState.CREATED)) {
+                executeStatus.setStatus(WorkflowRuntimeState.START);
             }
-            else if (current.after(stop) && status.equals(WorkflowExecuteStatus.START)) {
-                executeStatus.setStatus(WorkflowExecuteStatus.STOP);
+            else if (current.after(stop) && status.equals(WorkflowRuntimeState.START)) {
+                executeStatus.setStatus(WorkflowRuntimeState.STOP);
             }
             if (!executeStatus.getStatus().equals(status)) {
                 statusRepository.save(executeStatus);

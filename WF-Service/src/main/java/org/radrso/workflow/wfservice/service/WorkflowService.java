@@ -1,11 +1,10 @@
 package org.radrso.workflow.wfservice.service;
 
-import org.radrso.workflow.entities.config.JarFile;
-import org.radrso.workflow.entities.config.WorkflowConfig;
+import org.radrso.workflow.entity.model.JarFile;
+import org.radrso.workflow.entity.schema.WorkflowSchema;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -14,14 +13,14 @@ import java.util.List;
  */
 public interface WorkflowService {
 
-    boolean save(WorkflowConfig workflowConfig);
+    boolean save(WorkflowSchema workflowConfig);
 
-    List<WorkflowConfig> getAll();
+    List<WorkflowSchema> getAll();
 
-    Page<WorkflowConfig> getAll(int pno, int psize);
+    Page<WorkflowSchema> getAll(int pno, int psize);
 
-    WorkflowConfig getByWorkflowId(String workflowId);
-    List<WorkflowConfig> getByApplication(String application);
+    WorkflowSchema getByWorkflowId(String workflowId);
+    List<WorkflowSchema> getByApplication(String application);
     boolean delete(String workflowId);
     boolean deleteByApplication(String application);
     void stopWorkflow(String workflow);
@@ -39,6 +38,6 @@ public interface WorkflowService {
     boolean saveJarFile(String application, String jarName, byte[] bytes);
     List<JarFile> listApplicationJarFiles(String application);
 
-    void updateServiceStatus(WorkflowConfig workflowConfig);
+    void updateServiceStatus(WorkflowSchema workflowConfig);
 
 }

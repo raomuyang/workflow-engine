@@ -1,0 +1,64 @@
+{
+  "application": "APPLICATION-NAME -- Example",
+  "id": "WORKFLOW-ID",
+  "start_time":"2016-01-01",
+  "stop_time":"2016-01-01",
+
+  "steps": [
+    {
+      "sign": "&START",
+      "name": "Start",
+      "transfer":{
+        "input": [
+          {"name": "test1",  "type": "test1", "value": ""},
+          {"name": "test2",  "type": "test2", "value": ""},
+          {"name": "test3",  "type": "test3", "value": ""}
+        ],
+
+        "to": "sign-1"
+      }
+    },
+
+    {
+      "sign": "sign-1",
+      "name": "step name",
+      "call": "org.radrso.xxx.XXXClass || url",
+      "method": "xxxClass / GET / POST / PUT / DELETE...",
+
+      "transfer": {
+        "input": [
+          {"name": "test1",  "type": "test1"},
+          {"name": "test2",  "type": "test2"},
+          {"name": "test3",  "type": "test3"}
+        ],
+
+        "switch":
+        {
+          "variable": "{output}[sign-1][xxx][xxx]",
+          "compare_to": 123,
+          "type": "",
+          "if": "> == < && ||",
+          "than":{
+            "input":[],
+            "to": "sign-2"
+          },
+          "else":{
+            "input":[],
+            "to": "sign-3"
+          }
+        },
+
+        "to": "sign-2",
+        "scatters":["sign-3 switch 生效，则后面的to和scatter不起作用"]
+      }
+    },
+
+    {
+      "sign": "&FINISH",
+      "name": "Finish the workflow",
+      "call": "org.radrso.xxx.XXXClass || url",
+      "method": "xxxClass / GET / POST / PUT / DELETE..."
+    }
+  ]
+
+}

@@ -70,19 +70,19 @@
       "method": "Get",
       "transfer": {
         "judge": {
-          "compute": "{output}[id-search-weather][results][0][now][text]",
-          "computeWith": "晴天",
+          "variable": "{output}[id-search-weather][results][0][now][text]",
+          "compareTo": "晴天",
           "type": "String",
           "expression": "=",
 
-          "passTransfer":{
+          "thanTransfer":{
             "input": [
               {"name": "info", "value": "北京周边哪里好玩"},
               {"name": "key", "value": ""}
             ],
             "to": "id-outing"
           },
-          "nopassTransfer":{
+          "elseTransfer":{
             "input": [
               {"name": "info", "value": "红烧肉怎么做"},
               {"name": "key", "value": ""}

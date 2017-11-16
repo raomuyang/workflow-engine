@@ -1,10 +1,10 @@
 package org.radrso.workflow.wfservice.controller;
 
 import lombok.extern.log4j.Log4j;
-import org.radrso.workflow.entities.config.WorkflowConfig;
-import org.radrso.workflow.entities.response.WFResponse;
-import org.radrso.workflow.entities.wf.WorkflowInstance;
-import org.radrso.workflow.resolvers.FlowResolver;
+import org.radrso.workflow.entity.schema.WorkflowSchema;
+import org.radrso.workflow.entity.model.WorkflowResult;
+import org.radrso.workflow.entity.model.WorkflowInstance;
+import org.radrso.workflow.resolvers.WorkflowResolver;
 import org.radrso.workflow.resolvers.Resolvers;
 import org.radrso.workflow.wfservice.executor.InstanceJobRunner;
 import org.radrso.workflow.wfservice.service.WorkflowInstanceService;
@@ -167,10 +167,10 @@ public class InstanceController {
             map.put("msg", String.format("No such instance[%s]", instanceId));
             return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
         }
-        WorkflowConfig workflowConfig = workflowService.getByWorkflowId(instance.getWorkflowId());
+        WorkflowSchema workflowConfig = workflowService.getByWorkflowId(instance.getWorkflowId());
 
-        FlowResolver workflowResolver = Resolvers.getFlowResolver(workflowConfig, instance);
-        WFResponse response = instanceJobRunner.startExecute(workflowResolver, rerun);
+        WorkflowResolver workflowResolver = Resolvers.getFlowResolver(workflowConfig, instance);
+        WorkflowResult response = instanceJobRunner.startExecute(workflowResolver, rerun);
         boolean res = response.getCode() / 100 < 3 ? true : false;
         map.put("status", res);
         map.put("msg", response.getMsg());

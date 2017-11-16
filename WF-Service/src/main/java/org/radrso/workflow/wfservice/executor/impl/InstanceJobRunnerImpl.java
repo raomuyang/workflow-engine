@@ -1,12 +1,12 @@
 package org.radrso.workflow.wfservice.executor.impl;
 
 import org.radrso.plugins.requests.entity.ResponseCode;
-import org.radrso.workflow.entities.wf.WorkflowInstance;
-import org.radrso.workflow.exec.FlowExecutor;
-import org.radrso.workflow.exec.WorkflowExecutors;
+import org.radrso.workflow.entity.model.WorkflowInstance;
+import org.radrso.workflow.launcher.FlowLauncher;
+import org.radrso.workflow.launcher.WorkflowLaunchers;
 import org.radrso.workflow.base.Commander;
-import org.radrso.workflow.resolvers.FlowResolver;
-import org.radrso.workflow.entities.response.WFResponse;
+import org.radrso.workflow.resolvers.WorkflowResolver;
+import org.radrso.workflow.entity.model.WorkflowResult;
 import org.radrso.workflow.wfservice.executor.InstanceJobRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,19 +23,19 @@ public class InstanceJobRunnerImpl implements InstanceJobRunner {
     private Commander commander;
 
     @Override
-    public WFResponse startExecute(FlowResolver workflowResolver, boolean rerun) {
+    public WorkflowResult startExecute(WorkflowResolver workflowResolver, boolean rerun) {
 
         //保证调用的幂等性
         WorkflowInstance instance = workflowResolver.getWorkflowInstance();
         if(instance != null && !rerun) {
             if (instance.getStatus().equals(WorkflowInstance.COMPLETED)
                     || instance.getStatus().equals(WorkflowInstance.INTERRUPTED)) {
-                return new WFResponse(ResponseCode.HTTP_OK.code(),
+                return new WorkflowResult(ResponseCode.HTTP_OK.code(),
                         String.format("workflow instance is %s, please rerun it", instance.getStatus()), null);
             }
         }
 
-        FlowExecutor flowActionsExecutor = WorkflowExecutors.getFlowAction(commander);
+        FlowLauncher flowActionsExecutor = WorkflowLaunchers.getFlowAction(commander);
         String msg;
         if (rerun){
             flowActionsExecutor.restart(workflowResolver);
@@ -47,12 +47,12 @@ public class InstanceJobRunnerImpl implements InstanceJobRunner {
         }
 
         String instanceStatus = workflowResolver.getWorkflowInstance().getStatus();
-        return new WFResponse(ResponseCode.HTTP_REQUEST_CONTINUE.code(), msg, null);
+        return new WorkflowResult(ResponseCode.HTTP_REQUEST_CONTINUE.code(), msg, null);
     }
 
     @Override
     public boolean interrupt(String instanceId) {
-        FlowExecutor executor = WorkflowExecutors.getFlowAction(commander);
+        FlowLauncher executor = WorkflowLaunchers.getFlowAction(commander);
         return executor.interrupt(instanceId);
     }
 

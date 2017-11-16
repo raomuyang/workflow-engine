@@ -1,0 +1,8 @@
+{
+  "HEADER_PARAMS_ESCAPE": "$",
+  "VALUES_ESCAPE": "\\{(.*?)\\}",
+  "SCHEMA_START_SIGN": "&START",
+  "SCHEMA_FINISH_SIGN" : "&FINISH",
+  "SCHEMA_INSTANCE_ID_VALUE": "{instance}",
+  "OUTPUT_VALUE": "{output}"
+}

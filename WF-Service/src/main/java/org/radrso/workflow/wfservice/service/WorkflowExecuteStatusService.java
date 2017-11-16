@@ -1,6 +1,6 @@
 package org.radrso.workflow.wfservice.service;
 
-import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
+import org.radrso.workflow.entity.model.WorkflowRuntimeState;
 import org.springframework.data.domain.Page;
 
 /**
@@ -8,11 +8,11 @@ import org.springframework.data.domain.Page;
  */
 public interface WorkflowExecuteStatusService {
 
-    WorkflowExecuteStatus get(String workflowId);
+    WorkflowRuntimeState get(String workflowId);
 
-    Page<WorkflowExecuteStatus> getAll(int pno, int psize);
+    Page<WorkflowRuntimeState> getAll(int pno, int psize);
 
-    public boolean save(WorkflowExecuteStatus status);
+    public boolean save(WorkflowRuntimeState status);
 
     String getStatus(String workflowId);
 

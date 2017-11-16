@@ -101,7 +101,7 @@ public class TestRequestFactory {
         type = ContentType.APPLICATION_JSON;
         Map<String, Object> body = new HashMap<>();
         body.put("key", "no_api_key");
-        body.put("info", "你好");
+        body.put("model", "你好");
         body.put("userid", "123456");
         request = RequestFactory.createRequest(url, MethodEnum.POST, headers, JsonUtils.getJsonElement(body), type, true);
         response = request.sendRequest();

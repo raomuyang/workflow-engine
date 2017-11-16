@@ -2,9 +2,9 @@ package org.radrso.workflow.wfservice.controller;
 
 import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.DateTools;
-import org.radrso.workflow.entities.config.JarFile;
-import org.radrso.workflow.entities.config.WorkflowConfig;
-import org.radrso.workflow.entities.wf.WorkflowExecuteStatus;
+import org.radrso.workflow.entity.model.JarFile;
+import org.radrso.workflow.entity.schema.WorkflowSchema;
+import org.radrso.workflow.entity.model.WorkflowRuntimeState;
 import org.radrso.workflow.wfservice.service.WorkflowExecuteStatusService;
 import org.radrso.workflow.wfservice.service.WorkflowService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class WorkflowConfroller {
 
     @RequestMapping("/")
     public List<String> getAllWFId(){
-        List<WorkflowConfig> wfs = workflowService.getAll();
+        List<WorkflowSchema> wfs = workflowService.getAll();
         List<String> wfIds = new ArrayList<>();
         if(wfs != null)
             wfs.forEach(wf->{
@@ -44,7 +44,7 @@ public class WorkflowConfroller {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/")
-    public ResponseEntity<ModelMap> create(@RequestBody WorkflowConfig workflow){
+    public ResponseEntity<ModelMap> create(@RequestBody WorkflowSchema workflow){
         boolean res = workflowService.save(workflow);
         ModelMap map = new ModelMap();
         map.put("status", res);
@@ -58,12 +58,12 @@ public class WorkflowConfroller {
     }
 
     @RequestMapping("/pno/{pno}/psize/{psize}/")
-    public Page<WorkflowConfig> getAllInfos(@PathVariable("pno") int pno, @PathVariable("psize")int psize){
+    public Page<WorkflowSchema> getAllInfos(@PathVariable("pno") int pno, @PathVariable("psize")int psize){
         return workflowService.getAll(pno, psize);
     }
 
     @RequestMapping("/{workflowId}")
-    public WorkflowConfig getWorkflowById(@PathVariable("workflowId") String id){
+    public WorkflowSchema getWorkflowById(@PathVariable("workflowId") String id){
         return workflowService.getByWorkflowId(id);
     }
 
@@ -88,7 +88,7 @@ public class WorkflowConfroller {
         map.put("status", res);
 
         if(!res){
-            map.put("msg", "Upload error, pleas check the applicationId");
+            map.put("msg", "Upload error, pleas apply the applicationId");
             return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(map, HttpStatus.OK);
@@ -101,7 +101,7 @@ public class WorkflowConfroller {
     }
 
     @RequestMapping("/{workflowId}/status")
-    public WorkflowExecuteStatus getWorkflowStatus(@PathVariable("workflowId") String workflowId){
+    public WorkflowRuntimeState getWorkflowStatus(@PathVariable("workflowId") String workflowId){
         workflowService.updateServiceStatus(workflowService.getByWorkflowId(workflowId));
         return statusService.get(workflowId);
     }
@@ -118,7 +118,7 @@ public class WorkflowConfroller {
         String msg = String.format("Restart workflow %s successful, deadline is %s", workflowId, deadline);
         HttpStatus statusCode = HttpStatus.OK;
         if (!res) {
-            msg = String.format("Restart workflow %s successful, deadline is %s, please check it", workflowId, deadline);
+            msg = String.format("Restart workflow %s successful, deadline is %s, please apply it", workflowId, deadline);
             statusCode = HttpStatus.BAD_REQUEST;
         }
         modelMap.put("msg", msg);
@@ -140,7 +140,7 @@ public class WorkflowConfroller {
     }
 
     @RequestMapping("/status/pno/{pno}/psize/{psize}/")
-    public Page<WorkflowExecuteStatus> getAllStatus(@PathVariable("pno") int pno, @PathVariable("psize")int psize){
+    public Page<WorkflowRuntimeState> getAllStatus(@PathVariable("pno") int pno, @PathVariable("psize")int psize){
         return statusService.getAll(pno, psize);
     }
 
@@ -150,7 +150,7 @@ public class WorkflowConfroller {
      * @return
      */
     @RequestMapping(method = RequestMethod.PUT, value = "/update")
-    public ResponseEntity<ModelMap> update(@RequestBody WorkflowConfig workflow){
+    public ResponseEntity<ModelMap> update(@RequestBody WorkflowSchema workflow){
 
         boolean res = false;
         if(workflow.getId() != null
@@ -169,7 +169,7 @@ public class WorkflowConfroller {
     }
 
     @RequestMapping("/app/{application}/")
-    public List<WorkflowConfig> getWorkflowByApplication(@PathVariable("application") String application){
+    public List<WorkflowSchema> getWorkflowByApplication(@PathVariable("application") String application){
         return workflowService.getByApplication(application);
     }
 

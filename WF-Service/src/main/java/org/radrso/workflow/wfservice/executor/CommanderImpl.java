@@ -4,15 +4,15 @@ import lombok.extern.log4j.Log4j;
 import org.radrso.plugins.FileUtils;
 import org.radrso.plugins.requests.entity.ResponseCode;
 import org.radrso.workflow.base.Operations;
-import org.radrso.workflow.constant.ConfigConstant;
+import org.radrso.workflow.constant.EngineConstant;
 import org.radrso.workflow.constant.ExceptionCode;
-import org.radrso.workflow.entities.config.JarFile;
-import org.radrso.workflow.entities.config.WorkflowConfig;
-import org.radrso.workflow.entities.config.items.Step;
-import org.radrso.workflow.entities.exceptions.WFRuntimeException;
-import org.radrso.workflow.entities.response.WFResponse;
-import org.radrso.workflow.entities.wf.WorkflowErrorLog;
-import org.radrso.workflow.entities.wf.WorkflowInstance;
+import org.radrso.workflow.entity.model.JarFile;
+import org.radrso.workflow.entity.schema.WorkflowSchema;
+import org.radrso.workflow.entity.schema.items.Step;
+import org.radrso.workflow.entity.exception.WFRuntimeException;
+import org.radrso.workflow.entity.model.WorkflowResult;
+import org.radrso.workflow.entity.model.WorkflowErrorLog;
+import org.radrso.workflow.entity.model.WorkflowInstance;
 import org.radrso.workflow.base.Commander;
 import org.radrso.workflow.wfservice.service.WorkflowExecuteStatusService;
 import org.radrso.workflow.wfservice.service.WorkflowInstanceService;
@@ -32,7 +32,7 @@ import java.util.List;
 @Component
 @Log4j
 public class CommanderImpl implements Commander {
-    public static final String ROOT = ConfigConstant.SERVICE_JAR_HOME;
+    public static final String ROOT = EngineConstant.SERVICE_JAR_HOME;
 
     @Autowired
     protected Operations operations;
@@ -53,7 +53,7 @@ public class CommanderImpl implements Commander {
      */
     @Override
     public boolean jarFilesSync(String workflowId) {
-        WorkflowConfig workflowConfig = workflowService.getByWorkflowId(workflowId);
+        WorkflowSchema workflowConfig = workflowService.getByWorkflowId(workflowId);
         String app = workflowConfig.getApplication();
         String jarsRoot = ROOT + app + File.separator;
         List<String> jars = workflowConfig.getJars();
@@ -85,7 +85,7 @@ public class CommanderImpl implements Commander {
                 }
             }
 
-            WFResponse response = operations.checkAndImportJar(app, name);
+            WorkflowResult response = operations.checkAndImportJar(app, name);
             if(response.getCode() == ExceptionCode.JAR_FILE_NOT_FOUND.code()) {
                 log.info(String.format("UPLOAD Local JAR[%s]", app + "/" + name));
                 response = operations.checkAndImportJar(app, name);
@@ -110,7 +110,7 @@ public class CommanderImpl implements Commander {
     }
 
     @Override
-    public WorkflowConfig getWorkflowConfig(String instanceId) {
+    public WorkflowSchema getWorkflowConfig(String instanceId) {
         String id = instanceId;
         if (id.contains("-")) {
             id = id.substring(0, id.indexOf("-"));
@@ -129,7 +129,7 @@ public class CommanderImpl implements Commander {
      */
     @Override
     public String getWorkflowStatus(String workflowId) {
-        WorkflowConfig workflowConfig = workflowService.getByWorkflowId(workflowId);
+        WorkflowSchema workflowConfig = workflowService.getByWorkflowId(workflowId);
         if(workflowConfig == null)
             return null;
         workflowService.updateServiceStatus(workflowConfig);
@@ -137,7 +137,7 @@ public class CommanderImpl implements Commander {
     }
 
     @Override
-    public WFResponse runStepAction(Step step, Object[] params, String[] paramNames) {
+    public WorkflowResult runStepAction(Step step, Object[] params, String[] paramNames) {
         return operations.executeStepAction(step, params, paramNames);
     }
 
