@@ -23,8 +23,8 @@ import java.util.Map;
 @Document(collection = "progress")
 public class StepProgress implements Serializable{
     @Id
+    private String id;
     private String sign;
-
     private String instanceId;
     private String name;
     private StatusEnum status;
